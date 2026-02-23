@@ -123,3 +123,41 @@ cote/
 
 - HTML5, CSS3, Vanilla JavaScript
 - 반응형 레이아웃 (모바일 대응)
+
+---
+
+## GitHub 푸시 및 배포
+
+### 1. GitHub 로그인 (최초 1회)
+
+터미널에서:
+
+```bash
+gh auth login
+```
+
+브라우저가 열리면 로그인 후 권한을 허용합니다.
+
+### 2. 원격 저장소 생성 및 푸시
+
+프로젝트 루트(`cote`)에서:
+
+```bash
+gh repo create cote --public --source=. --remote=origin --push --description "자료구조·알고리즘 시각화"
+```
+
+이미 GitHub 웹에서 저장소를 만들었다면:
+
+```bash
+git remote add origin https://github.com/<사용자명>/cote.git
+git branch -M main
+git push -u origin main
+```
+
+### 3. GitHub Pages 설정
+
+1. 해당 리포지토리 **Settings** → **Pages** 이동  
+2. **Build and deployment** → **Source**를 **GitHub Actions**로 선택  
+3. 저장 후 `main` 브랜치에 푸시할 때마다 자동으로 배포됩니다.
+
+배포가 끝나면 `https://<사용자명>.github.io/cote/` 에서 사이트를 볼 수 있습니다.
