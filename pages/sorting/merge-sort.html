@@ -268,9 +268,23 @@
                 font-size: 12px;
             }
         }
+        .pc-recommend {
+            background: linear-gradient(135deg, #1e3a5f, #1d4ed8);
+            color: #f8fafc;
+            padding: 10px 16px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .pc-recommend span { opacity: 0.95; }
+        @media (max-width: 768px) {
+            body { overflow-x: hidden; }
+            .container { padding: 16px; margin: 0 8px; max-width: 100%; }
+        }
     </style>
 </head>
 <body>
+    <p class="pc-recommend"><span>💻 PC에서 보시면 시각화를 더 편하게 이용할 수 있습니다.</span></p>
     <div class="container">
         <a href="../../index.html" class="back-link">← 메인으로</a>
         <div class="control-panel">
@@ -360,7 +374,7 @@
 
                     if (this.originalArray.length === 0) throw new Error('Empty array');
                     if (this.originalArray.length > 12) {
-                        alert('Please use 12 or fewer elements for better visualization');
+                        alert('시각화를 위해 원소는 12개 이하로 입력하세요');
                         return;
                     }
 
@@ -371,7 +385,7 @@
                     this.updateVisualization();
                     this.updateUI();
                 } catch (error) {
-                    alert('Please enter valid numbers separated by commas (e.g., 64, 34, 25, 12)');
+                    alert('쉼표로 구분된 숫자만 입력하세요 (예: 64, 34, 25, 12)');
                 }
             }
 

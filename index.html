@@ -186,6 +186,17 @@
             margin-bottom: 4px;
         }
 
+        /* PC 권장 안내 */
+        .pc-recommend {
+            background: linear-gradient(135deg, #1e3a5f, #1d4ed8);
+            color: #f8fafc;
+            padding: 10px 16px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .pc-recommend span { opacity: 0.95; }
+
         /* Footer */
         .footer {
             margin-top: 48px;
@@ -195,9 +206,31 @@
             font-size: 0.85rem;
             color: #999;
         }
+
+        /* 모바일 */
+        @media (max-width: 768px) {
+            body { overflow-x: hidden; }
+            .header { padding: 20px 16px 18px; }
+            .header h1 { font-size: 1.35rem; word-break: keep-all; }
+            .header p { font-size: 0.85rem; }
+            .main { padding: 24px 12px 40px; }
+            .intro { margin-bottom: 28px; }
+            .intro h2 { font-size: 1.35rem; }
+            .intro p { font-size: 0.9rem; padding: 0 8px; }
+            .card-grid { gap: 16px; grid-template-columns: 1fr; }
+            .card { padding: 20px; }
+            .card h3 { font-size: 1.05rem; }
+            .section-num { font-size: 0.85rem; }
+            .intro[style] { margin-top: 40px !important; }
+        }
+        @media (max-width: 480px) {
+            .header h1 { font-size: 1.2rem; }
+            .card .btn { padding: 8px 14px; font-size: 0.85rem; }
+        }
     </style>
 </head>
 <body>
+    <p class="pc-recommend"><span>💻 PC에서 보시면 시각화를 더 편하게 이용할 수 있습니다.</span></p>
     <header class="header">
         <div class="header-inner">
             <h1>자료구조 · 알고리즘 시각화</h1>
