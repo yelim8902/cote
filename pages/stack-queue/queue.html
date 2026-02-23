@@ -1,0 +1,572 @@
+<!doctype html>
+<!-- saved from url=(0053)https://codes.yalco.kr/ds-algorithm/linear/queue.html -->
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>큐 시각화 | 자료구조 시각화</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f8f9fa;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e9ecef;
+      }
+
+      .control-panel {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 30px;
+        align-items: end;
+      }
+
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .input-group label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #555;
+      }
+
+      input[type="text"],
+      select {
+        padding: 12px;
+        border: 2px solid #e1e8ed;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        min-width: 200px;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #1d4ed8;
+        box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #1d4ed8, #2563eb);
+        color: white;
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(29, 78, 216, 0.3);
+      }
+
+      .btn-secondary {
+        background: #f8f9fa;
+        color: #495057;
+        border: 2px solid #dee2e6;
+      }
+
+      .btn-secondary:hover:not(:disabled) {
+        background: #e9ecef;
+        transform: translateY(-1px);
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+      }
+
+      .info-panel {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 15px;
+      }
+
+      .info-item {
+        text-align: center;
+        padding: 15px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .info-item h3 {
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #666;
+        margin-bottom: 8px;
+      }
+
+      .info-item .value {
+        font-size: 18px;
+        font-weight: 700;
+        color: #333;
+      }
+
+      .visualization {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow-x: auto;
+      }
+
+      .queue-container {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        min-width: 100%;
+        justify-content: center;
+      }
+
+      .queue-pointer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #1d4ed8;
+      }
+
+      .queue-elements {
+        display: flex;
+        gap: 4px;
+        min-height: 80px;
+        align-items: center;
+        border: 3px solid #e1e8ed;
+        border-radius: 10px;
+        padding: 10px;
+        background: #f8f9fa;
+        position: relative;
+      }
+
+      .queue-element {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #1d4ed8, #2563eb);
+        color: white;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 600;
+        transition: all 0.5s ease;
+        position: relative;
+      }
+
+      .queue-element.enqueuing {
+        background: linear-gradient(135deg, #feca57, #ff9ff3);
+        transform: scale(1.15);
+      }
+
+      .queue-element.dequeuing {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        transform: scale(1.1);
+      }
+
+      .empty-queue {
+        color: #999;
+        font-style: italic;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .step-info {
+        background: #f8f9fa;
+        border: 1px solid #e1e8ed;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      .step-info h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .step-info p {
+        font-size: 16px;
+        color: #666;
+        line-height: 1.5;
+      }
+
+      .navigation {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .keyboard-hint {
+        text-align: center;
+        font-size: 14px;
+        color: #999;
+        margin-top: 10px;
+      }
+
+      .arrow {
+        font-size: 24px;
+        color: #1d4ed8;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 20px;
+        color: #1d4ed8;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .back-link:hover {
+        color: #2563eb;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+
+        .control-panel {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .info-panel {
+          grid-template-columns: 1fr;
+        }
+
+        input[type="text"],
+        select {
+          min-width: auto;
+        }
+
+        .queue-container {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .queue-elements {
+          justify-content: center;
+          flex-wrap: wrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="../../index.html" class="back-link">← 메인으로</a>
+      <div class="control-panel">
+        <div class="input-group">
+          <label for="operationType">Operation</label>
+          <select id="operationType">
+            <option value="enqueue">Enqueue</option>
+            <option value="dequeue">Dequeue</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="valueInput">Value (for Enqueue)</label>
+          <input type="text" id="valueInput" placeholder="Enter value" />
+        </div>
+        <button class="btn btn-primary" id="addStepBtn">Add Step</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+      </div>
+
+      <div class="info-panel">
+        <div class="info-item">
+          <h3>Data Structure</h3>
+          <div class="value">Queue</div>
+        </div>
+        <div class="info-item">
+          <h3>Step</h3>
+          <div class="value" id="currentStep">0 / 0</div>
+        </div>
+        <div class="info-item">
+          <h3>Time Complexity</h3>
+          <div class="value">O(1)</div>
+        </div>
+        <div class="info-item">
+          <h3>Space Complexity</h3>
+          <div class="value">O(n)</div>
+        </div>
+      </div>
+
+      <div class="step-info">
+        <h3>Current Step</h3>
+        <p id="stepDescription">
+          Add operations to see step-by-step queue visualization
+        </p>
+      </div>
+
+      <div class="visualization">
+        <div class="queue-container">
+          <div class="queue-pointer">
+            <div class="arrow">→</div>
+            <div>FRONT</div>
+          </div>
+          <div class="queue-elements" id="queueElements">
+            <div class="empty-queue">Queue is empty</div>
+          </div>
+          <div class="queue-pointer">
+            <div class="arrow">←</div>
+            <div>REAR</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="navigation">
+        <button class="btn btn-secondary" id="prevBtn" disabled="">
+          Previous
+        </button>
+        <button class="btn btn-secondary" id="nextBtn" disabled="">Next</button>
+      </div>
+
+      <div class="keyboard-hint">Use ← → arrow keys to navigate steps</div>
+    </div>
+
+    <script>
+      class QueueVisualizer {
+        constructor() {
+          this.steps = [];
+          this.currentStepIndex = -1;
+          this.initializeEventListeners();
+          this.updateUI();
+        }
+
+        initializeEventListeners() {
+          document
+            .getElementById("addStepBtn")
+            .addEventListener("click", () => this.addStep());
+          document
+            .getElementById("resetBtn")
+            .addEventListener("click", () => this.reset());
+          document
+            .getElementById("prevBtn")
+            .addEventListener("click", () => this.previousStep());
+          document
+            .getElementById("nextBtn")
+            .addEventListener("click", () => this.nextStep());
+          document
+            .getElementById("operationType")
+            .addEventListener("change", () => this.updateValueInput());
+
+          document.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowLeft") {
+              e.preventDefault();
+              this.previousStep();
+            } else if (e.key === "ArrowRight") {
+              e.preventDefault();
+              this.nextStep();
+            }
+          });
+
+          document
+            .getElementById("valueInput")
+            .addEventListener("keypress", (e) => {
+              if (e.key === "Enter") {
+                this.addStep();
+              }
+            });
+        }
+
+        addStep() {
+          const operationType = document.getElementById("operationType").value;
+          const valueInput = document.getElementById("valueInput");
+          const value = valueInput.value.trim();
+
+          if (operationType === "enqueue" && !value) {
+            alert("Please enter a value for enqueue operation");
+            return;
+          }
+
+          if (
+            operationType === "dequeue" &&
+            this.getCurrentQueue().length === 0
+          ) {
+            alert("Cannot dequeue from empty queue");
+            return;
+          }
+
+          const step = {
+            operation: operationType,
+            value: operationType === "enqueue" ? value : null,
+            queue: [...this.getCurrentQueue()],
+          };
+
+          if (operationType === "enqueue") {
+            step.queue.push(value);
+          } else {
+            step.queue.shift();
+          }
+
+          this.steps.push(step);
+          this.currentStepIndex = this.steps.length - 1;
+
+          if (operationType === "enqueue") {
+            valueInput.value = "";
+          }
+
+          this.updateUI();
+        }
+
+        getCurrentQueue() {
+          if (this.currentStepIndex < 0) return [];
+          return this.steps[this.currentStepIndex].queue || [];
+        }
+
+        previousStep() {
+          if (this.currentStepIndex > 0) {
+            this.currentStepIndex--;
+            this.updateUI();
+          }
+        }
+
+        nextStep() {
+          if (this.currentStepIndex < this.steps.length - 1) {
+            this.currentStepIndex++;
+            this.updateUI();
+          }
+        }
+
+        reset() {
+          this.steps = [];
+          this.currentStepIndex = -1;
+          document.getElementById("valueInput").value = "";
+          this.updateUI();
+        }
+
+        updateValueInput() {
+          const operationType = document.getElementById("operationType").value;
+          const valueInput = document.getElementById("valueInput");
+          const label = document.querySelector('label[for="valueInput"]');
+
+          if (operationType === "dequeue") {
+            valueInput.disabled = true;
+            valueInput.style.opacity = "0.5";
+            label.textContent = "Value (not needed for dequeue)";
+          } else {
+            valueInput.disabled = false;
+            valueInput.style.opacity = "1";
+            label.textContent = "Value (for Enqueue)";
+          }
+        }
+
+        updateUI() {
+          this.updateStepInfo();
+          this.updateVisualization();
+          this.updateNavigationButtons();
+        }
+
+        updateStepInfo() {
+          const stepElement = document.getElementById("currentStep");
+          const descriptionElement = document.getElementById("stepDescription");
+
+          stepElement.textContent = `${Math.max(0, this.currentStepIndex + 1)} / ${this.steps.length}`;
+
+          if (this.currentStepIndex < 0) {
+            descriptionElement.textContent =
+              "Add operations to see step-by-step queue visualization";
+          } else {
+            const step = this.steps[this.currentStepIndex];
+            if (step.operation === "enqueue") {
+              descriptionElement.textContent = `Enqueue "${step.value}" to the rear of the queue`;
+            } else {
+              descriptionElement.textContent =
+                "Dequeue element from the front of the queue";
+            }
+          }
+        }
+
+        updateVisualization() {
+          const queueElements = document.getElementById("queueElements");
+          const currentQueue = this.getCurrentQueue();
+
+          queueElements.innerHTML = "";
+
+          if (currentQueue.length === 0) {
+            const emptyDiv = document.createElement("div");
+            emptyDiv.className = "empty-queue";
+            emptyDiv.textContent = "Queue is empty";
+            queueElements.appendChild(emptyDiv);
+          } else {
+            currentQueue.forEach((value, index) => {
+              const element = document.createElement("div");
+              element.className = "queue-element";
+              element.textContent = value;
+
+              // Add animation classes for current operation
+              if (this.currentStepIndex >= 0) {
+                const currentStep = this.steps[this.currentStepIndex];
+                if (
+                  currentStep.operation === "enqueue" &&
+                  index === currentQueue.length - 1
+                ) {
+                  element.classList.add("enqueuing");
+                } else if (currentStep.operation === "dequeue" && index === 0) {
+                  element.classList.add("dequeuing");
+                }
+              }
+
+              queueElements.appendChild(element);
+            });
+          }
+        }
+
+        updateNavigationButtons() {
+          const prevBtn = document.getElementById("prevBtn");
+          const nextBtn = document.getElementById("nextBtn");
+
+          prevBtn.disabled = this.currentStepIndex <= 0;
+          nextBtn.disabled = this.currentStepIndex >= this.steps.length - 1;
+        }
+      }
+
+      // Initialize the visualizer
+      new QueueVisualizer();
+    </script>
+  </body>
+</html>

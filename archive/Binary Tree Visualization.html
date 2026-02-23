@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)https://codes.yalco.kr/ds-algorithm/non-linear/binary-tree.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Tree Visualization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"], select {
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #dee2e6;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        .info-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-label {
+            font-size: 12px;
+            font-weight: 400;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .visualization {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            min-height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            position: relative;
+            overflow: auto;
+        }
+
+        .tree-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 0px;
+        }
+
+        .tree-node {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .plus-button {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 15px rgba(38, 222, 129, 0.3);
+            z-index: 10;
+        }
+
+        .plus-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(38, 222, 129, 0.4);
+        }
+
+        .tree-line {
+            position: absolute;
+            background: #dee2e6;
+            z-index: 1;
+        }
+
+        .traversal-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .traversal-item {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .traversal-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .traversal-value {
+            font-size: 16px;
+            font-weight: 400;
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            input[type="text"], select {
+                min-width: auto;
+            }
+            
+            .info-panel {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .traversal-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="control-panel">
+            <div class="input-group">
+                <label>Value</label>
+                <input type="text" id="nodeValue" placeholder="Enter value" value="50">
+            </div>
+            <button class="btn btn-secondary" onclick="clearTree()">Clear Tree</button>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-item">
+                <div class="info-label">Structure</div>
+                <div class="info-value">Binary Tree</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Nodes</div>
+                <div class="info-value" id="nodeCount">6</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Height</div>
+                <div class="info-value" id="treeHeight">4</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Time Complexity</div>
+                <div class="info-value">O(n)</div>
+            </div>
+        </div>
+
+        <div class="visualization">
+            <div class="tree-container" id="treeContainer"><div class="tree-line" style="width: 310.483px; height: 2px; left: calc(50% + 0px); top: 40px; transform: rotate(165.069deg); transform-origin: 0px 50%;"></div><div class="tree-line" style="width: 310.483px; height: 2px; left: calc(50% + 0px); top: 40px; transform: rotate(14.9314deg); transform-origin: 0px 50%;"></div><div class="tree-line" style="width: 170px; height: 2px; left: calc(50% - 300px); top: 120px; transform: rotate(151.928deg); transform-origin: 0px 50%;"></div><div class="tree-line" style="width: 170px; height: 2px; left: calc(50% - 300px); top: 120px; transform: rotate(28.0725deg); transform-origin: 0px 50%;"></div><div class="tree-line" style="width: 128.062px; height: 2px; left: calc(50% - 450px); top: 200px; transform: rotate(38.6598deg); transform-origin: 0px 50%;"></div><div class="tree-node" style="left: calc(50% - 30px); top: 10px;">50</div><div class="tree-node" style="left: calc(50% - 330px); top: 90px;">50</div><div class="tree-node" style="left: calc(50% - 480px); top: 170px;">50</div><button class="plus-button" style="left: calc(50% - 530px); top: 250px;">+</button><div class="tree-node" style="left: calc(50% - 380px); top: 250px;">50</div><button class="plus-button" style="left: calc(50% - 430px); top: 330px;">+</button><button class="plus-button" style="left: calc(50% - 310px); top: 330px;">+</button><div class="tree-node" style="left: calc(50% - 180px); top: 170px;">50</div><button class="plus-button" style="left: calc(50% - 230px); top: 250px;">+</button><button class="plus-button" style="left: calc(50% - 110px); top: 250px;">+</button><div class="tree-node" style="left: calc(50% + 270px); top: 90px;">50</div><button class="plus-button" style="left: calc(50% + 220px); top: 170px;">+</button><button class="plus-button" style="left: calc(50% + 340px); top: 170px;">+</button></div>
+        </div>
+
+        <div class="traversal-panel">
+            <div class="traversal-item">
+                <div class="traversal-label">Preorder</div>
+                <div class="traversal-value" id="preorder">50, 50, 50, 50, 50, 50</div>
+            </div>
+            <div class="traversal-item">
+                <div class="traversal-label">Inorder</div>
+                <div class="traversal-value" id="inorder">50, 50, 50, 50, 50, 50</div>
+            </div>
+            <div class="traversal-item">
+                <div class="traversal-label">Postorder</div>
+                <div class="traversal-value" id="postorder">50, 50, 50, 50, 50, 50</div>
+            </div>
+            <div class="traversal-item">
+                <div class="traversal-label">Level Order</div>
+                <div class="traversal-value" id="levelorder">50, 50, 50, 50, 50, 50</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class TreeNode {
+            constructor(value) {
+                this.value = value;
+                this.left = null;
+                this.right = null;
+            }
+        }
+
+        class BinaryTreeVisualizer {
+            constructor() {
+                this.root = null;
+                this.nodeCount = 0;
+                this.nodePositions = new Map();
+                this.levelWidth = 120;
+                this.levelHeight = 80;
+            }
+
+            addNode(position, parentNode = null) {
+                const value = document.getElementById('nodeValue').value.trim();
+                if (!value) {
+                    alert('Please enter a value');
+                    return;
+                }
+
+                const newNode = new TreeNode(value);
+
+                if (position === 'root') {
+                    this.root = newNode;
+                } else if (parentNode) {
+                    if (position === 'left') {
+                        parentNode.left = newNode;
+                    } else {
+                        parentNode.right = newNode;
+                    }
+                }
+
+                this.nodeCount++;
+                this.updateVisualization();
+                this.updateTraversals();
+                this.updateInfo();
+            }
+
+            clearTree() {
+                this.root = null;
+                this.nodeCount = 0;
+                this.nodePositions.clear();
+                this.updateVisualization();
+                this.updateTraversals();
+                this.updateInfo();
+            }
+
+            calculatePositions(node, x, y, level, nodeMap) {
+                if (!node) return;
+
+                const horizontalSpacing = Math.max(100, 300 / Math.pow(2, level));
+                
+                nodeMap.set(node, { x, y });
+
+                if (node.left) {
+                    this.calculatePositions(node.left, x - horizontalSpacing, y + this.levelHeight, level + 1, nodeMap);
+                }
+                if (node.right) {
+                    this.calculatePositions(node.right, x + horizontalSpacing, y + this.levelHeight, level + 1, nodeMap);
+                }
+            }
+
+            updateVisualization() {
+                const container = document.getElementById('treeContainer');
+                container.innerHTML = '';
+
+                if (!this.root) {
+                    const plusButton = document.createElement('button');
+                    plusButton.className = 'plus-button';
+                    plusButton.textContent = '+';
+                    plusButton.style.top = '10px';
+                    plusButton.style.left = '50%';
+                    plusButton.style.transform = 'translateX(-50%)';
+                    plusButton.onclick = () => this.addNode('root');
+                    container.appendChild(plusButton);
+                    return;
+                }
+
+                const nodeMap = new Map();
+                this.calculatePositions(this.root, 0, 10, 0, nodeMap);
+
+                // Draw lines first
+                this.drawLines(container, nodeMap);
+
+                // Draw nodes
+                nodeMap.forEach((pos, node) => {
+                    const nodeElement = document.createElement('div');
+                    nodeElement.className = 'tree-node';
+                    nodeElement.textContent = node.value;
+                    nodeElement.style.left = `calc(50% + ${pos.x}px - 30px)`;
+                    nodeElement.style.top = `${pos.y}px`;
+                    container.appendChild(nodeElement);
+
+                    // Add plus buttons for children
+                    if (!node.left) {
+                        const leftPlus = document.createElement('button');
+                        leftPlus.className = 'plus-button';
+                        leftPlus.textContent = '+';
+                        leftPlus.style.left = `calc(50% + ${pos.x - 60}px - 20px)`;
+                        leftPlus.style.top = `${pos.y + 80}px`;
+                        leftPlus.onclick = () => this.addNode('left', node);
+                        container.appendChild(leftPlus);
+                    }
+
+                    if (!node.right) {
+                        const rightPlus = document.createElement('button');
+                        rightPlus.className = 'plus-button';
+                        rightPlus.textContent = '+';
+                        rightPlus.style.left = `calc(50% + ${pos.x + 60}px - 20px)`;
+                        rightPlus.style.top = `${pos.y + 80}px`;
+                        rightPlus.onclick = () => this.addNode('right', node);
+                        container.appendChild(rightPlus);
+                    }
+                });
+            }
+
+            drawLines(container, nodeMap) {
+                nodeMap.forEach((pos, node) => {
+                    if (node.left) {
+                        const leftPos = nodeMap.get(node.left);
+                        this.drawLine(container, pos.x, pos.y + 30, leftPos.x, leftPos.y + 30);
+                    }
+                    if (node.right) {
+                        const rightPos = nodeMap.get(node.right);
+                        this.drawLine(container, pos.x, pos.y + 30, rightPos.x, rightPos.y + 30);
+                    }
+                });
+            }
+
+            drawLine(container, x1, y1, x2, y2) {
+                const line = document.createElement('div');
+                line.className = 'tree-line';
+                
+                const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+                
+                line.style.width = `${length}px`;
+                line.style.height = '2px';
+                line.style.left = `calc(50% + ${x1}px)`;
+                line.style.top = `${y1}px`;
+                line.style.transform = `rotate(${angle}deg)`;
+                line.style.transformOrigin = '0 50%';
+                
+                container.appendChild(line);
+            }
+
+            preorderTraversal(node, result = []) {
+                if (node) {
+                    result.push(node.value);
+                    this.preorderTraversal(node.left, result);
+                    this.preorderTraversal(node.right, result);
+                }
+                return result;
+            }
+
+            inorderTraversal(node, result = []) {
+                if (node) {
+                    this.inorderTraversal(node.left, result);
+                    result.push(node.value);
+                    this.inorderTraversal(node.right, result);
+                }
+                return result;
+            }
+
+            postorderTraversal(node, result = []) {
+                if (node) {
+                    this.postorderTraversal(node.left, result);
+                    this.postorderTraversal(node.right, result);
+                    result.push(node.value);
+                }
+                return result;
+            }
+
+            levelOrderTraversal(node) {
+                if (!node) return [];
+                
+                const result = [];
+                const queue = [node];
+                
+                while (queue.length > 0) {
+                    const current = queue.shift();
+                    result.push(current.value);
+                    
+                    if (current.left) queue.push(current.left);
+                    if (current.right) queue.push(current.right);
+                }
+                
+                return result;
+            }
+
+            getHeight(node) {
+                if (!node) return 0;
+                return 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+            }
+
+            updateTraversals() {
+                if (!this.root) {
+                    document.getElementById('preorder').textContent = '-';
+                    document.getElementById('inorder').textContent = '-';
+                    document.getElementById('postorder').textContent = '-';
+                    document.getElementById('levelorder').textContent = '-';
+                    return;
+                }
+
+                document.getElementById('preorder').textContent = this.preorderTraversal(this.root).join(', ');
+                document.getElementById('inorder').textContent = this.inorderTraversal(this.root).join(', ');
+                document.getElementById('postorder').textContent = this.postorderTraversal(this.root).join(', ');
+                document.getElementById('levelorder').textContent = this.levelOrderTraversal(this.root).join(', ');
+            }
+
+            updateInfo() {
+                document.getElementById('nodeCount').textContent = this.nodeCount;
+                document.getElementById('treeHeight').textContent = this.getHeight(this.root);
+            }
+        }
+
+        // Initialize the visualizer
+        const visualizer = new BinaryTreeVisualizer();
+
+        // Global functions for onclick handlers
+        function addNode(position, parentNode) {
+            visualizer.addNode(position, parentNode);
+        }
+
+        function clearTree() {
+            visualizer.clearTree();
+        }
+
+        // Handle Enter key in input
+        document.getElementById('nodeValue').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                // Find the first visible plus button and click it
+                const plusButton = document.querySelector('.plus-button');
+                if (plusButton) {
+                    plusButton.click();
+                }
+            }
+        });
+
+        // Initialize display
+        visualizer.updateInfo();
+    </script>
+
+
+</body></html>

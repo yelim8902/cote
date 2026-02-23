@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>준비 중 | 자료구조 시각화</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .box {
+            background: white;
+            border-radius: 20px;
+            padding: 48px;
+            max-width: 440px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+        .box h1 {
+            font-size: 1.25rem;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        .box .topic {
+            font-size: 1rem;
+            color: #1d4ed8;
+            font-weight: 600;
+            margin-bottom: 24px;
+            word-break: keep-all;
+        }
+        .box p {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+        .box a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .box a:hover { opacity: 0.95; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>이 시각화는 준비 중입니다</h1>
+        <p class="topic" id="topicName">—</p>
+        <p>콘텐츠가 추가되면 이 페이지에서 바로 이용할 수 있습니다. 메인으로 돌아가 다른 자료구조를 살펴보세요.</p>
+        <a href="../index.html">← 메인으로</a>
+    </div>
+    <script>
+        (function() {
+            var params = new URLSearchParams(location.search);
+            var section = params.get('section') || '';
+            var id = params.get('id') || '';
+            var labels = {
+                'array-list': {
+                    'arrays-basics': '배열 기초 (Arrays)',
+                    '2d-array': '2차원 배열 (2D Arrays)',
+                    'doubly-linked': '이중 연결 리스트 (Doubly Linked Lists)',
+                    'circular-linked': '원형 연결 리스트 (Circular Linked Lists)'
+                },
+                'stack-queue': {
+                    'queue-array': '큐 · 배열 기반 (Queue, Linear / Circular)'
+                },
+                sorting: {
+                    'bubble-sort': '버블 정렬 (Bubble Sort)',
+                    'selection-sort': '선택 정렬 (Selection Sort)',
+                    'insertion-sort': '삽입 정렬 (Insertion Sort)',
+                    'merge-sort': '합병 정렬 (Merge Sort)',
+                    'quick-sort': '퀵 정렬 (Quick Sort)',
+                    'heap-sort': '힙 정렬 (Heap Sort)',
+                    'binary-search': '이진 탐색 (Binary Search)'
+                },
+                hash: {
+                    'chaining': '해시 맵 · 체이닝 방식 (Chaining)',
+                    'open-addressing': '해시 맵 · 오픈 어드레싱 (Open Addressing)'
+                },
+                graph: {
+                    'basics': '그래프 기초 (방향성, 가중치, 인접 리스트/행렬)',
+                    'dfs-bfs': '깊이 우선 탐색 vs. 너비 우선 탐색 (DFS vs. BFS)',
+                    'dijkstra': '다익스트라 알고리즘 (Dijkstra)',
+                    'floyd-warshall': '플로이드 워셜 알고리즘 (Floyd-Warshall)',
+                    'bellman-ford': '벨만 포드 알고리즘 (Bellman-Ford)',
+                    'mst': '최소 신장 트리 (Minimum Spanning Trees)'
+                }
+            };
+            var sectionMap = labels[section];
+            var name = (sectionMap && sectionMap[id]) ? sectionMap[id] : (id ? id : '알 수 없는 항목');
+            document.getElementById('topicName').textContent = name;
+        })();
+    </script>
+</body>
+</html>

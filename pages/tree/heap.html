@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)https://codes.yalco.kr/ds-algorithm/non-linear/heap.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>힙 시각화 | 자료구조 시각화</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"], input[type="number"], select {
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1d4ed8;
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(29, 78, 216, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #dee2e6;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .info-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-item h3 {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .info-item p {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .visualization {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .heap-tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100%;
+            padding: 20px 0;
+        }
+
+        .heap-level {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .heap-node {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .heap-node.comparing {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            transform: scale(1.1);
+        }
+
+        .heap-node.swapping {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            transform: scale(1.15);
+        }
+
+        .heap-node.sorted {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+        }
+
+        .heap-edge {
+            position: absolute;
+            height: 2px;
+            background: #ccc;
+            z-index: 1;
+            transform-origin: left center;
+            border-radius: 1px;
+        }
+
+        .heap-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .edges-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .nodes-layer {
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #1d4ed8;
+        }
+
+        .step-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .step-info p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .array-view {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .array-view h3 {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .array-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .array-item {
+            padding: 8px 12px;
+            background: white;
+            border: 2px solid #e1e8ed;
+            border-radius: 6px;
+            font-weight: 600;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .array-item.highlight {
+            border-color: #1d4ed8;
+            background: rgba(29, 78, 216, 0.1);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            color: #1d4ed8;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .back-link:hover { color: #2563eb; }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .input-group {
+                width: 100%;
+            }
+
+            input[type="text"], input[type="number"], select {
+                min-width: auto;
+                width: 100%;
+            }
+
+            .heap-node {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+                margin: 0 5px;
+            }
+
+            .heap-level {
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../../index.html" class="back-link">← 메인으로</a>
+        <div class="controls">
+            <div class="input-group">
+                <label for="heapType">Heap Type</label>
+                <select id="heapType">
+                    <option value="min">Min Heap</option>
+                    <option value="max">Max Heap</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="operation">Operation</label>
+                <select id="operation">
+                    <option value="insert">Insert</option>
+                    <option value="delete">Delete Root</option>
+                    <option value="build">Build Heap</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="inputValue">Value / Array</label>
+                <input type="text" id="inputValue" placeholder="Enter value or array (delete root needs no input)">
+            </div>
+            <button class="btn btn-primary" id="startBtn">Start Operation</button>
+            <button class="btn btn-secondary" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-item">
+                <h3>Algorithm</h3>
+                <p id="algorithmName">Min Heap - Insert</p>
+            </div>
+            <div class="info-item">
+                <h3>Step</h3>
+                <p id="stepCounter">0 / 0</p>
+            </div>
+            <div class="info-item">
+                <h3>Time Complexity</h3>
+                <p id="timeComplexity">O(log n)</p>
+            </div>
+            <div class="info-item">
+                <h3>Space Complexity</h3>
+                <p id="spaceComplexity">O(1)</p>
+            </div>
+        </div>
+
+        <div class="visualization">
+            <div class="heap-tree" id="heapTree"><svg style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 1; pointer-events: none;"><line x1="469.7578125" y1="74.98828125" x2="434.765625" y2="164.9765625" stroke="#ccc" stroke-width="2"></line><line x1="469.7578125" y1="74.98828125" x2="504.75" y2="164.9765625" stroke="#ccc" stroke-width="2"></line><line x1="434.765625" y1="164.9765625" x2="364.78125" y2="254.96484375" stroke="#ccc" stroke-width="2"></line><line x1="434.765625" y1="164.9765625" x2="434.765625" y2="254.96484375" stroke="#ccc" stroke-width="2"></line><line x1="504.75" y1="164.9765625" x2="504.75" y2="254.96484375" stroke="#ccc" stroke-width="2"></line><line x1="504.75" y1="164.9765625" x2="574.734375" y2="254.96484375" stroke="#ccc" stroke-width="2"></line></svg><div class="heap-level" style="position: relative; z-index: 2;"><div class="heap-node" data-index="0">10</div></div><div class="heap-level" style="position: relative; z-index: 2;"><div class="heap-node" data-index="1">15</div><div class="heap-node" data-index="2">18</div></div><div class="heap-level" style="position: relative; z-index: 2;"><div class="heap-node" data-index="3">25</div><div class="heap-node" data-index="4">20</div><div class="heap-node" data-index="5">30</div><div class="heap-node" data-index="6">42</div></div></div>
+        </div>
+
+        <div class="array-view">
+            <h3>Array Representation</h3>
+            <div class="array-items" id="arrayView"><div class="array-item">10</div><div class="array-item">15</div><div class="array-item">18</div><div class="array-item">25</div><div class="array-item">20</div><div class="array-item">30</div><div class="array-item">42</div></div>
+        </div>
+
+        <div class="step-info">
+            <h3>Current Step</h3>
+            <p id="stepDescription">Current min heap with 7 elements. Use controls above to perform operations.</p>
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" disabled="">Previous</button>
+            <button class="btn btn-secondary" id="nextBtn" disabled="">Next</button>
+        </div>
+    </div>
+
+    <script>
+        class HeapVisualizer {
+            constructor() {
+                this.heap = [10, 15, 18, 25, 20, 30, 42];
+                this.steps = [];
+                this.currentStep = 0;
+                this.isMaxHeap = false; // Min heap as default
+                this.currentOperation = 'insert';
+                
+                this.initializeEventListeners();
+                this.updateUI();
+            }
+
+            initializeEventListeners() {
+                document.getElementById('heapType').addEventListener('change', (e) => {
+                    this.isMaxHeap = e.target.value === 'max';
+                    this.convertHeapType();
+                    this.updateAlgorithmInfo();
+                });
+
+                document.getElementById('operation').addEventListener('change', (e) => {
+                    this.currentOperation = e.target.value;
+                    this.updateAlgorithmInfo();
+                });
+
+                document.getElementById('startBtn').addEventListener('click', () => {
+                    this.startOperation();
+                });
+
+                document.getElementById('resetBtn').addEventListener('click', () => {
+                    this.reset();
+                });
+
+                document.getElementById('prevBtn').addEventListener('click', () => {
+                    this.previousStep();
+                });
+
+                document.getElementById('nextBtn').addEventListener('click', () => {
+                    this.nextStep();
+                });
+
+                // Enter key support for input field
+                document.getElementById('inputValue').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.startOperation();
+                    }
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    // Only handle arrow keys if input is not focused
+                    if (document.activeElement !== document.getElementById('inputValue')) {
+                        if (e.key === 'ArrowLeft') {
+                            this.previousStep();
+                        } else if (e.key === 'ArrowRight') {
+                            this.nextStep();
+                        }
+                    }
+                });
+            }
+
+            convertHeapType() {
+                // Clear current steps when changing heap type
+                this.steps = [];
+                this.currentStep = 0;
+                
+                // Rebuild the heap with the new type
+                const originalArray = [...this.heap];
+                this.generateBuildHeapSteps(originalArray);
+                
+                // Set to the final result
+                if (this.steps.length > 0) {
+                    this.currentStep = this.steps.length - 1;
+                    this.heap = [...this.steps[this.currentStep].heap];
+                    
+                    // Clear steps after conversion to show final state
+                    this.steps = [];
+                    this.currentStep = 0;
+                }
+                
+                this.updateUI();
+            }
+
+            startOperation() {
+                const inputValue = document.getElementById('inputValue').value.trim();
+                
+                // Delete operation doesn't need input value
+                if (this.currentOperation !== 'delete' && !inputValue) {
+                    return;
+                }
+
+                this.steps = [];
+                this.currentStep = 0;
+
+                switch (this.currentOperation) {
+                    case 'insert':
+                        const value = parseInt(inputValue);
+                        if (!isNaN(value)) {
+                            this.generateInsertSteps(value);
+                        }
+                        break;
+                    case 'delete':
+                        this.generateDeleteSteps();
+                        break;
+                    case 'build':
+                        const array = inputValue.split(',').map(x => parseInt(x.trim())).filter(x => !isNaN(x));
+                        if (array.length > 0) {
+                            this.generateBuildHeapSteps(array);
+                        }
+                        break;
+                }
+
+                // Clear input field after operation
+                document.getElementById('inputValue').value = '';
+                
+                this.updateUI();
+            }
+
+            generateInsertSteps(value) {
+                const workingHeap = [...this.heap];
+                this.steps = [];
+                
+                this.steps.push({
+                    heap: [...workingHeap],
+                    description: `Starting insertion of ${value} into the heap`,
+                    highlight: []
+                });
+
+                workingHeap.push(value);
+                let currentIndex = workingHeap.length - 1;
+                
+                this.steps.push({
+                    heap: [...workingHeap],
+                    description: `Added ${value} at the end of the heap (index ${currentIndex})`,
+                    highlight: [currentIndex]
+                });
+
+                while (currentIndex > 0) {
+                    const parentIndex = Math.floor((currentIndex - 1) / 2);
+                    const shouldSwap = this.isMaxHeap ? 
+                        workingHeap[currentIndex] > workingHeap[parentIndex] :
+                        workingHeap[currentIndex] < workingHeap[parentIndex];
+
+                    this.steps.push({
+                        heap: [...workingHeap],
+                        description: `Comparing ${workingHeap[currentIndex]} with parent ${workingHeap[parentIndex]}`,
+                        highlight: [currentIndex, parentIndex],
+                        comparing: [currentIndex, parentIndex]
+                    });
+
+                    if (shouldSwap) {
+                        [workingHeap[currentIndex], workingHeap[parentIndex]] = [workingHeap[parentIndex], workingHeap[currentIndex]];
+                        
+                        this.steps.push({
+                            heap: [...workingHeap],
+                            description: `Swapped ${workingHeap[parentIndex]} with ${workingHeap[currentIndex]}`,
+                            highlight: [currentIndex, parentIndex],
+                            swapping: [currentIndex, parentIndex]
+                        });
+
+                        currentIndex = parentIndex;
+                    } else {
+                        this.steps.push({
+                            heap: [...workingHeap],
+                            description: `Heap property satisfied. Insertion complete.`,
+                            highlight: [currentIndex],
+                            sorted: [currentIndex]
+                        });
+                        break;
+                    }
+                }
+
+                if (currentIndex === 0) {
+                    this.steps.push({
+                        heap: [...workingHeap],
+                        description: `Reached root. Insertion complete.`,
+                        highlight: [0],
+                        sorted: [0]
+                    });
+                }
+
+                this.heap = workingHeap;
+            }
+
+            generateDeleteSteps() {
+                if (this.heap.length === 0) return;
+
+                const workingHeap = [...this.heap];
+                this.steps = [];
+                
+                const rootValue = workingHeap[0];
+                this.steps.push({
+                    heap: [...workingHeap],
+                    description: `Deleting root element ${rootValue}`,
+                    highlight: [0]
+                });
+
+                if (workingHeap.length === 1) {
+                    workingHeap.pop();
+                    this.steps.push({
+                        heap: [...workingHeap],
+                        description: `Heap is now empty`,
+                        highlight: []
+                    });
+                    this.heap = workingHeap;
+                    return;
+                }
+
+                workingHeap[0] = workingHeap.pop();
+                this.steps.push({
+                    heap: [...workingHeap],
+                    description: `Moved last element ${workingHeap[0]} to root position`,
+                    highlight: [0]
+                });
+
+                let currentIndex = 0;
+                while (true) {
+                    const leftChild = 2 * currentIndex + 1;
+                    const rightChild = 2 * currentIndex + 2;
+                    let targetIndex = currentIndex;
+
+                    if (leftChild < workingHeap.length) {
+                        const shouldSwapLeft = this.isMaxHeap ?
+                            workingHeap[leftChild] > workingHeap[targetIndex] :
+                            workingHeap[leftChild] < workingHeap[targetIndex];
+                        if (shouldSwapLeft) {
+                            targetIndex = leftChild;
+                        }
+                    }
+
+                    if (rightChild < workingHeap.length) {
+                        const shouldSwapRight = this.isMaxHeap ?
+                            workingHeap[rightChild] > workingHeap[targetIndex] :
+                            workingHeap[rightChild] < workingHeap[targetIndex];
+                        if (shouldSwapRight) {
+                            targetIndex = rightChild;
+                        }
+                    }
+
+                    const compareIndices = [currentIndex];
+                    if (leftChild < workingHeap.length) compareIndices.push(leftChild);
+                    if (rightChild < workingHeap.length) compareIndices.push(rightChild);
+
+                    this.steps.push({
+                        heap: [...workingHeap],
+                        description: `Comparing ${workingHeap[currentIndex]} with children`,
+                        highlight: compareIndices,
+                        comparing: compareIndices
+                    });
+
+                    if (targetIndex === currentIndex) {
+                        this.steps.push({
+                            heap: [...workingHeap],
+                            description: `Heap property satisfied. Deletion complete.`,
+                            highlight: [currentIndex],
+                            sorted: [currentIndex]
+                        });
+                        break;
+                    }
+
+                    [workingHeap[currentIndex], workingHeap[targetIndex]] = [workingHeap[targetIndex], workingHeap[currentIndex]];
+                    
+                    this.steps.push({
+                        heap: [...workingHeap],
+                        description: `Swapped ${workingHeap[targetIndex]} with ${workingHeap[currentIndex]}`,
+                        highlight: [currentIndex, targetIndex],
+                        swapping: [currentIndex, targetIndex]
+                    });
+
+                    currentIndex = targetIndex;
+                }
+
+                this.heap = workingHeap;
+            }
+
+            generateBuildHeapSteps(array) {
+                const workingHeap = [...array];
+                this.steps = [];
+                
+                this.steps.push({
+                    heap: [...workingHeap],
+                    description: `Starting with unordered array`,
+                    highlight: []
+                });
+
+                const n = workingHeap.length;
+                for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+                    this.heapifyDown(workingHeap, i, n);
+                }
+
+                this.heap = workingHeap;
+            }
+
+            heapifyDown(heap, startIndex, heapSize) {
+                let currentIndex = startIndex;
+                
+                this.steps.push({
+                    heap: [...heap],
+                    description: `Heapifying subtree rooted at index ${currentIndex}`,
+                    highlight: [currentIndex]
+                });
+
+                while (true) {
+                    const leftChild = 2 * currentIndex + 1;
+                    const rightChild = 2 * currentIndex + 2;
+                    let targetIndex = currentIndex;
+
+                    if (leftChild < heapSize) {
+                        const shouldSwapLeft = this.isMaxHeap ?
+                            heap[leftChild] > heap[targetIndex] :
+                            heap[leftChild] < heap[targetIndex];
+                        if (shouldSwapLeft) {
+                            targetIndex = leftChild;
+                        }
+                    }
+
+                    if (rightChild < heapSize) {
+                        const shouldSwapRight = this.isMaxHeap ?
+                            heap[rightChild] > heap[targetIndex] :
+                            heap[rightChild] < heap[targetIndex];
+                        if (shouldSwapRight) {
+                            targetIndex = rightChild;
+                        }
+                    }
+
+                    if (targetIndex === currentIndex) {
+                        this.steps.push({
+                            heap: [...heap],
+                            description: `Subtree at index ${currentIndex} is properly heapified`,
+                            highlight: [currentIndex],
+                            sorted: [currentIndex]
+                        });
+                        break;
+                    }
+
+                    this.steps.push({
+                        heap: [...heap],
+                        description: `Swapping ${heap[currentIndex]} with ${heap[targetIndex]}`,
+                        highlight: [currentIndex, targetIndex],
+                        swapping: [currentIndex, targetIndex]
+                    });
+
+                    [heap[currentIndex], heap[targetIndex]] = [heap[targetIndex], heap[currentIndex]];
+                    currentIndex = targetIndex;
+                }
+            }
+
+            previousStep() {
+                if (this.currentStep > 0) {
+                    this.currentStep--;
+                    this.updateUI();
+                }
+            }
+
+            nextStep() {
+                if (this.currentStep < this.steps.length - 1) {
+                    this.currentStep++;
+                    this.updateUI();
+                }
+            }
+
+            reset() {
+                // Reset to a proper min heap
+                this.isMaxHeap = false;
+                document.getElementById('heapType').value = 'min';
+                this.heap = [10, 15, 18, 25, 20, 30, 42];
+                this.steps = [];
+                this.currentStep = 0;
+                document.getElementById('inputValue').value = '';
+                this.updateUI();
+            }
+
+            updateUI() {
+                this.updateAlgorithmInfo();
+                this.updateVisualization();
+                this.updateArrayView();
+                this.updateStepInfo();
+                this.updateNavigationButtons();
+            }
+
+            updateAlgorithmInfo() {
+                const heapType = this.isMaxHeap ? 'Max Heap' : 'Min Heap';
+                const operation = this.currentOperation.charAt(0).toUpperCase() + this.currentOperation.slice(1);
+                
+                document.getElementById('algorithmName').textContent = `${heapType} - ${operation}`;
+                document.getElementById('stepCounter').textContent = `${this.currentStep} / ${Math.max(0, this.steps.length - 1)}`;
+                
+                const timeComplexity = this.currentOperation === 'build' ? 'O(n)' : 'O(log n)';
+                const spaceComplexity = this.currentOperation === 'build' ? 'O(1)' : 'O(1)';
+                
+                document.getElementById('timeComplexity').textContent = timeComplexity;
+                document.getElementById('spaceComplexity').textContent = spaceComplexity;
+            }
+
+            updateVisualization() {
+                const currentHeap = this.steps.length > 0 ? this.steps[this.currentStep].heap : this.heap;
+                const heapTree = document.getElementById('heapTree');
+                heapTree.innerHTML = '';
+
+                if (currentHeap.length === 0) {
+                    heapTree.innerHTML = '<div style="text-align: center; color: #999; font-style: italic;">Empty heap</div>';
+                    return;
+                }
+
+                const levels = this.buildTreeLevels(currentHeap);
+                const step = this.steps[this.currentStep];
+                
+                // Use SVG for precise edge drawing
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.style.position = 'absolute';
+                svg.style.top = '0';
+                svg.style.left = '0';
+                svg.style.width = '100%';
+                svg.style.height = '100%';
+                svg.style.zIndex = '1';
+                svg.style.pointerEvents = 'none';
+                
+                heapTree.appendChild(svg);
+                
+                levels.forEach((level, levelIndex) => {
+                    const levelDiv = document.createElement('div');
+                    levelDiv.className = 'heap-level';
+                    levelDiv.style.position = 'relative';
+                    levelDiv.style.zIndex = '2';
+                    
+                    level.forEach((nodeData) => {
+                        const nodeDiv = document.createElement('div');
+                        nodeDiv.className = 'heap-node';
+                        nodeDiv.textContent = nodeData.value;
+                        nodeDiv.setAttribute('data-index', nodeData.index);
+                        
+                        if (step) {
+                            if (step.comparing && step.comparing.includes(nodeData.index)) {
+                                nodeDiv.classList.add('comparing');
+                            } else if (step.swapping && step.swapping.includes(nodeData.index)) {
+                                nodeDiv.classList.add('swapping');
+                            } else if (step.sorted && step.sorted.includes(nodeData.index)) {
+                                nodeDiv.classList.add('sorted');
+                            }
+                        }
+                        
+                        levelDiv.appendChild(nodeDiv);
+                    });
+                    
+                    heapTree.appendChild(levelDiv);
+                });
+
+                // Draw edges using SVG after a brief delay
+                setTimeout(() => {
+                    this.drawEdgesWithSVG(svg, currentHeap);
+                }, 50);
+            }
+
+            drawEdgesWithSVG(svg, heap) {
+                svg.innerHTML = ''; // Clear existing edges
+                
+                const nodes = document.querySelectorAll('.heap-node');
+                const nodePositions = new Map();
+                
+                // Calculate node positions
+                nodes.forEach(node => {
+                    const index = parseInt(node.getAttribute('data-index'));
+                    const rect = node.getBoundingClientRect();
+                    const svgRect = svg.getBoundingClientRect();
+                    
+                    nodePositions.set(index, {
+                        x: rect.left - svgRect.left + rect.width / 2,
+                        y: rect.top - svgRect.top + rect.height / 2
+                    });
+                });
+
+                // Draw edges
+                heap.forEach((_, index) => {
+                    const leftChild = 2 * index + 1;
+                    const rightChild = 2 * index + 2;
+                    
+                    if (leftChild < heap.length && nodePositions.has(index) && nodePositions.has(leftChild)) {
+                        this.createSVGLine(svg, nodePositions.get(index), nodePositions.get(leftChild));
+                    }
+                    if (rightChild < heap.length && nodePositions.has(index) && nodePositions.has(rightChild)) {
+                        this.createSVGLine(svg, nodePositions.get(index), nodePositions.get(rightChild));
+                    }
+                });
+            }
+
+            createSVGLine(svg, start, end) {
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', start.x);
+                line.setAttribute('y1', start.y);
+                line.setAttribute('x2', end.x);
+                line.setAttribute('y2', end.y);
+                line.setAttribute('stroke', '#ccc');
+                line.setAttribute('stroke-width', '2');
+                svg.appendChild(line);
+            }
+
+            buildTreeLevels(heap) {
+                const levels = [];
+                let currentLevel = 0;
+                let levelStart = 0;
+                
+                while (levelStart < heap.length) {
+                    const levelSize = Math.pow(2, currentLevel);
+                    const levelEnd = Math.min(levelStart + levelSize, heap.length);
+                    const level = [];
+                    
+                    for (let i = levelStart; i < levelEnd; i++) {
+                        level.push({
+                            value: heap[i],
+                            index: i
+                        });
+                    }
+                    
+                    levels.push(level);
+                    levelStart = levelEnd;
+                    currentLevel++;
+                }
+                
+                return levels;
+            }
+
+            updateArrayView() {
+                const currentHeap = this.steps.length > 0 ? this.steps[this.currentStep].heap : this.heap;
+                const arrayView = document.getElementById('arrayView');
+                arrayView.innerHTML = '';
+
+                if (currentHeap.length === 0) {
+                    arrayView.innerHTML = '<div style="text-align: center; color: #999; font-style: italic;">Empty array</div>';
+                    return;
+                }
+
+                const step = this.steps[this.currentStep];
+                
+                currentHeap.forEach((value, index) => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'array-item';
+                    itemDiv.textContent = value;
+                    
+                    if (step && step.highlight && step.highlight.includes(index)) {
+                        itemDiv.classList.add('highlight');
+                    }
+                    
+                    arrayView.appendChild(itemDiv);
+                });
+            }
+
+            updateStepInfo() {
+                const stepDescription = document.getElementById('stepDescription');
+                
+                if (this.steps.length === 0) {
+                    const heapType = this.isMaxHeap ? 'max' : 'min';
+                    stepDescription.textContent = `Current ${heapType} heap with ${this.heap.length} elements. Use controls above to perform operations.`;
+                } else {
+                    stepDescription.textContent = this.steps[this.currentStep].description;
+                }
+            }
+
+            updateNavigationButtons() {
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                
+                prevBtn.disabled = this.currentStep === 0;
+                nextBtn.disabled = this.steps.length === 0 || this.currentStep === this.steps.length - 1;
+            }
+        }
+
+        // Initialize the visualizer when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new HeapVisualizer();
+        });
+    </script>
+
+
+</body></html>

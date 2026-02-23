@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)https://codes.yalco.kr/ds-algorithm/sorting/selection-sort.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selection Sort Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"], select {
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #dee2e6;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .info-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-label {
+            font-size: 12px;
+            font-weight: 400;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .visualization {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            min-height: 300px;
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            gap: 4px;
+            overflow-x: auto;
+        }
+
+        .bar {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px 4px 0 0;
+            min-width: 30px;
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 5px;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .bar.current {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            transform: scale(1.1);
+        }
+
+        .bar.minimum {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            transform: scale(1.15);
+        }
+
+        .bar.sorted {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+        }
+
+        .bar.comparing {
+            background: linear-gradient(135deg, #ff9500, #ff6348);
+            transform: scale(1.05);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .step-info {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .step-description {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .help-text {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+            }
+            
+            input[type="text"], select {
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .info-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .bar {
+                min-width: 25px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="control-panel">
+            <div class="input-group">
+                <label for="arrayInput">Array Values</label>
+                <input type="text" id="arrayInput" placeholder="e.g., 64, 34, 25, 12, 90, 22, 14" value="64, 34, 25, 12, 90, 22, 14">
+            </div>
+            <button class="btn btn-primary" onclick="selectionSort.generateArray()">Generate Array</button>
+            <button class="btn btn-secondary" onclick="selectionSort.reset()">Reset</button>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-item">
+                <div class="info-label">Algorithm</div>
+                <div class="info-value">Selection Sort</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Step</div>
+                <div class="info-value" id="stepCounter">0 / 0</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Time Complexity</div>
+                <div class="info-value">O(n²)</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Space Complexity</div>
+                <div class="info-value">O(1)</div>
+            </div>
+        </div>
+
+        <div class="visualization" id="visualization"></div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="selectionSort.previousStep()" disabled="">Previous</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="selectionSort.nextStep()" disabled="">Next</button>
+        </div>
+
+        <div class="step-info">
+            <div class="step-description" id="stepDescription">Enter array values and click "Generate Array" to begin visualization</div>
+        </div>
+
+        <div class="help-text">
+            Use arrow keys (← →) to navigate between steps. Enter custom values or use the default array to start.
+        </div>
+    </div>
+
+    <script>
+        class SelectionSortVisualizer {
+            constructor() {
+                this.originalArray = [];
+                this.array = [];
+                this.steps = [];
+                this.currentStep = 0;
+                this.isGenerated = false;
+                
+                this.initializeEventListeners();
+            }
+
+            initializeEventListeners() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        this.previousStep();
+                    } else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        this.nextStep();
+                    }
+                });
+
+                document.getElementById('arrayInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.generateArray();
+                    }
+                });
+            }
+
+            generateArray() {
+                const input = document.getElementById('arrayInput').value.trim();
+                if (!input) return;
+
+                try {
+                    this.originalArray = input.split(',').map(num => {
+                        const parsed = parseInt(num.trim());
+                        if (isNaN(parsed)) throw new Error('Invalid number');
+                        return parsed;
+                    });
+
+                    if (this.originalArray.length === 0) throw new Error('Empty array');
+                    if (this.originalArray.length > 15) {
+                        alert('Please use 15 or fewer elements for better visualization');
+                        return;
+                    }
+
+                    this.array = [...this.originalArray];
+                    this.generateSteps();
+                    this.currentStep = 0;
+                    this.isGenerated = true;
+                    this.updateVisualization();
+                    this.updateUI();
+                } catch (error) {
+                    alert('Please enter valid numbers separated by commas (e.g., 64, 34, 25, 12)');
+                }
+            }
+
+            generateSteps() {
+                this.steps = [];
+                const arr = [...this.originalArray];
+                const n = arr.length;
+
+                // Initial state
+                this.steps.push({
+                    array: [...arr],
+                    current: -1,
+                    minimum: -1,
+                    comparing: -1,
+                    sorted: [],
+                    description: `Starting Selection Sort with ${n} elements. We'll find the minimum element and place it at the beginning.`
+                });
+
+                for (let i = 0; i < n - 1; i++) {
+                    let minIndex = i;
+
+                    // Start of new pass - show current position
+                    this.steps.push({
+                        array: [...arr],
+                        current: i,
+                        minimum: minIndex,
+                        comparing: -1,
+                        sorted: Array.from({length: i}, (_, k) => k),
+                        description: `Pass ${i + 1}: Starting from position ${i}. Current minimum is ${arr[minIndex]} at index ${minIndex}.`
+                    });
+
+                    // Find minimum element in remaining unsorted array
+                    for (let j = i + 1; j < n; j++) {
+                        // Show comparison
+                        this.steps.push({
+                            array: [...arr],
+                            current: i,
+                            minimum: minIndex,
+                            comparing: j,
+                            sorted: Array.from({length: i}, (_, k) => k),
+                            description: `Comparing ${arr[j]} with current minimum ${arr[minIndex]}. ${arr[j] < arr[minIndex] ? 'Found new minimum!' : 'Current minimum is still smaller.'}`
+                        });
+
+                        // Update minimum if found smaller element
+                        if (arr[j] < arr[minIndex]) {
+                            minIndex = j;
+                            this.steps.push({
+                                array: [...arr],
+                                current: i,
+                                minimum: minIndex,
+                                comparing: -1,
+                                sorted: Array.from({length: i}, (_, k) => k),
+                                description: `New minimum found: ${arr[minIndex]} at index ${minIndex}.`
+                            });
+                        }
+                    }
+
+                    // Swap if needed
+                    if (minIndex !== i) {
+                        this.steps.push({
+                            array: [...arr],
+                            current: i,
+                            minimum: minIndex,
+                            comparing: -1,
+                            sorted: Array.from({length: i}, (_, k) => k),
+                            description: `Swapping ${arr[i]} at position ${i} with minimum ${arr[minIndex]} at position ${minIndex}.`
+                        });
+
+                        [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+
+                        this.steps.push({
+                            array: [...arr],
+                            current: -1,
+                            minimum: -1,
+                            comparing: -1,
+                            sorted: Array.from({length: i + 1}, (_, k) => k),
+                            description: `Swapped! ${arr[i]} is now in its correct position at index ${i}.`
+                        });
+                    } else {
+                        this.steps.push({
+                            array: [...arr],
+                            current: -1,
+                            minimum: -1,
+                            comparing: -1,
+                            sorted: Array.from({length: i + 1}, (_, k) => k),
+                            description: `${arr[i]} is already in the correct position. No swap needed.`
+                        });
+                    }
+                }
+
+                // Final state - mark all elements as sorted
+                this.steps.push({
+                    array: [...arr],
+                    current: -1,
+                    minimum: -1,
+                    comparing: -1,
+                    sorted: Array.from({length: n}, (_, k) => k),
+                    description: 'Selection Sort complete! All elements are now sorted in ascending order.'
+                });
+            }
+
+            updateVisualization() {
+                const visualization = document.getElementById('visualization');
+                const step = this.steps[this.currentStep];
+                
+                if (!step) return;
+
+                const maxValue = Math.max(...step.array);
+                const minHeight = 40;
+                const maxHeight = 200;
+
+                visualization.innerHTML = step.array.map((value, index) => {
+                    const height = minHeight + (value / maxValue) * (maxHeight - minHeight);
+                    let className = 'bar';
+                    
+                    if (step.current === index) className += ' current';
+                    if (step.minimum === index) className += ' minimum';
+                    if (step.comparing === index) className += ' comparing';
+                    if (step.sorted.includes(index)) className += ' sorted';
+
+                    return `<div class="${className}" style="height: ${height}px;">${value}</div>`;
+                }).join('');
+            }
+
+            updateUI() {
+                const stepCounter = document.getElementById('stepCounter');
+                const stepDescription = document.getElementById('stepDescription');
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+
+                if (this.isGenerated && this.steps.length > 0) {
+                    stepCounter.textContent = `${this.currentStep + 1} / ${this.steps.length}`;
+                    stepDescription.textContent = this.steps[this.currentStep].description;
+                    
+                    prevBtn.disabled = this.currentStep === 0;
+                    nextBtn.disabled = this.currentStep === this.steps.length - 1;
+                } else {
+                    stepCounter.textContent = '0 / 0';
+                    stepDescription.textContent = 'Enter array values and click "Generate Array" to begin visualization';
+                    prevBtn.disabled = true;
+                    nextBtn.disabled = true;
+                }
+            }
+
+            nextStep() {
+                if (this.isGenerated && this.currentStep < this.steps.length - 1) {
+                    this.currentStep++;
+                    this.updateVisualization();
+                    this.updateUI();
+                }
+            }
+
+            previousStep() {
+                if (this.isGenerated && this.currentStep > 0) {
+                    this.currentStep--;
+                    this.updateVisualization();
+                    this.updateUI();
+                }
+            }
+
+            reset() {
+                this.currentStep = 0;
+                this.isGenerated = false;
+                this.steps = [];
+                this.array = [];
+                this.originalArray = [];
+                
+                document.getElementById('visualization').innerHTML = '';
+                this.updateUI();
+            }
+        }
+
+        const selectionSort = new SelectionSortVisualizer();
+    </script>
+
+
+</body></html>

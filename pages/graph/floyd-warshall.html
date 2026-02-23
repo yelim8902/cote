@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<!-- saved from url=(0061)https://codes.yalco.kr/ds-algorithm/graph/floyd-warshall.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>플로이드 워셜 시각화 | 자료구조 시각화</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"], select {
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1d4ed8;
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(29, 78, 216, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #dee2e6;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .info-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-item h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .info-item .value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .distance-matrix {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            min-width: 300px;
+            flex-shrink: 0;
+        }
+
+        .distance-matrix h3 {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .matrix-table th,
+        .matrix-table td {
+            border: 2px solid #dee2e6;
+            padding: 8px;
+            text-align: center;
+            min-width: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .matrix-table th {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            font-weight: 600;
+            color: #555;
+        }
+
+        .matrix-table td.current-k {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: white;
+            font-weight: 600;
+        }
+
+        .matrix-table td.current-i {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            color: white;
+            font-weight: 600;
+        }
+
+        .matrix-table td.current-j {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            color: white;
+            font-weight: 600;
+        }
+
+        .matrix-table td.updated {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+            color: white;
+            font-weight: 600;
+            transform: scale(1.05);
+        }
+
+        .visualization {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .graph-container {
+            width: 100%;
+            height: 350px;
+            position: relative;
+        }
+
+        .node {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .node.current-k {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            transform: scale(1.2);
+            box-shadow: 0 0 20px rgba(29, 78, 216, 0.6);
+        }
+
+        .node.current-i, .node.current-j {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            transform: scale(1.1);
+        }
+
+        .edge {
+            position: absolute;
+            height: 2px;
+            background: #dee2e6;
+            transform-origin: left center;
+            transition: all 0.5s ease;
+            z-index: 1;
+        }
+
+        .edge.highlighted {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            height: 4px;
+        }
+
+        .edge.current-path {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+            height: 4px;
+        }
+
+        .edge-weight {
+            position: absolute;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 15px;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #333;
+            z-index: 5;
+            transition: all 0.5s ease;
+        }
+
+        .edge-weight.highlighted {
+            border-color: #feca57;
+            background: #fff3cd;
+        }
+
+        .edge-weight.current-path {
+            border-color: #26de81;
+            background: #d4edda;
+        }
+
+        .step-description {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .step-description p {
+            font-size: 16px;
+            color: #333;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .navigation-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .negative-cycle-warning {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            color: #1d4ed8;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .back-link:hover { color: #2563eb; }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .info-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .navigation-controls {
+                flex-direction: column;
+            }
+            
+            .node {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+
+            .distance-matrix {
+                min-width: auto;
+            }
+
+            .matrix-table {
+                font-size: 12px;
+            }
+
+            .matrix-table th,
+            .matrix-table td {
+                padding: 6px;
+                min-width: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../../index.html" class="back-link">← 메인으로</a>
+        <div class="control-panel">
+            <button class="btn-primary" onclick="visualizer.generateRandomGraph()">Generate Random Graph</button>
+            <button class="btn-secondary" onclick="visualizer.reset()">Reset</button>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-item">
+                <h3>Algorithm</h3>
+                <div class="value">Floyd-Warshall</div>
+            </div>
+            <div class="info-item">
+                <h3>Step</h3>
+                <div class="value" id="stepInfo">0 / 0</div>
+            </div>
+            <div class="info-item">
+                <h3>Time Complexity</h3>
+                <div class="value">O(V³)</div>
+            </div>
+            <div class="info-item">
+                <h3>Space Complexity</h3>
+                <div class="value">O(V²)</div>
+            </div>
+        </div>
+
+        <div class="step-description">
+            <p id="stepDescription">Generate a random graph to begin the Floyd-Warshall algorithm.</p>
+        </div>
+
+        <div class="main-content">
+            <div class="distance-matrix" id="distanceMatrix" style="display: none;">
+                <h3>Distance Matrix</h3>
+                <table class="matrix-table" id="matrixTable"></table>
+            </div>
+            
+            <div class="visualization">
+                <div class="graph-container" id="graphContainer">
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 18px;">
+                        Generate a random graph to start visualization
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation-controls">
+            <button class="btn-secondary" id="prevBtn" onclick="visualizer.previousStep()" disabled="">Previous</button>
+            <button class="btn-primary" id="nextBtn" onclick="visualizer.nextStep()" disabled="">Next Step</button>
+            <button class="btn-primary" id="startBtn" onclick="visualizer.startAlgorithm()" disabled="">Start Algorithm</button>
+        </div>
+
+        <div class="negative-cycle-warning" id="negativeCycleWarning">
+            Negative cycle detected! Shortest paths are not well-defined.
+        </div>
+    </div>
+
+    <script>
+        class FloydWarshallVisualizer {
+            constructor() {
+                this.graph = [];
+                this.nodes = ['A', 'B', 'C', 'D', 'E'];
+                this.distanceMatrix = {};
+                this.steps = [];
+                this.currentStep = 0;
+                this.isInitialized = false;
+                this.hasNegativeCycle = false;
+                
+                this.initializeEventListeners();
+            }
+
+            initializeEventListeners() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        this.previousStep();
+                    } else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        this.nextStep();
+                    }
+                });
+            }
+
+            generateRandomGraph() {
+                // Generate random connected graph with 5 nodes (A, B, C, D, E)
+                const nodes = ['A', 'B', 'C', 'D', 'E'];
+                const graph = [];
+                
+                // Ensure connectivity by creating a spanning tree
+                const used = new Set(['A']);
+                const unused = new Set(['B', 'C', 'D', 'E']);
+                
+                while (unused.size > 0) {
+                    const usedNode = Array.from(used)[Math.floor(Math.random() * used.size)];
+                    const unusedNode = Array.from(unused)[Math.floor(Math.random() * unused.size)];
+                    
+                    const weight = Math.floor(Math.random() * 15) + 1; // Random weight from 1 to 15
+                    graph.push({ u: usedNode, v: unusedNode, weight });
+                    
+                    used.add(unusedNode);
+                    unused.delete(unusedNode);
+                }
+                
+                // Add additional random edges (40% chance for each possible edge)
+                for (let i = 0; i < nodes.length; i++) {
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const u = nodes[i];
+                        const v = nodes[j];
+                        
+                        // Check if edge already exists
+                        const exists = graph.some(edge => 
+                            (edge.u === u && edge.v === v) || (edge.u === v && edge.v === u)
+                        );
+                        
+                        if (!exists && Math.random() < 0.4) {
+                            const weight = Math.floor(Math.random() * 15) + 1;
+                            graph.push({ u, v, weight });
+                        }
+                    }
+                }
+                
+                this.graph = graph;
+                this.nodes = nodes;
+                this.isInitialized = true;
+                this.hasNegativeCycle = false;
+                
+                this.initializeDistanceMatrix();
+                this.generateSteps();
+                this.renderGraph();
+                this.renderInitialMatrix();
+                this.updateControls();
+                this.updateStepInfo();
+                
+                document.getElementById('distanceMatrix').style.display = 'block';
+                document.getElementById('negativeCycleWarning').style.display = 'none';
+            }
+
+            initializeDistanceMatrix() {
+                // Initialize distance matrix
+                this.distanceMatrix = {};
+                for (const node1 of this.nodes) {
+                    this.distanceMatrix[node1] = {};
+                    for (const node2 of this.nodes) {
+                        if (node1 === node2) {
+                            this.distanceMatrix[node1][node2] = 0;
+                        } else {
+                            this.distanceMatrix[node1][node2] = Infinity;
+                        }
+                    }
+                }
+                
+                // Set direct edge weights
+                for (const edge of this.graph) {
+                    this.distanceMatrix[edge.u][edge.v] = edge.weight;
+                    this.distanceMatrix[edge.v][edge.u] = edge.weight; // Undirected graph
+                }
+            }
+
+            generateSteps() {
+                this.steps = [];
+                
+                // Initial state
+                this.steps.push({
+                    type: 'init',
+                    description: 'Initialize distance matrix with direct edge weights and 0 for same nodes',
+                    matrix: this.deepCopyMatrix(this.distanceMatrix),
+                    k: null, i: null, j: null
+                });
+
+                // Floyd-Warshall algorithm
+                for (let k = 0; k < this.nodes.length; k++) {
+                    const kNode = this.nodes[k];
+                    
+                    for (let i = 0; i < this.nodes.length; i++) {
+                        const iNode = this.nodes[i];
+                        
+                        for (let j = 0; j < this.nodes.length; j++) {
+                            const jNode = this.nodes[j];
+                            
+                            if (this.distanceMatrix[iNode][kNode] !== Infinity && 
+                                this.distanceMatrix[kNode][jNode] !== Infinity) {
+                                
+                                const newDistance = this.distanceMatrix[iNode][kNode] + this.distanceMatrix[kNode][jNode];
+                                
+                                if (newDistance < this.distanceMatrix[iNode][jNode]) {
+                                    this.distanceMatrix[iNode][jNode] = newDistance;
+                                    
+                                    this.steps.push({
+                                        type: 'update',
+                                        description: `Update dist[${iNode}][${jNode}] = dist[${iNode}][${kNode}] + dist[${kNode}][${jNode}] = ${this.distanceMatrix[iNode][kNode]} + ${this.distanceMatrix[kNode][jNode]} = ${newDistance}`,
+                                        matrix: this.deepCopyMatrix(this.distanceMatrix),
+                                        k: kNode, i: iNode, j: jNode,
+                                        updated: true
+                                    });
+                                } else {
+                                    this.steps.push({
+                                        type: 'check',
+                                        description: `Check dist[${iNode}][${jNode}] via ${kNode}: ${this.distanceMatrix[iNode][kNode]} + ${this.distanceMatrix[kNode][jNode]} = ${newDistance} >= ${this.distanceMatrix[iNode][jNode]}, no update`,
+                                        matrix: this.deepCopyMatrix(this.distanceMatrix),
+                                        k: kNode, i: iNode, j: jNode,
+                                        updated: false
+                                    });
+                                }
+                            } else {
+                                this.steps.push({
+                                    type: 'skip',
+                                    description: `Skip dist[${iNode}][${jNode}] via ${kNode}: path not available`,
+                                    matrix: this.deepCopyMatrix(this.distanceMatrix),
+                                    k: kNode, i: iNode, j: jNode,
+                                    updated: false
+                                });
+                            }
+                        }
+                    }
+                }
+
+                // Check for negative cycles
+                for (let i = 0; i < this.nodes.length; i++) {
+                    if (this.distanceMatrix[this.nodes[i]][this.nodes[i]] < 0) {
+                        this.hasNegativeCycle = true;
+                        this.steps.push({
+                            type: 'negative_cycle',
+                            description: `Negative cycle detected: dist[${this.nodes[i]}][${this.nodes[i]}] = ${this.distanceMatrix[this.nodes[i]][this.nodes[i]]} < 0`,
+                            matrix: this.deepCopyMatrix(this.distanceMatrix),
+                            k: null, i: this.nodes[i], j: this.nodes[i]
+                        });
+                        break;
+                    }
+                }
+
+                if (!this.hasNegativeCycle) {
+                    this.steps.push({
+                        type: 'complete',
+                        description: 'Algorithm completed successfully. All shortest paths computed.',
+                        matrix: this.deepCopyMatrix(this.distanceMatrix),
+                        k: null, i: null, j: null
+                    });
+                }
+            }
+
+            deepCopyMatrix(matrix) {
+                const copy = {};
+                for (const node1 of this.nodes) {
+                    copy[node1] = {};
+                    for (const node2 of this.nodes) {
+                        copy[node1][node2] = matrix[node1][node2];
+                    }
+                }
+                return copy;
+            }
+
+            renderGraph() {
+                const container = document.getElementById('graphContainer');
+                container.innerHTML = '';
+                
+                const nodePositions = this.calculateNodePositions();
+                
+                // Draw edges
+                for (const edge of this.graph) {
+                    this.drawEdge(container, edge, nodePositions);
+                }
+                
+                // Draw nodes
+                for (const node of this.nodes) {
+                    this.drawNode(container, node, nodePositions[node]);
+                }
+            }
+
+            calculateNodePositions() {
+                const positions = {};
+                const centerX = 300;
+                const centerY = 175;
+                const radius = 150;
+                
+                this.nodes.forEach((node, index) => {
+                    const angle = (index * 2 * Math.PI) / this.nodes.length;
+                    positions[node] = {
+                        x: centerX + radius * Math.cos(angle),
+                        y: centerY + radius * Math.sin(angle)
+                    };
+                });
+                
+                return positions;
+            }
+
+            drawNode(container, node, position) {
+                const nodeElement = document.createElement('div');
+                nodeElement.className = 'node';
+                nodeElement.style.left = `${position.x - 25}px`;
+                nodeElement.style.top = `${position.y - 25}px`;
+                nodeElement.textContent = node;
+                nodeElement.id = `node-${node}`;
+                
+                container.appendChild(nodeElement);
+            }
+
+            drawEdge(container, edge, positions) {
+                const { u, v, weight } = edge;
+                const pos1 = positions[u];
+                const pos2 = positions[v];
+                
+                const dx = pos2.x - pos1.x;
+                const dy = pos2.y - pos1.y;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx);
+                
+                const edgeElement = document.createElement('div');
+                edgeElement.className = 'edge';
+                edgeElement.style.left = `${pos1.x}px`;
+                edgeElement.style.top = `${pos1.y}px`;
+                edgeElement.style.width = `${length}px`;
+                edgeElement.style.transform = `rotate(${angle}rad)`;
+                edgeElement.id = `edge-${u}-${v}`;
+                
+                const weightElement = document.createElement('div');
+                weightElement.className = 'edge-weight';
+                weightElement.textContent = weight;
+                weightElement.style.left = `${pos1.x + dx/2 - 15}px`;
+                weightElement.style.top = `${pos1.y + dy/2 - 15}px`;
+                weightElement.id = `weight-${u}-${v}`;
+                
+                container.appendChild(edgeElement);
+                container.appendChild(weightElement);
+            }
+
+            renderInitialMatrix() {
+                const table = document.getElementById('matrixTable');
+                table.innerHTML = '';
+                
+                // Create header row
+                const headerRow = document.createElement('tr');
+                headerRow.appendChild(document.createElement('th')); // Empty corner cell
+                
+                for (const node of this.nodes) {
+                    const th = document.createElement('th');
+                    th.textContent = node;
+                    headerRow.appendChild(th);
+                }
+                table.appendChild(headerRow);
+                
+                // Create data rows - show initial state with infinities
+                for (const fromNode of this.nodes) {
+                    const row = document.createElement('tr');
+                    
+                    // Row header
+                    const th = document.createElement('th');
+                    th.textContent = fromNode;
+                    row.appendChild(th);
+                    
+                    // Data cells
+                    for (const toNode of this.nodes) {
+                        const td = document.createElement('td');
+                        td.id = `cell-${fromNode}-${toNode}`;
+                        
+                        if (fromNode === toNode) {
+                            td.textContent = '0';
+                        } else {
+                            // Check if there's a direct edge
+                            const hasDirectEdge = this.graph.some(edge => 
+                                (edge.u === fromNode && edge.v === toNode) || 
+                                (edge.u === toNode && edge.v === fromNode)
+                            );
+                            
+                            if (hasDirectEdge) {
+                                const distance = this.distanceMatrix[fromNode][toNode];
+                                td.textContent = distance;
+                            } else {
+                                td.textContent = '∞';
+                            }
+                        }
+                        
+                        row.appendChild(td);
+                    }
+                    
+                    table.appendChild(row);
+                }
+            }
+
+            startAlgorithm() {
+                if (!this.isInitialized) return;
+                
+                this.currentStep = 0;
+                this.renderStep();
+                this.updateControls();
+            }
+
+            nextStep() {
+                if (this.currentStep < this.steps.length - 1) {
+                    this.currentStep++;
+                    this.renderStep();
+                    this.updateControls();
+                }
+            }
+
+            previousStep() {
+                if (this.currentStep > 0) {
+                    this.currentStep--;
+                    this.renderStep();
+                    this.updateControls();
+                }
+            }
+
+            renderStep() {
+                const step = this.steps[this.currentStep];
+                if (!step) return;
+                
+                // Update step description
+                document.getElementById('stepDescription').textContent = step.description;
+                
+                // Reset all visual states
+                document.querySelectorAll('.node').forEach(node => {
+                    node.className = 'node';
+                });
+                
+                document.querySelectorAll('.edge').forEach(edge => {
+                    edge.className = 'edge';
+                });
+                
+                document.querySelectorAll('.edge-weight').forEach(weight => {
+                    weight.className = 'edge-weight';
+                });
+                
+                document.querySelectorAll('.matrix-table td').forEach(cell => {
+                    cell.className = '';
+                });
+                
+                // Update matrix with current step values
+                for (const fromNode of this.nodes) {
+                    for (const toNode of this.nodes) {
+                        const cell = document.getElementById(`cell-${fromNode}-${toNode}`);
+                        if (cell) {
+                            const distance = step.matrix[fromNode][toNode];
+                            cell.textContent = distance === Infinity ? '∞' : distance;
+                        }
+                    }
+                }
+                
+                // Highlight current k, i, j
+                if (step.k !== null) {
+                    const nodeK = document.getElementById(`node-${step.k}`);
+                    if (nodeK) nodeK.classList.add('current-k');
+                    
+                    // Highlight k row and column in matrix
+                    for (const node of this.nodes) {
+                        const cellKToNode = document.getElementById(`cell-${step.k}-${node}`);
+                        const cellNodeToK = document.getElementById(`cell-${node}-${step.k}`);
+                        if (cellKToNode) cellKToNode.classList.add('current-k');
+                        if (cellNodeToK) cellNodeToK.classList.add('current-k');
+                    }
+                }
+                
+                if (step.i !== null) {
+                    const nodeI = document.getElementById(`node-${step.i}`);
+                    if (nodeI) nodeI.classList.add('current-i');
+                }
+                
+                if (step.j !== null) {
+                    const nodeJ = document.getElementById(`node-${step.j}`);
+                    if (nodeJ) nodeJ.classList.add('current-j');
+                }
+                
+                // Highlight current cell being processed
+                if (step.i !== null && step.j !== null) {
+                    const currentCell = document.getElementById(`cell-${step.i}-${step.j}`);
+                    if (currentCell) {
+                        if (step.updated) {
+                            currentCell.classList.add('updated');
+                        } else {
+                            currentCell.classList.add('current-i');
+                        }
+                    }
+                }
+                
+                // Highlight edges in graph
+                if (step.k !== null && step.i !== null && step.j !== null) {
+                    // Highlight path i->k and k->j
+                    const edgeIK = document.getElementById(`edge-${step.i}-${step.k}`) || 
+                                   document.getElementById(`edge-${step.k}-${step.i}`);
+                    const edgeKJ = document.getElementById(`edge-${step.k}-${step.j}`) || 
+                                   document.getElementById(`edge-${step.j}-${step.k}`);
+                    const weightIK = document.getElementById(`weight-${step.i}-${step.k}`) || 
+                                     document.getElementById(`weight-${step.k}-${step.i}`);
+                    const weightKJ = document.getElementById(`weight-${step.k}-${step.j}`) || 
+                                     document.getElementById(`weight-${step.j}-${step.k}`);
+                    
+                    if (edgeIK) edgeIK.classList.add(step.updated ? 'current-path' : 'highlighted');
+                    if (edgeKJ) edgeKJ.classList.add(step.updated ? 'current-path' : 'highlighted');
+                    if (weightIK) weightIK.classList.add(step.updated ? 'current-path' : 'highlighted');
+                    if (weightKJ) weightKJ.classList.add(step.updated ? 'current-path' : 'highlighted');
+                }
+                
+                // Show negative cycle warning
+                if (step.type === 'negative_cycle') {
+                    document.getElementById('negativeCycleWarning').style.display = 'block';
+                }
+                
+                this.updateStepInfo();
+            }
+
+            updateControls() {
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                const startBtn = document.getElementById('startBtn');
+                
+                prevBtn.disabled = this.currentStep === 0;
+                nextBtn.disabled = this.currentStep >= this.steps.length - 1;
+                startBtn.disabled = !this.isInitialized;
+            }
+
+            updateStepInfo() {
+                const stepInfo = document.getElementById('stepInfo');
+                stepInfo.textContent = this.isInitialized ? 
+                    `${this.currentStep + 1} / ${this.steps.length}` : '0 / 0';
+            }
+
+            reset() {
+                this.currentStep = 0;
+                this.isInitialized = false;
+                this.hasNegativeCycle = false;
+                this.steps = [];
+                this.distanceMatrix = {};
+                
+                document.getElementById('graphContainer').innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 18px;">
+                        Generate a random graph to start visualization
+                    </div>
+                `;
+                
+                document.getElementById('stepDescription').textContent = 
+                    'Generate a random graph to begin the Floyd-Warshall algorithm.';
+                
+                document.getElementById('distanceMatrix').style.display = 'none';
+                document.getElementById('negativeCycleWarning').style.display = 'none';
+                
+                this.updateControls();
+                this.updateStepInfo();
+            }
+        }
+
+        const visualizer = new FloydWarshallVisualizer();
+    </script>
+
+
+</body></html>

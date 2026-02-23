@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)https://codes.yalco.kr/ds-algorithm/non-linear/avl-tree.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVL 트리 시각화 | 자료구조 시각화</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="number"], select {
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1d4ed8;
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(29, 78, 216, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #dee2e6;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .info-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-item .label {
+            font-size: 12px;
+            font-weight: 400;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-item .value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        .visualization {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            min-height: 400px;
+            position: relative;
+            overflow: auto;
+        }
+
+        .tree-container {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 20px;
+        }
+
+        .tree-node {
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            border: 3px solid white;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .tree-node.balanced {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+        }
+
+        .tree-node.unbalanced {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            animation: shake 0.5s ease-in-out infinite;
+        }
+
+        .tree-node.current {
+            transform: scale(1.2);
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+
+        .tree-node.rotating {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            transform: scale(1.15) rotate(360deg);
+            animation: spin 1s ease-in-out;
+        }
+
+        .tree-node.path-highlight {
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        }
+
+        .balance-factor {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #495057;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 15;
+            transition: all 0.3s ease;
+        }
+
+        .balance-factor.critical {
+            background: #dc3545;
+            animation: blink 0.5s ease-in-out infinite;
+        }
+
+        .height-label {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #6c757d;
+            color: white;
+            font-size: 9px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 15;
+        }
+
+        .tree-edge {
+            position: absolute;
+            background: #dee2e6;
+            z-index: 1;
+            border-radius: 2px;
+            transition: all 0.5s ease;
+        }
+
+        .tree-edge.active {
+            background: #1d4ed8;
+            box-shadow: 0 0 10px rgba(29, 78, 216, 0.3);
+        }
+
+        .step-info {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-info .description {
+            font-size: 16px;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            font-size: 18px;
+            padding: 50px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1.1); }
+            50% { transform: scale(1.3); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        @keyframes spin {
+            0% { transform: scale(1.15) rotate(0deg); }
+            100% { transform: scale(1.15) rotate(360deg); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            color: #1d4ed8;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .back-link:hover { color: #2563eb; }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .info-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .tree-container {
+                height: 300px;
+            }
+
+            .tree-node {
+                width: 40px;
+                height: 40px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../../index.html" class="back-link">← 메인으로</a>
+        <div class="control-panel">
+            <div class="input-group">
+                <label for="valueInput">Value</label>
+                <input type="number" id="valueInput" placeholder="Enter value">
+            </div>
+            <div class="input-group">
+                <label for="operationSelect">Operation</label>
+                <select id="operationSelect">
+                    <option value="insert">Insert</option>
+                    <option value="delete">Delete</option>
+                    <option value="search">Search</option>
+                </select>
+            </div>
+            <button class="btn-primary" id="executeBtn">Execute</button>
+            <button class="btn-secondary" id="resetBtn">Reset Tree</button>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-item">
+                <div class="label">Algorithm</div>
+                <div class="value">AVL Tree</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Step</div>
+                <div class="value" id="stepCounter">0 / 0</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Time Complexity</div>
+                <div class="value" id="timeComplexity">O(log n)</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Space Complexity</div>
+                <div class="value">O(n)</div>
+            </div>
+        </div>
+
+        <div class="step-info">
+            <div class="description" id="stepDescription">Select an operation and enter a value to begin</div>
+        </div>
+
+        <div class="visualization">
+            <div class="tree-container" id="treeContainer"></div>
+        </div>
+
+        <div class="navigation">
+            <button class="btn-secondary" id="prevBtn" disabled="">Previous</button>
+            <button class="btn-secondary" id="nextBtn" disabled="">Next</button>
+        </div>
+    </div>
+
+    <script>
+        class AVLNode {
+            constructor(value) {
+                this.value = value;
+                this.left = null;
+                this.right = null;
+                this.height = 1;
+                this.id = Math.random().toString(36).substr(2, 9);
+            }
+        }
+
+        class AVLTreeVisualizer {
+            constructor() {
+                this.root = null;
+                this.steps = [];
+                this.currentStep = 0;
+                this.nodePositions = new Map();
+                
+                this.initializeEventListeners();
+                this.updateUI();
+            }
+
+            initializeEventListeners() {
+                const executeBtn = document.getElementById('executeBtn');
+                const resetBtn = document.getElementById('resetBtn');
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                const valueInput = document.getElementById('valueInput');
+
+                if (executeBtn) executeBtn.addEventListener('click', () => this.executeOperation());
+                if (resetBtn) resetBtn.addEventListener('click', () => this.resetTree());
+                if (prevBtn) prevBtn.addEventListener('click', () => this.previousStep());
+                if (nextBtn) nextBtn.addEventListener('click', () => this.nextStep());
+                
+                if (valueInput) {
+                    valueInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') this.executeOperation();
+                    });
+                }
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowLeft') this.previousStep();
+                    if (e.key === 'ArrowRight') this.nextStep();
+                });
+            }
+
+            executeOperation() {
+                const valueInput = document.getElementById('valueInput');
+                const operationSelect = document.getElementById('operationSelect');
+                
+                if (!valueInput || !operationSelect) return;
+                
+                const value = parseInt(valueInput.value);
+                const operation = operationSelect.value;
+                
+                if (isNaN(value)) {
+                    alert('Please enter a valid number');
+                    return;
+                }
+
+                this.steps = [];
+                this.currentStep = 0;
+                
+                switch (operation) {
+                    case 'insert':
+                        this.insertValue(value);
+                        break;
+                    case 'delete':
+                        this.deleteValue(value);
+                        break;
+                    case 'search':
+                        this.searchValue(value);
+                        break;
+                }
+                
+                this.updateUI();
+                valueInput.value = '';
+            }
+
+            // Get height of node
+            getHeight(node) {
+                return node ? node.height : 0;
+            }
+
+            // Get balance factor
+            getBalance(node) {
+                return node ? this.getHeight(node.left) - this.getHeight(node.right) : 0;
+            }
+
+            // Update height of node
+            updateHeight(node) {
+                if (node) {
+                    node.height = Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
+                }
+            }
+
+            // Right rotate
+            rightRotate(y) {
+                this.steps.push({
+                    description: `Performing right rotation on ${y.value}`,
+                    tree: this.cloneTree(this.root),
+                    currentNode: y.id,
+                    action: 'rotating'
+                });
+
+                const x = y.left;
+                const T2 = x.right;
+
+                x.right = y;
+                y.left = T2;
+
+                this.updateHeight(y);
+                this.updateHeight(x);
+
+                this.steps.push({
+                    description: `Right rotation completed - new root: ${x.value}`,
+                    tree: this.cloneTree(this.root),
+                    currentNode: x.id,
+                    action: 'balanced'
+                });
+
+                return x;
+            }
+
+            // Left rotate
+            leftRotate(x) {
+                this.steps.push({
+                    description: `Performing left rotation on ${x.value}`,
+                    tree: this.cloneTree(this.root),
+                    currentNode: x.id,
+                    action: 'rotating'
+                });
+
+                const y = x.right;
+                const T2 = y.left;
+
+                y.left = x;
+                x.right = T2;
+
+                this.updateHeight(x);
+                this.updateHeight(y);
+
+                this.steps.push({
+                    description: `Left rotation completed - new root: ${y.value}`,
+                    tree: this.cloneTree(this.root),
+                    currentNode: y.id,
+                    action: 'balanced'
+                });
+
+                return y;
+            }
+
+            // Insert value
+            insertValue(value) {
+                this.steps.push({
+                    description: `Starting insertion of ${value}`,
+                    tree: this.cloneTree(this.root),
+                    currentNode: null,
+                    action: 'start'
+                });
+
+                this.root = this.insertNode(this.root, value);
+
+                this.steps.push({
+                    description: `Insertion of ${value} completed`,
+                    tree: this.cloneTree(this.root),
+                    currentNode: null,
+                    action: 'complete'
+                });
+            }
+
+            insertNode(node, value) {
+                // Step 1: Perform normal BST insertion
+                if (node === null) {
+                    const newNode = new AVLNode(value);
+                    this.steps.push({
+                        description: `Inserting ${value} at this position`,
+                        tree: this.cloneTree(this.root),
+                        currentNode: newNode.id,
+                        action: 'insert'
+                    });
+                    return newNode;
+                }
+
+                this.steps.push({
+                    description: `Comparing ${value} with ${node.value}`,
+                    tree: this.cloneTree(this.root),
+                    currentNode: node.id,
+                    action: 'current'
+                });
+
+                if (value < node.value) {
+                    node.left = this.insertNode(node.left, value);
+                } else if (value > node.value) {
+                    node.right = this.insertNode(node.right, value);
+                } else {
+                    this.steps.push({
+                        description: `Value ${value} already exists`,
+                        tree: this.cloneTree(this.root),
+                        currentNode: node.id,
+                        action: 'current'
+                    });
+                    return node;
+                }
+
+                // Step 2: Update height
+                this.updateHeight(node);
+                this.steps.push({
+                    description: `Updated height of ${node.value} to ${node.height}`,
+                    tree: this.cloneTree(this.root),
+                    currentNode: node.id,
+                    action: 'balanced'
+                });
+
+                // Step 3: Get balance factor
+                const balance = this.getBalance(node);
+                
+                if (Math.abs(balance) > 1) {
+                    this.steps.push({
+                        description: `Balance factor of ${node.value} is ${balance} - rotation needed`,
+                        tree: this.cloneTree(this.root),
+                        currentNode: node.id,
+                        action: 'unbalanced'
+                    });
+                } else {
+                    this.steps.push({
+                        description: `Balance factor of ${node.value} is ${balance} - balanced`,
+                        tree: this.cloneTree(this.root),
+                        currentNode: node.id,
+                        action: 'balanced'
+                    });
+                }
+
+                // Step 4: Perform rotations if needed
+                // Left-Left Case
+                if (balance > 1 && value < node.left.value) {
+                    this.steps.push({
+                        description: `Left-Left case detected - performing right rotation`,
+                        tree: this.cloneTree(this.root),
+                        currentNode: node.id,
+                        action: 'unbalanced'
+                    });
+                    return this.rightRotate(node);
+                }
+
+                // Right-Right Case
+                if (balance < -1 && value > node.right.value) {
+                    this.steps.push({
+                        description: `Right-Right case detected - performing left rotation`,
+                        tree: this.cloneTree(this.root),
+                        currentNode: node.id,
+                        action: 'unbalanced'
+                    });
+                    return this.leftRotate(node);
+                }
+
+                // Left-Right Case
+                if (balance > 1 && value > node.left.value) {
+                    this.steps.push({
+                        description: `Left-Right case detected - performing left-right rotation`,
+                        tree: this.cloneTree(this.root),
+                        currentNode: node.id,
+                        action: 'unbalanced'
+                    });
+                    node.left = this.leftRotate(node.left);
+                    return this.rightRotate(node);
+                }
+
+                // Right-Left Case
+                if (balance < -1 && value < node.right.value) {
+                    this.steps.push({
+                        description: `Right-Left case detected - performing right-left rotation`,
+                        tree: this.cloneTree(this.root),
+                        currentNode: node.id,
+                        action: 'unbalanced'
+                    });
+                    node.right = this.rightRotate(node.right);
+                    return this.leftRotate(node);
+                }
+
+                return node;
+            }
+
+            // Delete value
+            deleteValue(value) {
+                if (this.root === null) {
+                    this.steps.push({
+                        description: `Cannot delete ${value} - tree is empty`,
+                        tree: null,
+                        currentNode: null,
+                        action: 'complete'
+                    });
+                    return;
+                }
+
+                this.steps.push({
+                    description: `Starting deletion of ${value}`,
+                    tree: this.cloneTree(this.root),
+                    currentNode: null,
+                    action: 'start'
+                });
+
+                this.root = this.deleteNode(this.root, value);
+
+                this.steps.push({
+                    description: `Deletion of ${value} completed`,
+                    tree: this.cloneTree(this.root),
+                    currentNode: null,
+                    action: 'complete'
+                });
+            }
+
+            deleteNode(node, value) {
+                if (node === null) {
+                    this.steps.push({
+                        description: `Value ${value} not found`,
+                        tree: this.cloneTree(this.root),
+                        currentNode: null,
+                        action: 'complete'
+                    });
+                    return node;
+                }
+
+                this.steps.push({
+                    description: `Comparing ${value} with ${node.value}`,
+                    tree: this.cloneTree(this.root),
+                    currentNode: node.id,
+                    action: 'current'
+                });
+
+                if (value < node.value) {
+                    node.left = this.deleteNode(node.left, value);
+                } else if (value > node.value) {
+                    node.right = this.deleteNode(node.right, value);
+                } else {
+                    this.steps.push({
+                        description: `Found ${value} - proceeding with deletion`,
+                        tree: this.cloneTree(this.root),
+                        currentNode: node.id,
+                        action: 'current'
+                    });
+
+                    if (node.left === null || node.right === null) {
+                        const temp = node.left ? node.left : node.right;
+                        if (temp === null) {
+                            this.steps.push({
+                                description: `Deleting leaf node ${value}`,
+                                tree: this.cloneTree(this.root),
+                                currentNode: node.id,
+                                action: 'current'
+                            });
+                            node = null;
+                        } else {
+                            this.steps.push({
+                                description: `Replacing ${value} with its child`,
+                                tree: this.cloneTree(this.root),
+                                currentNode: node.id,
+                                action: 'current'
+                            });
+                            node.value = temp.value;
+                            node.height = temp.height;
+                            node.left = temp.left;
+                            node.right = temp.right;
+                        }
+                    } else {
+                        const temp = this.getMinValueNode(node.right);
+                        this.steps.push({
+                            description: `Found successor ${temp.value}`,
+                            tree: this.cloneTree(this.root),
+                            currentNode: temp.id,
+                            action: 'current'
+                        });
+
+                        node.value = temp.value;
+                        node.right = this.deleteNode(node.right, temp.value);
+                    }
+                }
+
+                if (node === null) return node;
+
+                this.updateHeight(node);
+                this.steps.push({
+                    description: `Updated height of ${node.value} to ${node.height}`,
+                    tree: this.cloneTree(this.root),
+                    currentNode: node.id,
+                    action: 'balanced'
+                });
+
+                const balance = this.getBalance(node);
+                
+                if (Math.abs(balance) > 1) {
+                    this.steps.push({
+                        description: `Balance factor of ${node.value} is ${balance} - rotation needed`,
+                        tree: this.cloneTree(this.root),
+                        currentNode: node.id,
+                        action: 'unbalanced'
+                    });
+                } else {
+                    this.steps.push({
+                        description: `Balance factor of ${node.value} is ${balance} - balanced`,
+                        tree: this.cloneTree(this.root),
+                        currentNode: node.id,
+                        action: 'balanced'
+                    });
+                }
+
+                // Rotations for deletion
+                if (balance > 1 && this.getBalance(node.left) >= 0) {
+                    return this.rightRotate(node);
+                }
+
+                if (balance > 1 && this.getBalance(node.left) < 0) {
+                    node.left = this.leftRotate(node.left);
+                    return this.rightRotate(node);
+                }
+
+                if (balance < -1 && this.getBalance(node.right) <= 0) {
+                    return this.leftRotate(node);
+                }
+
+                if (balance < -1 && this.getBalance(node.right) > 0) {
+                    node.right = this.rightRotate(node.right);
+                    return this.leftRotate(node);
+                }
+
+                return node;
+            }
+
+            getMinValueNode(node) {
+                while (node.left !== null) {
+                    node = node.left;
+                }
+                return node;
+            }
+
+            // Search value
+            searchValue(value) {
+                this.steps.push({
+                    description: `Starting search for ${value}`,
+                    tree: this.cloneTree(this.root),
+                    currentNode: null,
+                    action: 'start'
+                });
+
+                this.searchNode(this.root, value);
+            }
+
+            searchNode(node, value) {
+                if (node === null) {
+                    this.steps.push({
+                        description: `Value ${value} not found`,
+                        tree: this.cloneTree(this.root),
+                        currentNode: null,
+                        action: 'complete'
+                    });
+                    return false;
+                }
+
+                this.steps.push({
+                    description: `Comparing ${value} with ${node.value}`,
+                    tree: this.cloneTree(this.root),
+                    currentNode: node.id,
+                    action: 'current'
+                });
+
+                if (value === node.value) {
+                    this.steps.push({
+                        description: `Found ${value}!`,
+                        tree: this.cloneTree(this.root),
+                        currentNode: node.id,
+                        action: 'balanced'
+                    });
+                    return true;
+                } else if (value < node.value) {
+                    return this.searchNode(node.left, value);
+                } else {
+                    return this.searchNode(node.right, value);
+                }
+            }
+
+            // Clone tree for step visualization
+            cloneTree(node) {
+                if (node === null) return null;
+                
+                const cloned = new AVLNode(node.value);
+                cloned.id = node.id;
+                cloned.height = node.height;
+                cloned.left = this.cloneTree(node.left);
+                cloned.right = this.cloneTree(node.right);
+                return cloned;
+            }
+
+            resetTree() {
+                this.root = null;
+                this.steps = [];
+                this.currentStep = 0;
+                this.nodePositions.clear();
+                this.updateUI();
+            }
+
+            previousStep() {
+                if (this.currentStep > 0) {
+                    this.currentStep--;
+                    this.updateUI();
+                }
+            }
+
+            nextStep() {
+                if (this.currentStep < this.steps.length - 1) {
+                    this.currentStep++;
+                    this.updateUI();
+                }
+            }
+
+            updateUI() {
+                const stepCounter = document.getElementById('stepCounter');
+                if (stepCounter) {
+                    stepCounter.textContent = 
+                        this.steps.length > 0 ? `${this.currentStep + 1} / ${this.steps.length}` : '0 / 0';
+                }
+
+                const stepDescription = document.getElementById('stepDescription');
+                if (stepDescription) {
+                    if (this.steps.length === 0) {
+                        stepDescription.textContent = 'Select an operation and enter a value to begin';
+                    } else {
+                        stepDescription.textContent = this.steps[this.currentStep].description;
+                    }
+                }
+
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                if (prevBtn) prevBtn.disabled = this.currentStep === 0;
+                if (nextBtn) nextBtn.disabled = this.currentStep >= this.steps.length - 1;
+
+                this.renderTree();
+            }
+
+            renderTree() {
+                const container = document.getElementById('treeContainer');
+                const emptyState = document.getElementById('emptyState');
+                
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                let currentTree = this.root;
+                let currentNodeId = null;
+                let action = 'normal';
+                
+                if (this.steps.length > 0) {
+                    const currentStepData = this.steps[this.currentStep];
+                    currentTree = currentStepData.tree;
+                    currentNodeId = currentStepData.currentNode;
+                    action = currentStepData.action;
+                }
+                
+                if (currentTree === null) {
+                    if (emptyState) {
+                        emptyState.style.display = 'block';
+                    } else {
+                        const emptyDiv = document.createElement('div');
+                        emptyDiv.className = 'empty-state';
+                        emptyDiv.textContent = 'Tree is empty. Insert a value to get started.';
+                        container.appendChild(emptyDiv);
+                    }
+                    return;
+                }
+                
+                if (emptyState) {
+                    emptyState.style.display = 'none';
+                }
+                
+                this.calculatePositions(currentTree, 0, 0, 600, 0);
+                this.renderEdges(currentTree, container);
+                this.renderNodes(currentTree, container, currentNodeId, action);
+            }
+
+            calculatePositions(node, x, y, width, depth) {
+                if (node === null) return;
+                
+                const nodeX = x + width / 2;
+                const nodeY = y + depth * 80 + 20;
+                
+                this.nodePositions.set(node.id, { x: nodeX, y: nodeY });
+                
+                if (node.left) {
+                    this.calculatePositions(node.left, x, y, width / 2, depth + 1);
+                }
+                if (node.right) {
+                    this.calculatePositions(node.right, x + width / 2, y, width / 2, depth + 1);
+                }
+            }
+
+            renderEdges(node, container) {
+                if (node === null) return;
+                
+                const nodePos = this.nodePositions.get(node.id);
+                
+                if (node.left) {
+                    const leftPos = this.nodePositions.get(node.left.id);
+                    this.createEdge(container, nodePos, leftPos);
+                    this.renderEdges(node.left, container);
+                }
+                
+                if (node.right) {
+                    const rightPos = this.nodePositions.get(node.right.id);
+                    this.createEdge(container, nodePos, rightPos);
+                    this.renderEdges(node.right, container);
+                }
+            }
+
+            createEdge(container, from, to) {
+                const edge = document.createElement('div');
+                edge.className = 'tree-edge';
+                
+                const dx = to.x - from.x;
+                const dy = to.y - from.y;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                
+                edge.style.width = length + 'px';
+                edge.style.height = '2px';
+                edge.style.left = from.x + 'px';
+                edge.style.top = from.y + 'px';
+                edge.style.transformOrigin = '0 50%';
+                edge.style.transform = `rotate(${angle}deg)`;
+                
+                container.appendChild(edge);
+            }
+
+            renderNodes(node, container, currentNodeId, action) {
+                if (node === null) return;
+                
+                const nodeElement = document.createElement('div');
+                nodeElement.className = 'tree-node';
+                nodeElement.textContent = node.value;
+                
+                const pos = this.nodePositions.get(node.id);
+                nodeElement.style.left = (pos.x - 22.5) + 'px';
+                nodeElement.style.top = (pos.y - 22.5) + 'px';
+                
+                // Add height label
+                const heightLabel = document.createElement('div');
+                heightLabel.className = 'height-label';
+                heightLabel.textContent = node.height;
+                nodeElement.appendChild(heightLabel);
+                
+                // Add balance factor
+                const balance = this.getBalance(node);
+                const balanceElement = document.createElement('div');
+                balanceElement.className = 'balance-factor';
+                if (Math.abs(balance) > 1) {
+                    balanceElement.classList.add('critical');
+                }
+                balanceElement.textContent = balance >= 0 ? `+${balance}` : balance;
+                nodeElement.appendChild(balanceElement);
+                
+                // Apply visual states
+                if (node.id === currentNodeId) {
+                    if (action === 'unbalanced') {
+                        nodeElement.classList.add('unbalanced');
+                    } else if (action === 'rotating') {
+                        nodeElement.classList.add('rotating');
+                    } else if (action === 'balanced') {
+                        nodeElement.classList.add('balanced');
+                    } else {
+                        nodeElement.classList.add('current');
+                    }
+                } else if (Math.abs(balance) <= 1) {
+                    nodeElement.classList.add('balanced');
+                }
+                
+                container.appendChild(nodeElement);
+                
+                this.renderNodes(node.left, container, currentNodeId, action);
+                this.renderNodes(node.right, container, currentNodeId, action);
+            }
+        }
+
+        // Initialize the visualizer
+        const visualizer = new AVLTreeVisualizer();
+    </script>
+
+
+</body></html>

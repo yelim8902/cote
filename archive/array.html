@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<!-- saved from url=(0053)https://codes.yalco.kr/ds-algorithm/linear/array.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"], input[type="number"], select {
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 22px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #dee2e6;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .info-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .info-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .visualization {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .array-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .array-elements {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .array-element {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.5s ease;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .array-element.highlighted {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            transform: scale(1.1);
+        }
+
+        .array-element.success {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+        }
+
+        .array-indices {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .array-index {
+            width: 60px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .empty-array {
+            color: #999;
+            font-style: italic;
+            font-size: 18px;
+        }
+
+        .result-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .result-success {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+            color: white;
+        }
+
+        .result-error {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        .result-info {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn {
+                margin-top: 10px;
+            }
+            
+            .info-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .array-element {
+                width: 50px;
+                height: 50px;
+                font-size: 14px;
+            }
+            
+            .array-index {
+                width: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="control-panel">
+            <div class="input-group">
+                <label for="arrayType">Array Type</label>
+                <select id="arrayType">
+                    <option value="static">Static Array</option>
+                    <option value="dynamic">Dynamic Array</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label for="operation">Operation</label>
+                <select id="operation">
+                    <option value="initialize">Initialize Array</option>
+                    <option value="access">Access Element</option>
+                    <option value="update">Update Element</option>
+                    <option value="search">Linear Search</option>
+                    <option value="traverse">Traverse Array</option>
+                    <option value="insert">Insert Element</option>
+                    <option value="delete">Delete Element</option>
+                </select>
+            </div>
+            
+            <div class="input-group" id="sizeGroup" style="display: flex;">
+                <label for="arraySize">Array Size</label>
+                <input type="number" id="arraySize" min="1" max="20" value="8">
+            </div>
+            
+            <div class="input-group" id="valuesGroup" style="display: flex;">
+                <label for="arrayValues">Values (comma-separated)</label>
+                <input type="text" id="arrayValues" placeholder="e.g., 5,2,8,1,9,3">
+            </div>
+            
+            <div class="input-group" id="indexGroup" style="display: none;">
+                <label for="targetIndex">Index</label>
+                <input type="number" id="targetIndex" min="0" value="0">
+            </div>
+            
+            <div class="input-group" id="valueGroup" style="display: none;">
+                <label for="targetValue">Value</label>
+                <input type="number" id="targetValue" value="10">
+            </div>
+            
+            <div class="input-group" id="searchGroup" style="display: none;">
+                <label for="searchValue">Search Value</label>
+                <input type="number" id="searchValue" value="5">
+            </div>
+            
+            <div class="input-group" id="insertIndexGroup" style="display: none;">
+                <label for="insertIndex">Insert Index</label>
+                <input type="number" id="insertIndex" min="0" value="0">
+            </div>
+            
+            <div class="input-group" id="insertValueGroup" style="display: none;">
+                <label for="insertValue">Insert Value</label>
+                <input type="number" id="insertValue" value="10">
+            </div>
+            
+            <div class="input-group" id="deleteIndexGroup" style="display: none;">
+                <label for="deleteIndex">Delete Index</label>
+                <input type="number" id="deleteIndex" min="0" value="0">
+            </div>
+            
+            <button class="btn btn-primary" onclick="executeOperation()">Execute</button>
+            <button class="btn btn-secondary" onclick="resetArray()">Reset</button>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-item">
+                <div class="info-label">Data Structure</div>
+                <div class="info-value" id="arrayTypeDisplay">Static Array</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Operation</div>
+                <div class="info-value" id="currentOperation">Initialize</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Time Complexity</div>
+                <div class="info-value" id="timeComplexity">O(n)</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Space Complexity</div>
+                <div class="info-value" id="spaceComplexity">O(n)</div>
+            </div>
+        </div>
+
+        <div class="visualization">
+            <div class="array-container">
+                <div class="array-indices" id="arrayIndices"><div class="array-index">0</div><div class="array-index">1</div><div class="array-index">2</div><div class="array-index">3</div><div class="array-index">4</div><div class="array-index">5</div><div class="array-index">6</div><div class="array-index">7</div></div>
+                <div class="array-elements" id="arrayElements"><div class="array-element" id="element-0">76</div><div class="array-element" id="element-1">79</div><div class="array-element" id="element-2">44</div><div class="array-element" id="element-3">52</div><div class="array-element" id="element-4">59</div><div class="array-element" id="element-5">93</div><div class="array-element" id="element-6">91</div><div class="array-element" id="element-7">96</div></div>
+            </div>
+            <div id="resultMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        class StaticArrayVisualizer {
+            constructor() {
+                this.array = [];
+                this.size = 0;
+                this.capacity = 0;
+                this.isStatic = true;
+                this.initializeEventListeners();
+                this.updateComplexity();
+            }
+
+            initializeEventListeners() {
+                const operationSelect = document.getElementById('operation');
+                const arrayTypeSelect = document.getElementById('arrayType');
+                
+                operationSelect.addEventListener('change', () => {
+                    this.updateInputVisibility();
+                    this.updateComplexity();
+                });
+
+                arrayTypeSelect.addEventListener('change', () => {
+                    this.isStatic = arrayTypeSelect.value === 'static';
+                    this.updateArrayTypeDisplay();
+                    this.updateComplexity();
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        executeOperation();
+                    } else if (e.key === 'Escape') {
+                        resetArray();
+                    }
+                });
+            }
+
+            updateArrayTypeDisplay() {
+                const arrayTypeDisplay = document.getElementById('arrayTypeDisplay');
+                arrayTypeDisplay.textContent = this.isStatic ? 'Static Array' : 'Dynamic Array';
+            }
+
+            updateInputVisibility() {
+                const operation = document.getElementById('operation').value;
+                
+                // Hide all conditional inputs
+                document.getElementById('sizeGroup').style.display = 'none';
+                document.getElementById('valuesGroup').style.display = 'none';
+                document.getElementById('indexGroup').style.display = 'none';
+                document.getElementById('valueGroup').style.display = 'none';
+                document.getElementById('searchGroup').style.display = 'none';
+                document.getElementById('insertIndexGroup').style.display = 'none';
+                document.getElementById('insertValueGroup').style.display = 'none';
+                document.getElementById('deleteIndexGroup').style.display = 'none';
+
+                // Show relevant inputs based on operation
+                switch(operation) {
+                    case 'initialize':
+                        document.getElementById('sizeGroup').style.display = 'flex';
+                        document.getElementById('valuesGroup').style.display = 'flex';
+                        break;
+                    case 'access':
+                        document.getElementById('indexGroup').style.display = 'flex';
+                        break;
+                    case 'update':
+                        document.getElementById('indexGroup').style.display = 'flex';
+                        document.getElementById('valueGroup').style.display = 'flex';
+                        break;
+                    case 'search':
+                        document.getElementById('searchGroup').style.display = 'flex';
+                        break;
+                    case 'insert':
+                        document.getElementById('insertIndexGroup').style.display = 'flex';
+                        document.getElementById('insertValueGroup').style.display = 'flex';
+                        break;
+                    case 'delete':
+                        document.getElementById('deleteIndexGroup').style.display = 'flex';
+                        break;
+                }
+            }
+
+            updateComplexity() {
+                const operation = document.getElementById('operation').value;
+                const isDynamic = !this.isStatic;
+                
+                const complexities = {
+                    'initialize': { time: 'O(n)', space: 'O(n)' },
+                    'access': { time: 'O(1)', space: 'O(1)' },
+                    'update': { time: 'O(1)', space: 'O(1)' },
+                    'search': { time: 'O(n)', space: 'O(1)' },
+                    'traverse': { time: 'O(n)', space: 'O(1)' },
+                    'insert': { 
+                        time: isDynamic ? 'O(n)' : 'O(n)', 
+                        space: isDynamic ? 'O(1)*' : 'O(1)' 
+                    },
+                    'delete': { time: 'O(n)', space: 'O(1)' }
+                };
+
+                document.getElementById('currentOperation').textContent = 
+                    operation.charAt(0).toUpperCase() + operation.slice(1).replace(/([A-Z])/g, ' $1');
+                document.getElementById('timeComplexity').textContent = complexities[operation].time;
+                document.getElementById('spaceComplexity').textContent = complexities[operation].space;
+            }
+
+            initializeArray(size, values) {
+                this.capacity = size;
+                this.array = [];
+                
+                if (values && values.length > 0) {
+                    // Use only provided values, don't fill remaining slots
+                    for (let i = 0; i < Math.min(size, values.length); i++) {
+                        this.array[i] = values[i];
+                    }
+                    // Leave remaining slots empty (don't add random values)
+                } else {
+                    // Generate random values only if no values provided
+                    for (let i = 0; i < size; i++) {
+                        this.array[i] = Math.floor(Math.random() * 100);
+                    }
+                }
+                
+                this.size = this.array.length;
+                this.renderArray();
+                
+                if (values && values.length > 0) {
+                    const emptySlots = this.capacity - this.array.length;
+                    this.showResult(`Array initialized with ${this.array.length} elements, ${emptySlots} empty slots`, 'success');
+                } else {
+                    this.showResult(`Array initialized with capacity ${this.capacity}!`, 'success');
+                }
+            }
+
+            accessElement(index) {
+                if (this.array.length === 0) {
+                    this.showResult('No array initialized!', 'error');
+                    return;
+                }
+                
+                if (index < 0 || index >= this.array.length) {
+                    this.showResult(`Index ${index} is out of bounds!`, 'error');
+                    return;
+                }
+
+                this.highlightElement(index);
+                this.showResult(`Element at index ${index}: ${this.array[index]}`, 'info');
+            }
+
+            updateElement(index, value) {
+                if (this.array.length === 0) {
+                    this.showResult('No array initialized!', 'error');
+                    return;
+                }
+                
+                if (index < 0 || index >= this.array.length) {
+                    this.showResult(`Index ${index} is out of bounds!`, 'error');
+                    return;
+                }
+
+                const oldValue = this.array[index];
+                this.array[index] = value;
+                this.renderArray();
+                this.highlightElement(index, 'success');
+                this.showResult(`Updated index ${index}: ${oldValue} → ${value}`, 'success');
+            }
+
+            insertElement(index, value) {
+                if (this.array.length === 0) {
+                    this.showResult('No array initialized!', 'error');
+                    return;
+                }
+
+                if (index < 0 || index > this.array.length) {
+                    this.showResult(`Index ${index} is out of bounds for insertion!`, 'error');
+                    return;
+                }
+
+                if (this.isStatic) {
+                    // Static array: check if there's space
+                    if (this.array.length >= this.capacity) {
+                        this.showResult('Cannot insert: Static array is at full capacity!', 'error');
+                        return;
+                    }
+                    
+                    // Shift elements to the right
+                    for (let i = this.array.length; i > index; i--) {
+                        this.array[i] = this.array[i - 1];
+                    }
+                    this.array[index] = value;
+                } else {
+                    // Dynamic array: can always insert
+                    this.array.splice(index, 0, value);
+                }
+
+                this.size = this.array.length;
+                this.renderArray();
+                this.highlightElement(index, 'success');
+                
+                const arrayType = this.isStatic ? 'static' : 'dynamic';
+                this.showResult(`Inserted ${value} at index ${index} (${arrayType} array)`, 'success');
+            }
+
+            deleteElement(index) {
+                if (this.array.length === 0) {
+                    this.showResult('No array initialized!', 'error');
+                    return;
+                }
+
+                if (index < 0 || index >= this.array.length) {
+                    this.showResult(`Index ${index} is out of bounds!`, 'error');
+                    return;
+                }
+
+                const deletedValue = this.array[index];
+
+                if (this.isStatic) {
+                    // Static array: shift elements left
+                    for (let i = index; i < this.array.length - 1; i++) {
+                        this.array[i] = this.array[i + 1];
+                    }
+                    this.array.length = this.array.length - 1;
+                } else {
+                    // Dynamic array: use splice
+                    this.array.splice(index, 1);
+                }
+
+                this.size = this.array.length;
+                this.renderArray();
+                
+                const arrayType = this.isStatic ? 'static' : 'dynamic';
+                this.showResult(`Deleted ${deletedValue} from index ${index} (${arrayType} array)`, 'success');
+            }
+
+            searchElement(value) {
+                if (this.array.length === 0) {
+                    this.showResult('No array initialized!', 'error');
+                    return;
+                }
+
+                for (let i = 0; i < this.array.length; i++) {
+                    if (this.array[i] === value) {
+                        this.highlightElement(i, 'success');
+                        this.showResult(`Found ${value} at index ${i}`, 'success');
+                        return;
+                    }
+                }
+                
+                this.showResult(`Value ${value} not found in array`, 'error');
+            }
+
+            traverseArray() {
+                if (this.array.length === 0) {
+                    this.showResult('No array initialized!', 'error');
+                    return;
+                }
+
+                let result = 'Traversing: ';
+                for (let i = 0; i < this.array.length; i++) {
+                    result += `[${i}]=${this.array[i]}`;
+                    if (i < this.array.length - 1) result += ', ';
+                }
+                
+                this.showResult(result, 'info');
+                
+                // Highlight all elements briefly
+                const elements = document.querySelectorAll('.array-element');
+                elements.forEach((element, index) => {
+                    setTimeout(() => {
+                        element.classList.add('highlighted');
+                        setTimeout(() => {
+                            element.classList.remove('highlighted');
+                        }, 300);
+                    }, index * 100);
+                });
+            }
+
+            renderArray() {
+                const elementsContainer = document.getElementById('arrayElements');
+                const indicesContainer = document.getElementById('arrayIndices');
+                
+                if (this.array.length === 0) {
+                    elementsContainer.innerHTML = '<div class="empty-array">No array initialized</div>';
+                    indicesContainer.innerHTML = '';
+                    return;
+                }
+
+                // Render elements
+                elementsContainer.innerHTML = '';
+                this.array.forEach((value, index) => {
+                    const element = document.createElement('div');
+                    element.className = 'array-element';
+                    element.textContent = value;
+                    element.id = `element-${index}`;
+                    elementsContainer.appendChild(element);
+                });
+
+                // For static arrays, show empty slots if capacity > current size
+                if (this.isStatic && this.capacity > this.array.length) {
+                    for (let i = this.array.length; i < this.capacity; i++) {
+                        const element = document.createElement('div');
+                        element.className = 'array-element empty-slot';
+                        element.textContent = '—';
+                        element.style.opacity = '0.3';
+                        element.style.background = 'linear-gradient(135deg, #dee2e6, #adb5bd)';
+                        element.id = `element-${i}`;
+                        elementsContainer.appendChild(element);
+                    }
+                }
+
+                // Render indices
+                indicesContainer.innerHTML = '';
+                const totalSlots = this.isStatic ? this.capacity : this.array.length;
+                for (let i = 0; i < totalSlots; i++) {
+                    const indexElement = document.createElement('div');
+                    indexElement.className = 'array-index';
+                    indexElement.textContent = i;
+                    if (this.isStatic && i >= this.array.length) {
+                        indexElement.style.opacity = '0.3';
+                    }
+                    indicesContainer.appendChild(indexElement);
+                }
+            }
+
+            highlightElement(index, type = 'highlighted') {
+                // Clear previous highlights
+                document.querySelectorAll('.array-element').forEach(el => {
+                    el.classList.remove('highlighted', 'success');
+                });
+
+                const element = document.getElementById(`element-${index}`);
+                if (element) {
+                    element.classList.add(type);
+                    
+                    // Auto-remove highlight after delay
+                    setTimeout(() => {
+                        element.classList.remove(type);
+                    }, 2000);
+                }
+            }
+
+            showResult(message, type) {
+                const resultDiv = document.getElementById('resultMessage');
+                resultDiv.innerHTML = `<div class="result-message result-${type}">${message}</div>`;
+                
+                // Auto-clear message after delay
+                setTimeout(() => {
+                    resultDiv.innerHTML = '';
+                }, 3000);
+            }
+
+            reset() {
+                this.array = [];
+                this.size = 0;
+                this.capacity = 0;
+                this.renderArray();
+                document.getElementById('resultMessage').innerHTML = '';
+            }
+        }
+
+        // Global instance
+        const visualizer = new StaticArrayVisualizer();
+
+        // Global functions for buttons
+        function executeOperation() {
+            const operation = document.getElementById('operation').value;
+            
+            switch(operation) {
+                case 'initialize':
+                    const size = parseInt(document.getElementById('arraySize').value);
+                    const valuesStr = document.getElementById('arrayValues').value.trim();
+                    const values = valuesStr ? valuesStr.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v)) : [];
+                    visualizer.initializeArray(size, values);
+                    break;
+                    
+                case 'access':
+                    const accessIndex = parseInt(document.getElementById('targetIndex').value);
+                    visualizer.accessElement(accessIndex);
+                    break;
+                    
+                case 'update':
+                    const updateIndex = parseInt(document.getElementById('targetIndex').value);
+                    const newValue = parseInt(document.getElementById('targetValue').value);
+                    visualizer.updateElement(updateIndex, newValue);
+                    break;
+                    
+                case 'search':
+                    const searchValue = parseInt(document.getElementById('searchValue').value);
+                    visualizer.searchElement(searchValue);
+                    break;
+                    
+                case 'traverse':
+                    visualizer.traverseArray();
+                    break;
+                    
+                case 'insert':
+                    const insertIndex = parseInt(document.getElementById('insertIndex').value);
+                    const insertValue = parseInt(document.getElementById('insertValue').value);
+                    visualizer.insertElement(insertIndex, insertValue);
+                    break;
+                    
+                case 'delete':
+                    const deleteIndex = parseInt(document.getElementById('deleteIndex').value);
+                    visualizer.deleteElement(deleteIndex);
+                    break;
+            }
+        }
+
+        function resetArray() {
+            visualizer.reset();
+        }
+
+        // Initialize the interface
+        document.addEventListener('DOMContentLoaded', () => {
+            visualizer.updateInputVisibility();
+        });
+    </script>
+
+
+</body></html>

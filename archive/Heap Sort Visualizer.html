@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)https://codes.yalco.kr/ds-algorithm/sorting/heap-sort.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heap Sort Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"], select {
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #dee2e6;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .info-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-label {
+            font-size: 12px;
+            font-weight: 400;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .visualization-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .visualization {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .visualization-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .array-bars {
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            gap: 4px;
+            overflow-x: auto;
+            flex: 1;
+        }
+
+        .heap-tree {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            min-height: 350px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tree-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .tree-container {
+            position: relative;
+            height: 280px;
+            overflow: visible;
+        }
+
+        .tree-node {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+            color: white;
+            transition: all 0.5s ease;
+            z-index: 10;
+            border: 2px solid transparent;
+        }
+
+        .tree-node.root {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            transform: scale(1.2);
+            border-color: #f39c12;
+        }
+
+        .tree-node.comparing {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            transform: scale(1.1);
+            border-color: #e74c3c;
+        }
+
+        .tree-node.parent {
+            background: linear-gradient(135deg, #ff9500, #ff6348);
+            transform: scale(1.1);
+            border-color: #d35400;
+        }
+
+        .tree-node.child {
+            background: linear-gradient(135deg, #a55eea, #8e44ad);
+            transform: scale(1.05);
+            border-color: #9b59b6;
+        }
+
+        .tree-node.heapifying {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+            transform: scale(1.15);
+            border-color: #27ae60;
+        }
+
+        .tree-node.swapping {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            transform: scale(1.15);
+            border-color: #e74c3c;
+            animation: pulse 0.5s infinite;
+        }
+
+        .tree-node.sorted {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            opacity: 0.6;
+        }
+
+        .tree-node.default {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .tree-edge {
+            position: absolute;
+            background: #bdc3c7;
+            z-index: 1;
+            transition: all 0.5s ease;
+        }
+
+        .tree-edge.highlighted {
+            background: #e74c3c;
+            z-index: 5;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1.15); }
+            50% { transform: scale(1.25); }
+        }
+
+        .bar {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px 4px 0 0;
+            min-width: 30px;
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 5px;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .bar.root {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            transform: scale(1.2);
+            z-index: 10;
+        }
+
+        .bar.comparing {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            transform: scale(1.1);
+        }
+
+        .bar.parent {
+            background: linear-gradient(135deg, #ff9500, #ff6348);
+            transform: scale(1.1);
+        }
+
+        .bar.child {
+            background: linear-gradient(135deg, #a55eea, #8e44ad);
+            transform: scale(1.05);
+        }
+
+        .bar.heapifying {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+            transform: scale(1.15);
+        }
+
+        .bar.swapping {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            transform: scale(1.15);
+        }
+
+        .bar.sorted {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+        }
+
+        .bar.heap-boundary {
+            border-right: 3px solid #e74c3c;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .step-info {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .step-description {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 10px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .help-text {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .heap-indicator {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+            }
+            
+            input[type="text"], select {
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .info-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .visualization-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .bar {
+                min-width: 25px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="control-panel">
+            <div class="input-group">
+                <label for="arrayInput">Array Values</label>
+                <input type="text" id="arrayInput" placeholder="e.g., 64, 34, 25, 12, 90, 22, 14" value="64, 34, 25, 12, 90, 22, 14">
+            </div>
+            <button class="btn btn-primary" onclick="heapSort.generateArray()">Generate Array</button>
+            <button class="btn btn-secondary" onclick="heapSort.reset()">Reset</button>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-item">
+                <div class="info-label">Algorithm</div>
+                <div class="info-value">Heap Sort</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Step</div>
+                <div class="info-value" id="stepCounter">0 / 0</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Time Complexity</div>
+                <div class="info-value">O(n log n)</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Space Complexity</div>
+                <div class="info-value">O(1)</div>
+            </div>
+        </div>
+
+        <div class="visualization-container">
+            <div class="visualization">
+                <div class="visualization-title">Array Representation</div>
+                <div class="array-bars" id="visualization"></div>
+            </div>
+
+            <div class="heap-tree">
+                <div class="tree-title">Binary Heap Structure</div>
+                <div class="tree-container" id="treeContainer"></div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="heapSort.previousStep()" disabled="">Previous</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="heapSort.nextStep()" disabled="">Next</button>
+        </div>
+
+        <div class="step-info">
+            <div class="step-description" id="stepDescription">Enter array values and click "Generate Array" to begin visualization</div>
+        </div>
+
+        <div class="help-text">
+            Use arrow keys (← →) to navigate between steps. Enter custom values or use the default array to start.
+        </div>
+    </div>
+
+    <script>
+        class HeapSortVisualizer {
+            constructor() {
+                this.originalArray = [];
+                this.array = [];
+                this.steps = [];
+                this.currentStep = 0;
+                this.isGenerated = false;
+                
+                this.initializeEventListeners();
+            }
+
+            initializeEventListeners() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        this.previousStep();
+                    } else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        this.nextStep();
+                    }
+                });
+
+                document.getElementById('arrayInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.generateArray();
+                    }
+                });
+            }
+
+            generateArray() {
+                const input = document.getElementById('arrayInput').value.trim();
+                if (!input) return;
+
+                try {
+                    this.originalArray = input.split(',').map(num => {
+                        const parsed = parseInt(num.trim());
+                        if (isNaN(parsed)) throw new Error('Invalid number');
+                        return parsed;
+                    });
+
+                    if (this.originalArray.length === 0) throw new Error('Empty array');
+                    if (this.originalArray.length > 12) {
+                        alert('Please use 12 or fewer elements for better visualization');
+                        return;
+                    }
+
+                    this.array = [...this.originalArray];
+                    this.generateSteps();
+                    this.currentStep = 0;
+                    this.isGenerated = true;
+                    this.updateVisualization();
+                    this.updateUI();
+                } catch (error) {
+                    alert('Please enter valid numbers separated by commas (e.g., 64, 34, 25, 12)');
+                }
+            }
+
+            generateSteps() {
+                this.steps = [];
+                const arr = [...this.originalArray];
+                const n = arr.length;
+
+                // Initial state
+                this.steps.push({
+                    array: [...arr],
+                    root: -1,
+                    comparing: [],
+                    parent: -1,
+                    children: [],
+                    heapifying: -1,
+                    swapping: [],
+                    sorted: [],
+                    heapSize: n,
+                    description: `Starting Heap Sort with ${n} elements. First, we'll build a max heap from the array.`
+                });
+
+                // Build max heap (heapify)
+                for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+                    this.heapify(arr, n, i, `Building max heap: heapifying from index ${i}`);
+                }
+
+                this.steps.push({
+                    array: [...arr],
+                    root: 0,
+                    comparing: [],
+                    parent: -1,
+                    children: [],
+                    heapifying: -1,
+                    swapping: [],
+                    sorted: [],
+                    heapSize: n,
+                    description: `Max heap built! Root element ${arr[0]} is the largest. Now we'll extract elements one by one.`
+                });
+
+                // Extract elements from heap one by one
+                for (let i = n - 1; i > 0; i--) {
+                    // Move current root to end
+                    this.steps.push({
+                        array: [...arr],
+                        root: 0,
+                        comparing: [],
+                        parent: -1,
+                        children: [],
+                        heapifying: -1,
+                        swapping: [0, i],
+                        sorted: Array.from({length: n - i - 1}, (_, k) => n - 1 - k),
+                        heapSize: i + 1,
+                        description: `Extracting max element ${arr[0]}. Swapping root with last heap element at index ${i}.`
+                    });
+
+                    [arr[0], arr[i]] = [arr[i], arr[0]];
+
+                    this.steps.push({
+                        array: [...arr],
+                        root: -1,
+                        comparing: [],
+                        parent: -1,
+                        children: [],
+                        heapifying: -1,
+                        swapping: [],
+                        sorted: Array.from({length: n - i}, (_, k) => n - 1 - k),
+                        heapSize: i,
+                        description: `Element ${arr[i]} is now in its final position. Heap size reduced to ${i}.`
+                    });
+
+                    // Heapify the reduced heap
+                    if (i > 1) {
+                        this.heapify(arr, i, 0, `Restoring heap property after extraction`);
+                    }
+                }
+
+                // Final state
+                this.steps.push({
+                    array: [...arr],
+                    root: -1,
+                    comparing: [],
+                    parent: -1,
+                    children: [],
+                    heapifying: -1,
+                    swapping: [],
+                    sorted: Array.from({length: n}, (_, k) => k),
+                    heapSize: 0,
+                    description: 'Heap Sort complete! All elements are now sorted in ascending order.'
+                });
+            }
+
+            heapify(arr, heapSize, rootIndex, phase) {
+                let largest = rootIndex;
+                let left = 2 * rootIndex + 1;
+                let right = 2 * rootIndex + 2;
+
+                // Show current node being heapified
+                this.steps.push({
+                    array: [...arr],
+                    root: -1,
+                    comparing: [],
+                    parent: rootIndex,
+                    children: [left, right].filter(i => i < heapSize),
+                    heapifying: rootIndex,
+                    swapping: [],
+                    sorted: Array.from({length: arr.length - heapSize}, (_, k) => arr.length - 1 - k),
+                    heapSize: heapSize,
+                    description: `${phase}: checking node ${arr[rootIndex]} at index ${rootIndex} with its children.`
+                });
+
+                // Compare with left child
+                if (left < heapSize) {
+                    this.steps.push({
+                        array: [...arr],
+                        root: -1,
+                        comparing: [rootIndex, left],
+                        parent: rootIndex,
+                        children: [left],
+                        heapifying: -1,
+                        swapping: [],
+                        sorted: Array.from({length: arr.length - heapSize}, (_, k) => arr.length - 1 - k),
+                        heapSize: heapSize,
+                        description: `Comparing parent ${arr[rootIndex]} with left child ${arr[left]}. ${arr[left] > arr[largest] ? 'Left child is larger!' : 'Parent is larger or equal.'}`
+                    });
+
+                    if (arr[left] > arr[largest]) {
+                        largest = left;
+                    }
+                }
+
+                // Compare with right child
+                if (right < heapSize) {
+                    this.steps.push({
+                        array: [...arr],
+                        root: -1,
+                        comparing: [largest, right],
+                        parent: rootIndex,
+                        children: [right],
+                        heapifying: -1,
+                        swapping: [],
+                        sorted: Array.from({length: arr.length - heapSize}, (_, k) => arr.length - 1 - k),
+                        heapSize: heapSize,
+                        description: `Comparing current largest ${arr[largest]} with right child ${arr[right]}. ${arr[right] > arr[largest] ? 'Right child is larger!' : 'Current largest is maintained.'}`
+                    });
+
+                    if (arr[right] > arr[largest]) {
+                        largest = right;
+                    }
+                }
+
+                // If largest is not root, swap and continue heapifying
+                if (largest !== rootIndex) {
+                    this.steps.push({
+                        array: [...arr],
+                        root: -1,
+                        comparing: [],
+                        parent: -1,
+                        children: [],
+                        heapifying: -1,
+                        swapping: [rootIndex, largest],
+                        sorted: Array.from({length: arr.length - heapSize}, (_, k) => arr.length - 1 - k),
+                        heapSize: heapSize,
+                        description: `Swapping ${arr[rootIndex]} at index ${rootIndex} with ${arr[largest]} at index ${largest} to maintain heap property.`
+                    });
+
+                    [arr[rootIndex], arr[largest]] = [arr[largest], arr[rootIndex]];
+
+                    // Recursively heapify the affected sub-tree
+                    this.heapify(arr, heapSize, largest, phase);
+                } else {
+                    this.steps.push({
+                        array: [...arr],
+                        root: -1,
+                        comparing: [],
+                        parent: -1,
+                        children: [],
+                        heapifying: rootIndex,
+                        swapping: [],
+                        sorted: Array.from({length: arr.length - heapSize}, (_, k) => arr.length - 1 - k),
+                        heapSize: heapSize,
+                        description: `Node ${arr[rootIndex]} at index ${rootIndex} is already in correct position. Heap property maintained.`
+                    });
+                }
+            }
+
+            updateVisualization() {
+                const visualization = document.getElementById('visualization');
+                const step = this.steps[this.currentStep];
+                
+                if (!step) return;
+
+                const maxValue = Math.max(...step.array);
+                const minHeight = 40;
+                const maxHeight = 200;
+
+                visualization.innerHTML = step.array.map((value, index) => {
+                    const height = minHeight + (value / maxValue) * (maxHeight - minHeight);
+                    let className = 'bar';
+                    
+                    if (step.root === index) className += ' root';
+                    if (step.comparing.includes(index)) className += ' comparing';
+                    if (step.parent === index) className += ' parent';
+                    if (step.children.includes(index)) className += ' child';
+                    if (step.heapifying === index) className += ' heapifying';
+                    if (step.swapping.includes(index)) className += ' swapping';
+                    if (step.sorted.includes(index)) className += ' sorted';
+                    if (index === step.heapSize - 1 && step.heapSize < step.array.length) className += ' heap-boundary';
+
+                    let indicator = '';
+                    if (index < step.heapSize && step.heapSize < step.array.length) {
+                        indicator = '<div class="heap-indicator">heap</div>';
+                    }
+
+                    return `<div class="${className}" style="height: ${height}px;">${value}${indicator}</div>`;
+                }).join('');
+
+                // Update tree visualization
+                this.updateTreeVisualization();
+            }
+
+            updateTreeVisualization() {
+                const treeContainer = document.getElementById('treeContainer');
+                const step = this.steps[this.currentStep];
+                
+                if (!step) return;
+
+                const heapArray = step.array.slice(0, step.heapSize);
+                if (heapArray.length === 0) {
+                    treeContainer.innerHTML = '<div style="text-align: center; color: #666; margin-top: 100px;">Heap is empty</div>';
+                    return;
+                }
+
+                // Calculate positions for nodes
+                const positions = this.calculateNodePositions(heapArray.length);
+                
+                // Clear container
+                treeContainer.innerHTML = '';
+
+                // Draw edges first
+                for (let i = 0; i < heapArray.length; i++) {
+                    const leftChild = 2 * i + 1;
+                    const rightChild = 2 * i + 2;
+
+                    if (leftChild < heapArray.length) {
+                        this.drawEdge(treeContainer, positions[i], positions[leftChild], step, i, leftChild);
+                    }
+                    if (rightChild < heapArray.length) {
+                        this.drawEdge(treeContainer, positions[i], positions[rightChild], step, i, rightChild);
+                    }
+                }
+
+                // Draw nodes
+                heapArray.forEach((value, index) => {
+                    const node = document.createElement('div');
+                    node.className = 'tree-node';
+                    node.textContent = value;
+                    
+                    // Apply styles based on current state
+                    if (step.root === index) node.classList.add('root');
+                    else if (step.comparing.includes(index)) node.classList.add('comparing');
+                    else if (step.parent === index) node.classList.add('parent');
+                    else if (step.children.includes(index)) node.classList.add('child');
+                    else if (step.heapifying === index) node.classList.add('heapifying');
+                    else if (step.swapping.includes(index)) node.classList.add('swapping');
+                    else if (step.sorted.includes(index)) node.classList.add('sorted');
+                    else node.classList.add('default');
+
+                    const pos = positions[index];
+                    node.style.left = pos.x + 'px';
+                    node.style.top = pos.y + 'px';
+                    
+                    treeContainer.appendChild(node);
+                });
+            }
+
+            calculateNodePositions(nodeCount) {
+                const positions = [];
+                const containerWidth = 400;
+                const containerHeight = 220;
+                const levels = Math.ceil(Math.log2(nodeCount + 1));
+                const levelHeight = containerHeight / (levels + 1);
+
+                for (let i = 0; i < nodeCount; i++) {
+                    const level = Math.floor(Math.log2(i + 1));
+                    const positionInLevel = i - (Math.pow(2, level) - 1);
+                    const nodesInLevel = Math.pow(2, level);
+                    const levelWidth = containerWidth / (nodesInLevel + 1);
+                    
+                    positions.push({
+                        x: levelWidth * (positionInLevel + 1) - 20, // -20 for centering (node width/2)
+                        y: levelHeight * (level + 1) - 20 // -20 for centering (node height/2)
+                    });
+                }
+
+                return positions;
+            }
+
+            drawEdge(container, parentPos, childPos, step, parentIndex, childIndex) {
+                const edge = document.createElement('div');
+                edge.className = 'tree-edge';
+                
+                // Highlight edge if nodes are being compared or one is being heapified
+                if ((step.comparing.includes(parentIndex) && step.comparing.includes(childIndex)) ||
+                    (step.parent === parentIndex && step.children.includes(childIndex)) ||
+                    (step.heapifying === parentIndex && step.children.includes(childIndex))) {
+                    edge.classList.add('highlighted');
+                }
+
+                const dx = childPos.x - parentPos.x;
+                const dy = childPos.y - parentPos.y;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+                edge.style.width = length + 'px';
+                edge.style.height = '2px';
+                edge.style.left = (parentPos.x + 20) + 'px'; // +20 for node center
+                edge.style.top = (parentPos.y + 20) + 'px'; // +20 for node center
+                edge.style.transformOrigin = '0 50%';
+                edge.style.transform = `rotate(${angle}deg)`;
+
+                container.appendChild(edge);
+            }
+
+            updateUI() {
+                const stepCounter = document.getElementById('stepCounter');
+                const stepDescription = document.getElementById('stepDescription');
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+
+                if (this.isGenerated && this.steps.length > 0) {
+                    stepCounter.textContent = `${this.currentStep + 1} / ${this.steps.length}`;
+                    stepDescription.textContent = this.steps[this.currentStep].description;
+                    
+                    prevBtn.disabled = this.currentStep === 0;
+                    nextBtn.disabled = this.currentStep === this.steps.length - 1;
+                } else {
+                    stepCounter.textContent = '0 / 0';
+                    stepDescription.textContent = 'Enter array values and click "Generate Array" to begin visualization';
+                    prevBtn.disabled = true;
+                    nextBtn.disabled = true;
+                }
+            }
+
+            nextStep() {
+                if (this.isGenerated && this.currentStep < this.steps.length - 1) {
+                    this.currentStep++;
+                    this.updateVisualization();
+                    this.updateUI();
+                }
+            }
+
+            previousStep() {
+                if (this.isGenerated && this.currentStep > 0) {
+                    this.currentStep--;
+                    this.updateVisualization();
+                    this.updateUI();
+                }
+            }
+
+            reset() {
+                this.currentStep = 0;
+                this.isGenerated = false;
+                this.steps = [];
+                this.array = [];
+                this.originalArray = [];
+                
+                document.getElementById('visualization').innerHTML = '';
+                document.getElementById('treeContainer').innerHTML = '';
+                this.updateUI();
+            }
+        }
+
+        const heapSort = new HeapSortVisualizer();
+    </script>
+
+
+</body></html>

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<!-- saved from url=(0065)https://codes.yalco.kr/ds-algorithm/hash-map/open-addressing.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hash Map Open Addressing Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 12px;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"], select {
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #dee2e6;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        .info-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 6px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-item h3 {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .info-item span {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .visualization {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            min-height: 400px;
+        }
+
+        .hash-table {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hash-slot {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #e1e8ed;
+            transition: all 0.5s ease;
+            min-height: 100px;
+            justify-content: center;
+        }
+
+        .hash-slot.occupied {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .hash-slot.probing {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            border-color: #feca57;
+            transform: scale(1.05);
+        }
+
+        .hash-slot.inserting {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+            border-color: #26de81;
+            transform: scale(1.1);
+        }
+
+        .hash-slot.conflict {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border-color: #ff6b6b;
+            transform: scale(1.05);
+        }
+
+        .slot-index {
+            font-size: 14px;
+            font-weight: 700;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .slot-content {
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .hash-slot.occupied .slot-index {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .empty-indicator {
+            color: #999;
+            font-style: italic;
+            font-size: 14px;
+        }
+
+        .step-info {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 10px;
+            border-radius: 15px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .step-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .step-info p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .probe-info {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            color: #495057;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .info-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .hash-table {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+            
+            input[type="text"], select {
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hash-table {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="control-panel">
+            <div class="input-group">
+                <label for="customInput">Custom Input</label>
+                <input type="text" id="customInput" placeholder="Enter key-value pairs (e.g., key1:value1,key2:value2)">
+            </div>
+            <button class="btn" id="insertBtn">Insert Custom</button>
+            <button class="btn" id="demoBtn">Run Demo (8 Elements)</button>
+            <button class="btn-secondary btn" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-item">
+                <h3>Data Structure</h3>
+                <span>Hash Map (Open Addressing)</span>
+            </div>
+            <div class="info-item">
+                <h3>Step</h3>
+                <span id="stepCounter">0 / 0</span>
+            </div>
+            <div class="info-item">
+                <h3>Time Complexity</h3>
+                <span>O(1) avg, O(n) worst</span>
+            </div>
+            <div class="info-item">
+                <h3>Space Complexity</h3>
+                <span>O(n)</span>
+            </div>
+            <div class="info-item">
+                <h3>Table Size</h3>
+                <span id="tableSize">12</span>
+            </div>
+            <div class="info-item">
+                <h3>Probing Method</h3>
+                <span>Linear Probing</span>
+            </div>
+        </div>
+
+        <div class="step-info">
+            <h3 id="stepTitle">Hash Map with Open Addressing</h3>
+            <p id="stepDescription">Hash map uses open addressing with linear probing to handle collisions. When a collision occurs, we probe the next available slot.</p>
+        </div>
+
+        <div class="visualization">
+            <div class="hash-table" id="hashTable"><div class="hash-slot" id="slot-0">
+                        <div class="slot-index">[0]</div>
+                        <div class="slot-content">
+                            <div class="empty-indicator">Empty</div>
+                        </div>
+                    </div><div class="hash-slot" id="slot-1">
+                        <div class="slot-index">[1]</div>
+                        <div class="slot-content">
+                            <div class="empty-indicator">Empty</div>
+                        </div>
+                    </div><div class="hash-slot" id="slot-2">
+                        <div class="slot-index">[2]</div>
+                        <div class="slot-content">
+                            <div class="empty-indicator">Empty</div>
+                        </div>
+                    </div><div class="hash-slot" id="slot-3">
+                        <div class="slot-index">[3]</div>
+                        <div class="slot-content">
+                            <div class="empty-indicator">Empty</div>
+                        </div>
+                    </div><div class="hash-slot" id="slot-4">
+                        <div class="slot-index">[4]</div>
+                        <div class="slot-content">
+                            <div class="empty-indicator">Empty</div>
+                        </div>
+                    </div><div class="hash-slot" id="slot-5">
+                        <div class="slot-index">[5]</div>
+                        <div class="slot-content">
+                            <div class="empty-indicator">Empty</div>
+                        </div>
+                    </div><div class="hash-slot" id="slot-6">
+                        <div class="slot-index">[6]</div>
+                        <div class="slot-content">
+                            <div class="empty-indicator">Empty</div>
+                        </div>
+                    </div><div class="hash-slot" id="slot-7">
+                        <div class="slot-index">[7]</div>
+                        <div class="slot-content">
+                            <div class="empty-indicator">Empty</div>
+                        </div>
+                    </div><div class="hash-slot" id="slot-8">
+                        <div class="slot-index">[8]</div>
+                        <div class="slot-content">
+                            <div class="empty-indicator">Empty</div>
+                        </div>
+                    </div><div class="hash-slot" id="slot-9">
+                        <div class="slot-index">[9]</div>
+                        <div class="slot-content">
+                            <div class="empty-indicator">Empty</div>
+                        </div>
+                    </div><div class="hash-slot" id="slot-10">
+                        <div class="slot-index">[10]</div>
+                        <div class="slot-content">
+                            <div class="empty-indicator">Empty</div>
+                        </div>
+                    </div><div class="hash-slot" id="slot-11">
+                        <div class="slot-index">[11]</div>
+                        <div class="slot-content">
+                            <div class="empty-indicator">Empty</div>
+                        </div>
+                    </div></div>
+        </div>
+
+        <div class="navigation">
+            <button class="btn-secondary btn" id="prevBtn" disabled="">Previous</button>
+            <button class="btn-secondary btn" id="nextBtn" disabled="">Next</button>
+        </div>
+    </div>
+
+    <script>
+        class OpenAddressingVisualizer {
+            constructor() {
+                this.tableSize = 12;
+                this.hashTable = Array(this.tableSize).fill(null);
+                this.steps = [];
+                this.currentStep = 0;
+                this.demoData = [
+                    { key: 5, value: 'apple' },      // 5 % 5 = 0
+                    { key: 12, value: 'banana' },    // 12 % 5 = 2
+                    { key: 7, value: 'cherry' },     // 7 % 5 = 2 (충돌, 다음 슬롯으로)
+                    { key: 23, value: 'date' },      // 23 % 5 = 3
+                    { key: 15, value: 'elderberry' }, // 15 % 5 = 0 (충돌, 다음 슬롯으로)
+                    { key: 8, value: 'fig' },        // 8 % 5 = 3 (충돌, 다음 슬롯으로)
+                    { key: 19, value: 'grape' },     // 19 % 5 = 4
+                    { key: 11, value: 'honeydew' }   // 11 % 5 = 1
+                ];
+                
+                this.initializeTable();
+                this.initializeEventListeners();
+            }
+
+            initializeTable() {
+                const tableContainer = document.getElementById('hashTable');
+                tableContainer.innerHTML = '';
+                
+                for (let i = 0; i < this.tableSize; i++) {
+                    const slot = document.createElement('div');
+                    slot.className = 'hash-slot';
+                    slot.id = `slot-${i}`;
+                    slot.innerHTML = `
+                        <div class="slot-index">[${i}]</div>
+                        <div class="slot-content">
+                            <div class="empty-indicator">Empty</div>
+                        </div>
+                    `;
+                    tableContainer.appendChild(slot);
+                }
+            }
+
+            initializeEventListeners() {
+                document.getElementById('insertBtn').addEventListener('click', () => this.handleCustomInsert());
+                document.getElementById('demoBtn').addEventListener('click', () => this.runDemo());
+                document.getElementById('resetBtn').addEventListener('click', () => this.reset());
+                document.getElementById('prevBtn').addEventListener('click', () => this.previousStep());
+                document.getElementById('nextBtn').addEventListener('click', () => this.nextStep());
+                
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowLeft') this.previousStep();
+                    if (e.key === 'ArrowRight') this.nextStep();
+                });
+
+                document.getElementById('customInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.handleCustomInsert();
+                });
+            }
+
+            hash(key) {
+                return key % 5;
+            }
+
+            findSlot(key, table) {
+                const hashValue = this.hash(key);
+                let slot = hashValue;
+                let probeCount = 0;
+                const probeSequence = [];
+
+                while (probeCount < this.tableSize) {
+                    probeSequence.push(slot);
+                    if (table[slot] === null) {
+                        return { slot, probeSequence, found: true };
+                    }
+                    slot = (slot + 1) % this.tableSize;
+                    probeCount++;
+                }
+
+                return { slot: -1, probeSequence, found: false };
+            }
+
+            handleCustomInsert() {
+                const input = document.getElementById('customInput').value.trim();
+                if (!input) return;
+
+                const pairs = input.split(',').map(pair => {
+                    const [key, value] = pair.split(':');
+                    return { key: parseInt(key.trim()), value: value.trim() };
+                });
+
+                if (pairs.some(pair => isNaN(pair.key) || !pair.value)) {
+                    alert('Please enter valid key-value pairs (e.g., 7:apple,12:banana)');
+                    return;
+                }
+
+                this.steps = [];
+                this.currentStep = 0;
+                this.generateSteps(pairs);
+                this.updateNavigationButtons();
+                this.reset();
+            }
+
+            runDemo() {
+                this.steps = [];
+                this.currentStep = 0;
+                this.generateSteps(this.demoData);
+                this.updateNavigationButtons();
+                this.reset();
+            }
+
+            generateSteps(data) {
+                this.steps = [];
+                const tempTable = Array(this.tableSize).fill(null);
+                
+                // Initial state
+                this.steps.push({
+                    type: 'initial',
+                    description: 'Hash map initialized with 12 slots using open addressing and linear probing.',
+                    table: [...tempTable],
+                    highlightSlots: [],
+                    probeInfo: ''
+                });
+
+                data.forEach((item, index) => {
+                    const hashValue = this.hash(item.key);
+                    
+                    // Show hash calculation
+                    this.steps.push({
+                        type: 'calculating',
+                        description: `Calculating hash for key ${item.key}: ${item.key} % 5 = ${hashValue}`,
+                        table: [...tempTable],
+                        highlightSlots: [hashValue],
+                        currentItem: item,
+                        probeInfo: `Initial hash: ${hashValue}`
+                    });
+
+                    // Find insertion slot with probing
+                    const { slot: insertionSlot, probeSequence } = this.findSlot(item.key, tempTable);
+
+                    if (probeSequence.length > 1) {
+                        // Show collision detection
+                        this.steps.push({
+                            type: 'collision',
+                            description: `Collision detected at slot ${hashValue}! Starting linear probing...`,
+                            table: [...tempTable],
+                            highlightSlots: [hashValue],
+                            currentItem: item,
+                            probeInfo: `Collision at slot ${hashValue}`,
+                            slotState: 'conflict'
+                        });
+
+                        // Show probing steps
+                        for (let i = 1; i < probeSequence.length; i++) {
+                            const probingSlot = probeSequence[i];
+                            const isLast = i === probeSequence.length - 1;
+                            
+                            this.steps.push({
+                                type: 'probing',
+                                description: `Probing slot ${probingSlot}... ${isLast ? 'Found empty slot!' : 'Occupied, continue probing.'}`,
+                                table: [...tempTable],
+                                highlightSlots: [probingSlot],
+                                currentItem: item,
+                                probeInfo: `Probe ${i}: (${hashValue} + ${i}) % 12 = ${probingSlot}`,
+                                slotState: isLast ? 'probing' : 'conflict'
+                            });
+                        }
+                    }
+
+                    // Insert element
+                    if (insertionSlot !== -1) {
+                        tempTable[insertionSlot] = item;
+                        this.steps.push({
+                            type: 'inserting',
+                            description: `Inserting ${item.key}:${item.value} into slot ${insertionSlot}${probeSequence.length > 1 ? ` after ${probeSequence.length - 1} probe(s)` : ''}`,
+                            table: [...tempTable],
+                            highlightSlots: [insertionSlot],
+                            currentItem: item,
+                            probeInfo: `Inserted at slot ${insertionSlot}`,
+                            slotState: 'inserting'
+                        });
+                    } else {
+                        // Table full
+                        this.steps.push({
+                            type: 'full',
+                            description: `Cannot insert ${item.key}:${item.value} - table is full!`,
+                            table: [...tempTable],
+                            highlightSlots: [],
+                            currentItem: item,
+                            probeInfo: 'Table full'
+                        });
+                    }
+                });
+
+                // Final state
+                this.steps.push({
+                    type: 'complete',
+                    description: 'All elements inserted using open addressing with linear probing.',
+                    table: [...tempTable],
+                    highlightSlots: [],
+                    probeInfo: 'Insertion complete'
+                });
+            }
+
+            executeStep() {
+                if (this.currentStep >= this.steps.length) return;
+
+                const step = this.steps[this.currentStep];
+                
+                // Update step info
+                document.getElementById('stepCounter').textContent = `${this.currentStep + 1} / ${this.steps.length}`;
+                document.getElementById('stepTitle').textContent = this.getStepTitle(step);
+                document.getElementById('stepDescription').textContent = step.description;
+
+                // Update visualization
+                this.updateVisualization(step);
+                this.updateNavigationButtons();
+            }
+
+            getStepTitle(step) {
+                switch (step.type) {
+                    case 'initial': return 'Hash Map Initialized';
+                    case 'calculating': return `Calculating Hash Value (${step.currentItem ? step.currentItem.key + ':' + step.currentItem.value : ''})`;
+                    case 'collision': return `Collision Detected (${step.currentItem ? step.currentItem.key + ':' + step.currentItem.value : ''})`;
+                    case 'probing': return `Linear Probing (${step.currentItem ? step.currentItem.key + ':' + step.currentItem.value : ''})`;
+                    case 'inserting': return `Inserting Element (${step.currentItem ? step.currentItem.key + ':' + step.currentItem.value : ''})`;
+                    case 'full': return `Table Full (${step.currentItem ? step.currentItem.key + ':' + step.currentItem.value : ''})`;
+                    case 'complete': return 'Insertion Complete';
+                    default: return 'Hash Map with Open Addressing';
+                }
+            }
+
+            updateVisualization(step) {
+                // Reset all slots
+                for (let i = 0; i < this.tableSize; i++) {
+                    const slot = document.getElementById(`slot-${i}`);
+                    slot.className = 'hash-slot';
+                    
+                    const content = step.table[i];
+                    const contentDiv = slot.querySelector('.slot-content');
+                    
+                    if (content === null) {
+                        contentDiv.innerHTML = '<div class="empty-indicator">Empty</div>';
+                    } else {
+                        contentDiv.innerHTML = `${content.key}:${content.value}`;
+                        slot.classList.add('occupied');
+                    }
+                }
+
+                // Apply highlighting and states
+                step.highlightSlots.forEach(slotIndex => {
+                    const slot = document.getElementById(`slot-${slotIndex}`);
+                    if (step.slotState) {
+                        slot.classList.add(step.slotState);
+                    } else {
+                        slot.classList.add('probing');
+                    }
+                });
+            }
+
+            previousStep() {
+                if (this.currentStep > 0) {
+                    this.currentStep--;
+                    this.executeStep();
+                }
+            }
+
+            nextStep() {
+                if (this.currentStep < this.steps.length - 1) {
+                    this.currentStep++;
+                    this.executeStep();
+                }
+            }
+
+            updateNavigationButtons() {
+                document.getElementById('prevBtn').disabled = this.currentStep === 0;
+                document.getElementById('nextBtn').disabled = this.currentStep >= this.steps.length - 1;
+            }
+
+            reset() {
+                this.hashTable = Array(this.tableSize).fill(null);
+                this.currentStep = 0;
+                this.initializeTable();
+                
+                if (this.steps.length > 0) {
+                    this.executeStep();
+                } else {
+                    document.getElementById('stepCounter').textContent = '0 / 0';
+                    document.getElementById('stepTitle').textContent = 'Hash Map with Open Addressing';
+                    document.getElementById('stepDescription').textContent = 'Hash map uses open addressing with linear probing to handle collisions. When a collision occurs, we probe the next available slot.';
+                }
+                
+                this.updateNavigationButtons();
+            }
+        }
+
+        // Initialize the visualizer when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new OpenAddressingVisualizer();
+        });
+    </script>
+
+
+</body></html>

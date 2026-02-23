@@ -1,0 +1,20 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local / env
+.env
+.env.local
+
+# Optional: archive if you don't want it in repo
+# archive/

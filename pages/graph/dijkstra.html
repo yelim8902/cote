@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<!-- saved from url=(0055)https://codes.yalco.kr/ds-algorithm/graph/dijkstra.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>다익스트라 시각화 | 자료구조 시각화</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="number"], select {
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1d4ed8;
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(29, 78, 216, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #dee2e6;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .info-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-item h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .info-item .value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .visualization {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .graph-container {
+            width: 100%;
+            height: 350px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vertex {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .vertex.source {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+            transform: scale(1.2);
+        }
+
+        .vertex.visited {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+        }
+
+        .vertex.current {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            transform: scale(1.3);
+        }
+
+        .edge {
+            position: absolute;
+            height: 3px;
+            background: #dee2e6;
+            transform-origin: left center;
+            z-index: 1;
+            transition: all 0.5s ease;
+        }
+
+        .edge.active {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            height: 4px;
+        }
+
+        .edge.shortest-path {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+            height: 5px;
+        }
+
+        .edge-weight {
+            position: absolute;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 15px;
+            padding: 4px 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            z-index: 5;
+            transition: all 0.5s ease;
+        }
+
+        .edge-weight.active {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+            color: #ff6b6b;
+        }
+
+        .distance-label {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .distance-label.updated {
+            border-color: #feca57;
+            background: #fffaf0;
+            color: #feca57;
+        }
+
+        .step-description {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #495057;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .navigation {
+            display: none;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .shortest-paths {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .shortest-paths h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .path-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .path-item {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+        }
+
+        .path-route {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .path-distance {
+            font-weight: 700;
+            color: #26de81;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            color: #1d4ed8;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .back-link:hover { color: #2563eb; }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .input-group {
+                width: 100%;
+            }
+            
+            .info-panel {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .vertex {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../../index.html" class="back-link">← 메인으로</a>
+        <div class="control-panel">
+            <div class="input-group">
+                <label for="sourceVertex">Source Vertex</label>
+                <select id="sourceVertex">
+                    <option value="0">A</option>
+                    <option value="1">B</option>
+                    <option value="2">C</option>
+                    <option value="3">D</option>
+                    <option value="4">E</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="nodeSpacing">Node Spacing</label>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="btn btn-secondary" id="decreaseSpacing" style="padding: 8px 12px; min-width: auto;">←</button>
+                    <span id="spacingValue" style="font-weight: 600; min-width: 40px; text-align: center;">1.5x</span>
+                    <button class="btn btn-secondary" id="increaseSpacing" style="padding: 8px 12px; min-width: auto;">→</button>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="startBtn">Start Algorithm</button>
+            <button class="btn btn-secondary" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-item">
+                <h3>Algorithm</h3>
+                <div class="value">Dijkstra's</div>
+            </div>
+            <div class="info-item">
+                <h3>Step</h3>
+                <div class="value" id="stepCounter">0 / 0</div>
+            </div>
+            <div class="info-item">
+                <h3>Time Complexity</h3>
+                <div class="value">O(V²)</div>
+            </div>
+            <div class="info-item">
+                <h3>Space Complexity</h3>
+                <div class="value">O(V)</div>
+            </div>
+        </div>
+
+        <div class="step-description" id="stepDescription">
+            Select a source vertex and click "Start Algorithm" to begin finding shortest paths
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" disabled="">Previous</button>
+            <button class="btn btn-secondary" id="nextBtn" disabled="">Next</button>
+        </div>
+
+        <div class="visualization">
+            <div class="graph-container" id="graphContainer"><div class="edge" id="edge-0-1" style="left: 25px; top: 112.5px; width: 309.233px; transform: rotate(-14.0362deg);"></div><div class="edge-weight" id="weight-0-1" style="left: 165px; top: 65px;">4</div><div class="edge" id="edge-0-2" style="left: 25px; top: 112.5px; width: 212.132px; transform: rotate(45deg);"></div><div class="edge-weight" id="weight-0-2" style="left: 90px; top: 177.5px;">2</div><div class="edge" id="edge-0-4" style="left: 25px; top: 112.5px; width: 600px; transform: rotate(0deg);"></div><div class="edge-weight" id="weight-0-4" style="left: 315px; top: 102.5px;">7</div><div class="edge" id="edge-1-2" style="left: 325px; top: 37.5px; width: 270.416px; transform: rotate(123.69deg);"></div><div class="edge-weight" id="weight-1-2" style="left: 240px; top: 140px;">1</div><div class="edge" id="edge-1-3" style="left: 325px; top: 37.5px; width: 270.416px; transform: rotate(56.3099deg);"></div><div class="edge-weight" id="weight-1-3" style="left: 390px; top: 140px;">5</div><div class="edge" id="edge-2-3" style="left: 175px; top: 262.5px; width: 300px; transform: rotate(0deg);"></div><div class="edge-weight" id="weight-2-3" style="left: 315px; top: 252.5px;">8</div><div class="edge" id="edge-2-4" style="left: 175px; top: 262.5px; width: 474.342px; transform: rotate(-18.4349deg);"></div><div class="edge-weight" id="weight-2-4" style="left: 390px; top: 177.5px;">10</div><div class="edge" id="edge-3-4" style="left: 475px; top: 262.5px; width: 212.132px; transform: rotate(-45deg);"></div><div class="edge-weight" id="weight-3-4" style="left: 540px; top: 177.5px;">2</div><div class="vertex" id="vertex-0" style="left: 0px; top: 87.5px;">A<div class="distance-label" id="distance-0">∞</div></div><div class="vertex" id="vertex-1" style="left: 300px; top: 12.5px;">B<div class="distance-label" id="distance-1">∞</div></div><div class="vertex" id="vertex-2" style="left: 150px; top: 237.5px;">C<div class="distance-label" id="distance-2">∞</div></div><div class="vertex" id="vertex-3" style="left: 450px; top: 237.5px;">D<div class="distance-label" id="distance-3">∞</div></div><div class="vertex" id="vertex-4" style="left: 600px; top: 87.5px;">E<div class="distance-label" id="distance-4">∞</div></div></div>
+        </div>
+
+        <div class="shortest-paths" id="shortestPaths" style="display: none;">
+            <h3>Shortest Paths from Source</h3>
+            <div class="path-list" id="pathList"></div>
+        </div>
+    </div>
+
+    <script>
+        class DijkstraVisualizer {
+            constructor() {
+                this.graph = [
+                    [0, 4, 0, 0, 0],
+                    [4, 0, 8, 0, 0],
+                    [0, 8, 0, 7, 0],
+                    [0, 0, 7, 0, 9],
+                    [0, 0, 0, 9, 0]
+                ];
+                
+                // Add more edges for better visualization
+                this.graph[0][1] = 4; this.graph[1][0] = 4;
+                this.graph[0][2] = 2; this.graph[2][0] = 2;
+                this.graph[1][2] = 1; this.graph[2][1] = 1;
+                this.graph[1][3] = 5; this.graph[3][1] = 5;
+                this.graph[2][3] = 8; this.graph[3][2] = 8;
+                this.graph[2][4] = 10; this.graph[4][2] = 10;
+                this.graph[3][4] = 2; this.graph[4][3] = 2;
+                this.graph[0][4] = 7; this.graph[4][0] = 7;
+
+                this.vertices = 5;
+                this.vertexLabels = ['A', 'B', 'C', 'D', 'E'];
+                this.sourceVertex = 0;
+                this.steps = [];
+                this.currentStep = 0;
+                this.isRunning = false;
+                this.distances = [];
+                this.previous = [];
+                this.visited = [];
+                this.nodeSpacing = 1.5; // Default spacing multiplier
+
+                this.initializeEventListeners();
+                this.createGraph();
+                this.updateUI();
+            }
+
+            initializeEventListeners() {
+                document.getElementById('startBtn').addEventListener('click', () => this.startAlgorithm());
+                document.getElementById('resetBtn').addEventListener('click', () => this.reset());
+                document.getElementById('prevBtn').addEventListener('click', () => this.previousStep());
+                document.getElementById('nextBtn').addEventListener('click', () => this.nextStep());
+                document.getElementById('sourceVertex').addEventListener('change', (e) => {
+                    this.sourceVertex = parseInt(e.target.value);
+                    this.reset();
+                });
+
+                // Node spacing controls
+                document.getElementById('increaseSpacing').addEventListener('click', () => {
+                    this.nodeSpacing = Math.min(2.0, this.nodeSpacing + 0.1);
+                    this.updateSpacingDisplay();
+                    this.createGraph();
+                    if (this.isRunning) this.visualizeStep();
+                });
+
+                document.getElementById('decreaseSpacing').addEventListener('click', () => {
+                    this.nodeSpacing = Math.max(0.5, this.nodeSpacing - 0.1);
+                    this.updateSpacingDisplay();
+                    this.createGraph();
+                    if (this.isRunning) this.visualizeStep();
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (this.isRunning) {
+                        if (e.key === 'ArrowLeft') this.previousStep();
+                        if (e.key === 'ArrowRight') this.nextStep();
+                    }
+                    // Allow spacing adjustment with keyboard even when not running
+                    if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        this.nodeSpacing = Math.min(2.0, this.nodeSpacing + 0.1);
+                        this.updateSpacingDisplay();
+                        this.createGraph();
+                        if (this.isRunning) this.visualizeStep();
+                    }
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        this.nodeSpacing = Math.max(0.5, this.nodeSpacing - 0.1);
+                        this.updateSpacingDisplay();
+                        this.createGraph();
+                        if (this.isRunning) this.visualizeStep();
+                    }
+                });
+            }
+
+            createGraph() {
+                const container = document.getElementById('graphContainer');
+                container.innerHTML = '';
+
+                // Base vertex positions
+                const basePositions = [
+                    { x: 100, y: 100 }, // A
+                    { x: 300, y: 50 },  // B
+                    { x: 200, y: 200 }, // C
+                    { x: 400, y: 200 }, // D
+                    { x: 500, y: 100 }  // E
+                ];
+
+                // Calculate center point
+                const centerX = 300;
+                const centerY = 125;
+
+                // Apply spacing multiplier relative to center
+                const positions = basePositions.map(pos => ({
+                    x: centerX + (pos.x - centerX) * this.nodeSpacing,
+                    y: centerY + (pos.y - centerY) * this.nodeSpacing
+                }));
+
+                // Create edges first (so they appear behind vertices)
+                for (let i = 0; i < this.vertices; i++) {
+                    for (let j = i + 1; j < this.vertices; j++) {
+                        if (this.graph[i][j] > 0) {
+                            this.createEdge(i, j, positions[i], positions[j], this.graph[i][j]);
+                        }
+                    }
+                }
+
+                // Create vertices
+                for (let i = 0; i < this.vertices; i++) {
+                    this.createVertex(i, positions[i]);
+                }
+            }
+
+            createVertex(index, position) {
+                const vertex = document.createElement('div');
+                vertex.className = 'vertex';
+                vertex.id = `vertex-${index}`;
+                vertex.style.left = `${position.x}px`;
+                vertex.style.top = `${position.y}px`;
+                vertex.textContent = this.vertexLabels[index];
+
+                const distanceLabel = document.createElement('div');
+                distanceLabel.className = 'distance-label';
+                distanceLabel.id = `distance-${index}`;
+                distanceLabel.textContent = '∞';
+                vertex.appendChild(distanceLabel);
+
+                document.getElementById('graphContainer').appendChild(vertex);
+            }
+
+            createEdge(from, to, pos1, pos2, weight) {
+                const edge = document.createElement('div');
+                edge.className = 'edge';
+                edge.id = `edge-${from}-${to}`;
+
+                const dx = pos2.x - pos1.x;
+                const dy = pos2.y - pos1.y;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+                edge.style.left = `${pos1.x + 25}px`;
+                edge.style.top = `${pos1.y + 25}px`;
+                edge.style.width = `${length}px`;
+                edge.style.transform = `rotate(${angle}deg)`;
+
+                const weightLabel = document.createElement('div');
+                weightLabel.className = 'edge-weight';
+                weightLabel.id = `weight-${from}-${to}`;
+                weightLabel.textContent = weight;
+                weightLabel.style.left = `${pos1.x + dx/2 + 15}px`;
+                weightLabel.style.top = `${pos1.y + dy/2 + 15}px`;
+
+                document.getElementById('graphContainer').appendChild(edge);
+                document.getElementById('graphContainer').appendChild(weightLabel);
+            }
+
+            updateSpacingDisplay() {
+                document.getElementById('spacingValue').textContent = `${this.nodeSpacing.toFixed(1)}x`;
+            }
+
+            startAlgorithm() {
+                this.reset();
+                this.isRunning = true;
+                this.runDijkstra();
+                this.updateUI();
+            }
+
+            runDijkstra() {
+                this.distances = new Array(this.vertices).fill(Infinity);
+                this.previous = new Array(this.vertices).fill(-1);
+                this.visited = new Array(this.vertices).fill(false);
+                this.distances[this.sourceVertex] = 0;
+
+                this.steps = [];
+                this.steps.push({
+                    type: 'init',
+                    description: `Initialize: Set distance to source vertex ${this.vertexLabels[this.sourceVertex]} = 0, all others = ∞`,
+                    distances: [...this.distances],
+                    visited: [...this.visited],
+                    current: this.sourceVertex
+                });
+
+                const unvisited = new Set();
+                for (let i = 0; i < this.vertices; i++) {
+                    unvisited.add(i);
+                }
+
+                while (unvisited.size > 0) {
+                    // Find vertex with minimum distance
+                    let current = -1;
+                    let minDistance = Infinity;
+                    for (let vertex of unvisited) {
+                        if (this.distances[vertex] < minDistance) {
+                            minDistance = this.distances[vertex];
+                            current = vertex;
+                        }
+                    }
+
+                    if (current === -1 || this.distances[current] === Infinity) break;
+
+                    this.steps.push({
+                        type: 'select',
+                        description: `Select vertex ${this.vertexLabels[current]} with minimum distance (${this.distances[current]})`,
+                        distances: [...this.distances],
+                        visited: [...this.visited],
+                        current: current
+                    });
+
+                    unvisited.delete(current);
+                    this.visited[current] = true;
+
+                    // Update distances to neighbors
+                    for (let neighbor = 0; neighbor < this.vertices; neighbor++) {
+                        if (this.graph[current][neighbor] > 0 && !this.visited[neighbor]) {
+                            const newDistance = this.distances[current] + this.graph[current][neighbor];
+                            
+                            this.steps.push({
+                                type: 'examine',
+                                description: `Examine edge ${this.vertexLabels[current]} → ${this.vertexLabels[neighbor]}: ${this.distances[current]} + ${this.graph[current][neighbor]} = ${newDistance}`,
+                                distances: [...this.distances],
+                                visited: [...this.visited],
+                                current: current,
+                                examining: neighbor,
+                                edge: [current, neighbor]
+                            });
+
+                            if (newDistance < this.distances[neighbor]) {
+                                this.distances[neighbor] = newDistance;
+                                this.previous[neighbor] = current;
+                                
+                                this.steps.push({
+                                    type: 'update',
+                                    description: `Update distance to ${this.vertexLabels[neighbor]}: ${newDistance} < previous distance, update!`,
+                                    distances: [...this.distances],
+                                    visited: [...this.visited],
+                                    current: current,
+                                    updated: neighbor
+                                });
+                            } else {
+                                this.steps.push({
+                                    type: 'no-update',
+                                    description: `No update needed: ${newDistance} ≥ current distance to ${this.vertexLabels[neighbor]}`,
+                                    distances: [...this.distances],
+                                    visited: [...this.visited],
+                                    current: current
+                                });
+                            }
+                        }
+                    }
+
+                    this.steps.push({
+                        type: 'mark-visited',
+                        description: `Mark vertex ${this.vertexLabels[current]} as visited`,
+                        distances: [...this.distances],
+                        visited: [...this.visited],
+                        current: current
+                    });
+                }
+
+                this.steps.push({
+                    type: 'complete',
+                    description: 'Algorithm complete! Shortest paths found to all reachable vertices',
+                    distances: [...this.distances],
+                    visited: [...this.visited],
+                    current: -1
+                });
+
+                this.showShortestPaths();
+            }
+
+            showShortestPaths() {
+                const pathsContainer = document.getElementById('shortestPaths');
+                const pathList = document.getElementById('pathList');
+                pathList.innerHTML = '';
+
+                for (let i = 0; i < this.vertices; i++) {
+                    if (i === this.sourceVertex) continue;
+
+                    const pathItem = document.createElement('div');
+                    pathItem.className = 'path-item';
+
+                    const route = this.reconstructPath(i);
+                    const routeText = route.length > 0 ? route.join(' → ') : 'No path';
+                    const distance = this.distances[i] === Infinity ? '∞' : this.distances[i];
+
+                    pathItem.innerHTML = `
+                        <span class="path-route">${this.vertexLabels[this.sourceVertex]} → ${this.vertexLabels[i]}: ${routeText}</span>
+                        <span class="path-distance">${distance}</span>
+                    `;
+
+                    pathList.appendChild(pathItem);
+                }
+
+                pathsContainer.style.display = 'block';
+            }
+
+            reconstructPath(target) {
+                const path = [];
+                let current = target;
+                
+                while (current !== -1 && this.distances[current] !== Infinity) {
+                    path.unshift(this.vertexLabels[current]);
+                    current = this.previous[current];
+                }
+
+                return path.length > 1 ? path : [];
+            }
+
+            nextStep() {
+                if (this.currentStep < this.steps.length - 1) {
+                    this.currentStep++;
+                    this.visualizeStep();
+                    this.updateUI();
+                }
+            }
+
+            previousStep() {
+                if (this.currentStep > 0) {
+                    this.currentStep--;
+                    this.visualizeStep();
+                    this.updateUI();
+                }
+            }
+
+            visualizeStep() {
+                const step = this.steps[this.currentStep];
+                
+                // Reset all visual states
+                document.querySelectorAll('.vertex').forEach(v => {
+                    v.className = 'vertex';
+                    if (parseInt(v.id.split('-')[1]) === this.sourceVertex) {
+                        v.classList.add('source');
+                    }
+                });
+                
+                document.querySelectorAll('.edge').forEach(e => {
+                    e.className = 'edge';
+                });
+                
+                document.querySelectorAll('.edge-weight').forEach(w => {
+                    w.className = 'edge-weight';
+                });
+
+                document.querySelectorAll('.distance-label').forEach(l => {
+                    l.className = 'distance-label';
+                });
+
+                // Update distance labels
+                step.distances.forEach((dist, i) => {
+                    const label = document.getElementById(`distance-${i}`);
+                    label.textContent = dist === Infinity ? '∞' : dist;
+                });
+
+                // Apply step-specific styles
+                if (step.current !== undefined && step.current !== -1) {
+                    const currentVertex = document.getElementById(`vertex-${step.current}`);
+                    currentVertex.classList.add('current');
+                }
+
+                if (step.visited) {
+                    step.visited.forEach((isVisited, i) => {
+                        if (isVisited && i !== step.current) {
+                            document.getElementById(`vertex-${i}`).classList.add('visited');
+                        }
+                    });
+                }
+
+                if (step.examining !== undefined) {
+                    const examiningVertex = document.getElementById(`vertex-${step.examining}`);
+                    examiningVertex.style.transform = 'scale(1.1)';
+                }
+
+                if (step.updated !== undefined) {
+                    const updatedLabel = document.getElementById(`distance-${step.updated}`);
+                    updatedLabel.classList.add('updated');
+                }
+
+                if (step.edge) {
+                    const [from, to] = step.edge;
+                    const edge1 = document.getElementById(`edge-${from}-${to}`);
+                    const edge2 = document.getElementById(`edge-${to}-${from}`);
+                    const weight1 = document.getElementById(`weight-${from}-${to}`);
+                    const weight2 = document.getElementById(`weight-${to}-${from}`);
+                    
+                    if (edge1) edge1.classList.add('active');
+                    if (edge2) edge2.classList.add('active');
+                    if (weight1) weight1.classList.add('active');
+                    if (weight2) weight2.classList.add('active');
+                }
+
+                document.getElementById('stepDescription').textContent = step.description;
+            }
+
+            reset() {
+                this.isRunning = false;
+                this.currentStep = 0;
+                this.steps = [];
+                
+                document.querySelectorAll('.vertex').forEach(v => {
+                    v.className = 'vertex';
+                });
+                
+                document.querySelectorAll('.edge').forEach(e => {
+                    e.className = 'edge';
+                });
+                
+                document.querySelectorAll('.edge-weight').forEach(w => {
+                    w.className = 'edge-weight';
+                });
+
+                document.querySelectorAll('.distance-label').forEach((l, i) => {
+                    l.className = 'distance-label';
+                    l.textContent = '∞';
+                });
+
+                document.getElementById('stepDescription').textContent = 'Select a source vertex and click "Start Algorithm" to begin finding shortest paths';
+                document.getElementById('shortestPaths').style.display = 'none';
+                
+                this.updateUI();
+            }
+
+            updateUI() {
+                const stepCounter = document.getElementById('stepCounter');
+                stepCounter.textContent = `${this.currentStep} / ${Math.max(this.steps.length - 1, 0)}`;
+
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                const startBtn = document.getElementById('startBtn');
+
+                prevBtn.disabled = !this.isRunning || this.currentStep === 0;
+                nextBtn.disabled = !this.isRunning || this.currentStep >= this.steps.length - 1;
+                startBtn.disabled = this.isRunning;
+
+                // Update spacing display
+                this.updateSpacingDisplay();
+
+                if (this.isRunning && this.currentStep === 0) {
+                    this.visualizeStep();
+                }
+            }
+        }
+
+        // Initialize the visualizer when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new DijkstraVisualizer();
+        });
+    </script>
+
+
+</body></html>

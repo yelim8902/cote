@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)https://codes.yalco.kr/ds-algorithm/graph/dfs-bfs.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFS/BFS Visualization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            padding: 20px;
+            color: #333333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        select, input[type="text"] {
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #dee2e6;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .info-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-item h3 {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .info-item .value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .visualization {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            min-height: 400px;
+            display: grid;
+            grid-template-columns: 1fr 200px;
+            gap: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .graph-container {
+            width: 100%;
+            height: 350px;
+            position: relative;
+        }
+
+        .data-structure-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 20px;
+        }
+
+        .data-structure-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .data-structure-items {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            min-height: 200px;
+            width: 100%;
+        }
+
+        .data-structure-item {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 600;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .data-structure-item.highlight {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            border-color: #feca57;
+            transform: scale(1.05);
+        }
+
+        .node {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            border: 3px solid transparent;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .node.start {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+            border-color: #20bf6b;
+        }
+
+        .node.visited {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            transform: scale(1.1);
+        }
+
+        .node.current {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            transform: scale(1.15);
+            border-color: #feca57;
+        }
+
+        .node.neighbor {
+            background: linear-gradient(135deg, #ffa726, #fb8c00);
+            border-color: #fb8c00;
+            transform: scale(1.05);
+        }
+
+        .edge {
+            position: absolute;
+            height: 3px;
+            background: #dee2e6;
+            transform-origin: left center;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+
+        .edge.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 5px;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .step-info {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .step-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .step-info p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .traversal-order {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .traversal-node {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .help-text {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .control-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .info-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .visualization {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .data-structure-container {
+                order: -1;
+                flex-direction: row;
+                justify-content: center;
+                padding-top: 0;
+            }
+            
+            .data-structure-items {
+                flex-direction: row;
+                min-height: auto;
+                width: auto;
+                gap: 5px;
+            }
+            
+            .data-structure-item {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+            }
+            
+            .node {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            
+            select, input[type="text"] {
+                min-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="control-panel">
+            <div class="input-group">
+                <label for="algorithm">Algorithm</label>
+                <select id="algorithm">
+                    <option value="dfs">Depth-First Search (DFS)</option>
+                    <option value="bfs">Breadth-First Search (BFS)</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label for="startNode">Start Node</label>
+                <select id="startNode">
+                    <option value="0">A</option>
+                    <option value="1">B</option>
+                    <option value="2">C</option>
+                    <option value="3">D</option>
+                    <option value="4">E</option>
+                    <option value="5">F</option>
+                    <option value="6">G</option>
+                </select>
+            </div>
+            
+            <button class="btn-primary" onclick="startTraversal()">Start Traversal</button>
+            <button class="btn-secondary" onclick="resetVisualization()">Reset</button>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-item">
+                <h3>Algorithm</h3>
+                <div class="value" id="algorithmName">DFS</div>
+            </div>
+            <div class="info-item">
+                <h3>Step</h3>
+                <div class="value" id="currentStep">0 / 0</div>
+            </div>
+            <div class="info-item">
+                <h3>Time Complexity</h3>
+                <div class="value" id="timeComplexity">O(V + E)</div>
+            </div>
+            <div class="info-item">
+                <h3>Space Complexity</h3>
+                <div class="value" id="spaceComplexity">O(V)</div>
+            </div>
+        </div>
+
+        <div class="visualization">
+            <div class="graph-container" id="graphContainer"><div class="edge" id="edge-0" style="left: 175px; top: 55px; width: 128.062px; transform: rotate(141.34deg);"></div><div class="edge" id="edge-1" style="left: 175px; top: 55px; width: 128.062px; transform: rotate(38.6598deg);"></div><div class="edge" id="edge-2" style="left: 75px; top: 135px; width: 94.3398px; transform: rotate(57.9946deg);"></div><div class="edge" id="edge-3" style="left: 75px; top: 135px; width: 160px; transform: rotate(90deg);"></div><div class="edge" id="edge-4" style="left: 275px; top: 135px; width: 94.3398px; transform: rotate(122.005deg);"></div><div class="edge" id="edge-5" style="left: 275px; top: 135px; width: 160px; transform: rotate(90deg);"></div><div class="edge" id="edge-6" style="left: 125px; top: 215px; width: 94.3398px; transform: rotate(122.005deg);"></div><div class="edge" id="edge-7" style="left: 225px; top: 215px; width: 94.3398px; transform: rotate(57.9946deg);"></div><div class="node" id="node-0" style="left: 150px; top: 30px;">A</div><div class="node" id="node-1" style="left: 50px; top: 110px;">B</div><div class="node" id="node-2" style="left: 250px; top: 110px;">C</div><div class="node" id="node-3" style="left: 100px; top: 190px;">D</div><div class="node" id="node-4" style="left: 200px; top: 190px;">E</div><div class="node" id="node-5" style="left: 50px; top: 270px;">F</div><div class="node" id="node-6" style="left: 250px; top: 270px;">G</div></div>
+            <div class="data-structure-container">
+                <div class="data-structure-title" id="dataStructureTitle">Stack/Queue</div>
+                <div class="data-structure-items" id="dataStructureItems">
+                    <!-- Stack/Queue items will appear here -->
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="btn-secondary" id="prevBtn" onclick="previousStep()" disabled="">Previous</button>
+            <button class="btn-secondary" id="nextBtn" onclick="nextStep()" disabled="">Next</button>
+        </div>
+
+        <div class="step-info">
+            <h3 id="stepTitle">Select algorithm and start node, then click "Start Traversal"</h3>
+            <p id="stepDescription">Choose between DFS (uses stack/recursion) and BFS (uses queue) to explore the graph.</p>
+        </div>
+
+        <div class="traversal-order" id="traversalOrder">
+            <!-- Traversal order will be shown here -->
+        </div>
+
+        <div class="help-text">
+            Use arrow keys (← →) to navigate between steps
+        </div>
+    </div>
+
+    <script>
+        class GraphTraversalVisualizer {
+            constructor() {
+                this.graph = {
+                    nodes: [
+                        { id: 0, name: 'A', x: 150, y: 30 },
+                        { id: 1, name: 'B', x: 50, y: 110 },
+                        { id: 2, name: 'C', x: 250, y: 110 },
+                        { id: 3, name: 'D', x: 100, y: 190 },
+                        { id: 4, name: 'E', x: 200, y: 190 },
+                        { id: 5, name: 'F', x: 50, y: 270 },
+                        { id: 6, name: 'G', x: 250, y: 270 }
+                    ],
+                    edges: [
+                        { from: 0, to: 1 }, { from: 0, to: 2 },
+                        { from: 1, to: 3 }, { from: 1, to: 5 },
+                        { from: 2, to: 4 }, { from: 2, to: 6 },
+                        { from: 3, to: 5 }, { from: 4, to: 6 }
+                    ]
+                };
+                
+                this.adjacencyList = this.buildAdjacencyList();
+                this.traversalSteps = [];
+                this.currentStepIndex = 0;
+                this.isTraversalActive = false;
+                
+                this.initializeGraph();
+                this.initializeEventListeners();
+            }
+            
+            buildAdjacencyList() {
+                const adj = {};
+                this.graph.nodes.forEach(node => {
+                    adj[node.id] = [];
+                });
+                
+                this.graph.edges.forEach(edge => {
+                    adj[edge.from].push(edge.to);
+                    adj[edge.to].push(edge.from);
+                });
+                
+                return adj;
+            }
+            
+            initializeEventListeners() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        this.previousStep();
+                    } else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        this.nextStep();
+                    }
+                });
+                
+                document.getElementById('algorithm').addEventListener('change', (e) => {
+                    const algorithm = e.target.value;
+                    document.getElementById('algorithmName').textContent = algorithm.toUpperCase();
+                });
+            }
+            
+            initializeGraph() {
+                const container = document.getElementById('graphContainer');
+                container.innerHTML = '';
+                
+                // Create edges
+                this.graph.edges.forEach((edge, index) => {
+                    const fromNode = this.graph.nodes[edge.from];
+                    const toNode = this.graph.nodes[edge.to];
+                    
+                    const edgeElement = document.createElement('div');
+                    edgeElement.className = 'edge';
+                    edgeElement.id = `edge-${index}`;
+                    
+                    const dx = toNode.x - fromNode.x;
+                    const dy = toNode.y - fromNode.y;
+                    const length = Math.sqrt(dx * dx + dy * dy);
+                    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                    
+                    edgeElement.style.left = `${fromNode.x + 25}px`;
+                    edgeElement.style.top = `${fromNode.y + 25}px`;
+                    edgeElement.style.width = `${length}px`;
+                    edgeElement.style.transform = `rotate(${angle}deg)`;
+                    
+                    container.appendChild(edgeElement);
+                });
+                
+                // Create nodes
+                this.graph.nodes.forEach(node => {
+                    const nodeElement = document.createElement('div');
+                    nodeElement.className = 'node';
+                    nodeElement.id = `node-${node.id}`;
+                    nodeElement.style.left = `${node.x}px`;
+                    nodeElement.style.top = `${node.y}px`;
+                    nodeElement.textContent = node.name;
+                    
+                    container.appendChild(nodeElement);
+                });
+            }
+            
+            dfs(startNode) {
+                const visited = new Set();
+                const stack = [startNode];
+                const steps = [];
+                
+                steps.push({
+                    type: 'start',
+                    node: startNode,
+                    visited: new Set(),
+                    current: startNode,
+                    stack: [startNode],
+                    description: `Starting DFS from node ${this.graph.nodes[startNode].name}`
+                });
+                
+                while (stack.length > 0) {
+                    const current = stack.pop();
+                    
+                    if (!visited.has(current)) {
+                        visited.add(current);
+                        
+                        steps.push({
+                            type: 'visit',
+                            node: current,
+                            visited: new Set(visited),
+                            current: current,
+                            stack: [...stack],
+                            description: `Visiting node ${this.graph.nodes[current].name}`
+                        });
+                        
+                        // Add neighbors to stack (in reverse order for proper DFS)
+                        const neighbors = [...this.adjacencyList[current]].reverse();
+                        const addedNeighbors = [];
+                        for (const neighbor of neighbors) {
+                            if (!visited.has(neighbor)) {
+                                stack.push(neighbor);
+                                addedNeighbors.push(neighbor);
+                            }
+                        }
+                        
+                        if (addedNeighbors.length > 0) {
+                            steps.push({
+                                type: 'explore',
+                                node: current,
+                                visited: new Set(visited),
+                                current: current,
+                                stack: [...stack],
+                                neighbors: addedNeighbors,
+                                description: `Added unvisited neighbors to stack: ${addedNeighbors.map(n => this.graph.nodes[n].name).join(', ')}`
+                            });
+                        }
+                    }
+                }
+                
+                steps.push({
+                    type: 'complete',
+                    node: null,
+                    visited: new Set(visited),
+                    current: null,
+                    stack: [],
+                    description: 'DFS traversal completed'
+                });
+                
+                return steps;
+            }
+            
+            bfs(startNode) {
+                const visited = new Set();
+                const queue = [startNode];
+                const steps = [];
+                
+                steps.push({
+                    type: 'start',
+                    node: startNode,
+                    visited: new Set(),
+                    current: startNode,
+                    queue: [startNode],
+                    description: `Starting BFS from node ${this.graph.nodes[startNode].name}`
+                });
+                
+                while (queue.length > 0) {
+                    const current = queue.shift();
+                    
+                    if (!visited.has(current)) {
+                        visited.add(current);
+                        
+                        steps.push({
+                            type: 'visit',
+                            node: current,
+                            visited: new Set(visited),
+                            current: current,
+                            queue: [...queue],
+                            description: `Visiting node ${this.graph.nodes[current].name}`
+                        });
+                        
+                        // Add neighbors to queue
+                        for (const neighbor of this.adjacencyList[current]) {
+                            if (!visited.has(neighbor) && !queue.includes(neighbor)) {
+                                queue.push(neighbor);
+                            }
+                        }
+                        
+                        if (queue.length > 0) {
+                            steps.push({
+                                type: 'explore',
+                                node: current,
+                                visited: new Set(visited),
+                                current: current,
+                                queue: [...queue],
+                                description: `Added unvisited neighbors to queue: ${queue.map(n => this.graph.nodes[n].name).join(', ')}`
+                            });
+                        }
+                    }
+                }
+                
+                steps.push({
+                    type: 'complete',
+                    node: null,
+                    visited: new Set(visited),
+                    current: null,
+                    queue: [],
+                    description: 'BFS traversal completed'
+                });
+                
+                return steps;
+            }
+            
+            startTraversal() {
+                const algorithm = document.getElementById('algorithm').value;
+                const startNode = parseInt(document.getElementById('startNode').value);
+                
+                this.traversalSteps = algorithm === 'dfs' ? this.dfs(startNode) : this.bfs(startNode);
+                this.currentStepIndex = 0;
+                this.isTraversalActive = true;
+                
+                document.getElementById('currentStep').textContent = `1 / ${this.traversalSteps.length}`;
+                
+                // Show appropriate data structure
+                this.updateDataStructureDisplay(algorithm);
+                
+                this.updateNavigationButtons();
+                this.updateVisualization();
+            }
+            
+            resetVisualization() {
+                this.traversalSteps = [];
+                this.currentStepIndex = 0;
+                this.isTraversalActive = false;
+                
+                // Reset all nodes
+                this.graph.nodes.forEach(node => {
+                    const nodeElement = document.getElementById(`node-${node.id}`);
+                    nodeElement.className = 'node';
+                });
+                
+                // Reset all edges
+                this.graph.edges.forEach((edge, index) => {
+                    const edgeElement = document.getElementById(`edge-${index}`);
+                    edgeElement.className = 'edge';
+                });
+                
+                // Hide data structures
+                document.getElementById('dataStructureTitle').textContent = 'Stack/Queue';
+                document.getElementById('dataStructureItems').innerHTML = '';
+                
+                document.getElementById('currentStep').textContent = '0 / 0';
+                document.getElementById('stepTitle').textContent = 'Select algorithm and start node, then click "Start Traversal"';
+                document.getElementById('stepDescription').textContent = 'Choose between DFS (uses stack/recursion) and BFS (uses queue) to explore the graph.';
+                document.getElementById('traversalOrder').innerHTML = '';
+                
+                this.updateNavigationButtons();
+            }
+            
+            previousStep() {
+                if (this.currentStepIndex > 0) {
+                    this.currentStepIndex--;
+                    this.updateVisualization();
+                    this.updateNavigationButtons();
+                }
+            }
+            
+            nextStep() {
+                if (this.currentStepIndex < this.traversalSteps.length - 1) {
+                    this.currentStepIndex++;
+                    this.updateVisualization();
+                    this.updateNavigationButtons();
+                }
+            }
+            
+            updateVisualization() {
+                if (!this.isTraversalActive || this.traversalSteps.length === 0) return;
+                
+                const step = this.traversalSteps[this.currentStepIndex];
+                
+                // Reset all nodes
+                this.graph.nodes.forEach(node => {
+                    const nodeElement = document.getElementById(`node-${node.id}`);
+                    nodeElement.className = 'node';
+                });
+                
+                // Apply current state
+                if (step.visited) {
+                    step.visited.forEach(nodeId => {
+                        const nodeElement = document.getElementById(`node-${nodeId}`);
+                        nodeElement.classList.add('visited');
+                    });
+                }
+                
+                if (step.current !== null) {
+                    const currentElement = document.getElementById(`node-${step.current}`);
+                    currentElement.classList.add('current');
+                }
+                
+                if (step.type === 'start') {
+                    const startElement = document.getElementById(`node-${step.node}`);
+                    startElement.classList.add('start');
+                }
+                
+                // Update step information
+                document.getElementById('currentStep').textContent = `${this.currentStepIndex + 1} / ${this.traversalSteps.length}`;
+                document.getElementById('stepTitle').textContent = `Step ${this.currentStepIndex + 1}: ${step.type.charAt(0).toUpperCase() + step.type.slice(1)}`;
+                document.getElementById('stepDescription').textContent = step.description;
+                
+                // Update traversal order
+                this.updateTraversalOrder();
+                
+                // Update data structure visualization
+                this.updateDataStructureVisualization();
+            }
+            
+            updateDataStructureDisplay(algorithm) {
+                const title = document.getElementById('dataStructureTitle');
+                
+                if (algorithm === 'dfs') {
+                    title.textContent = 'Stack';
+                } else {
+                    title.textContent = 'Queue';
+                }
+            }
+            
+            updateDataStructureVisualization() {
+                if (!this.isTraversalActive || this.traversalSteps.length === 0) return;
+                
+                const step = this.traversalSteps[this.currentStepIndex];
+                const algorithm = document.getElementById('algorithm').value;
+                
+                if (algorithm === 'dfs' && step.stack !== undefined) {
+                    this.updateStackVisualization(step.stack);
+                } else if (algorithm === 'bfs' && step.queue !== undefined) {
+                    this.updateQueueVisualization(step.queue);
+                }
+            }
+            
+            updateStackVisualization(stack) {
+                const container = document.getElementById('dataStructureItems');
+                container.innerHTML = '';
+                
+                if (stack.length === 0) {
+                    const emptyItem = document.createElement('div');
+                    emptyItem.style.color = '#999';
+                    emptyItem.style.fontSize = '14px';
+                    emptyItem.style.padding = '10px';
+                    emptyItem.textContent = 'Empty';
+                    container.appendChild(emptyItem);
+                    return;
+                }
+                
+                // Stack grows upward (reverse order for visual)
+                const reversedStack = [...stack].reverse();
+                reversedStack.forEach((nodeId, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'data-structure-item';
+                    item.textContent = this.graph.nodes[nodeId].name;
+                    
+                    // Highlight the top item (last in original array)
+                    if (index === 0) {
+                        item.classList.add('highlight');
+                    }
+                    
+                    container.appendChild(item);
+                });
+            }
+            
+            updateQueueVisualization(queue) {
+                const container = document.getElementById('dataStructureItems');
+                container.innerHTML = '';
+                
+                if (queue.length === 0) {
+                    const emptyItem = document.createElement('div');
+                    emptyItem.style.color = '#999';
+                    emptyItem.style.fontSize = '14px';
+                    emptyItem.style.padding = '10px';
+                    emptyItem.textContent = 'Empty';
+                    container.appendChild(emptyItem);
+                    return;
+                }
+                
+                queue.forEach((nodeId, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'data-structure-item';
+                    item.textContent = this.graph.nodes[nodeId].name;
+                    
+                    // Highlight the front item
+                    if (index === 0) {
+                        item.classList.add('highlight');
+                    }
+                    
+                    container.appendChild(item);
+                });
+            }
+            
+            updateTraversalOrder() {
+                const orderContainer = document.getElementById('traversalOrder');
+                orderContainer.innerHTML = '';
+                
+                if (!this.isTraversalActive || this.traversalSteps.length === 0) return;
+                
+                const visitedNodes = [];
+                for (let i = 0; i <= this.currentStepIndex; i++) {
+                    const step = this.traversalSteps[i];
+                    if (step.type === 'visit' && !visitedNodes.includes(step.node)) {
+                        visitedNodes.push(step.node);
+                    }
+                }
+                
+                visitedNodes.forEach(nodeId => {
+                    const nodeElement = document.createElement('div');
+                    nodeElement.className = 'traversal-node';
+                    nodeElement.textContent = this.graph.nodes[nodeId].name;
+                    orderContainer.appendChild(nodeElement);
+                });
+            }
+            
+            updateNavigationButtons() {
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                
+                prevBtn.disabled = !this.isTraversalActive || this.currentStepIndex === 0;
+                nextBtn.disabled = !this.isTraversalActive || this.currentStepIndex === this.traversalSteps.length - 1;
+            }
+        }
+        
+        // Initialize the visualizer
+        const visualizer = new GraphTraversalVisualizer();
+        
+        // Global functions for button clicks
+        function startTraversal() {
+            visualizer.startTraversal();
+        }
+        
+        function resetVisualization() {
+            visualizer.resetVisualization();
+        }
+        
+        function previousStep() {
+            visualizer.previousStep();
+        }
+        
+        function nextStep() {
+            visualizer.nextStep();
+        }
+    </script>
+
+
+</body></html>
