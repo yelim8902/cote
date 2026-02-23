@@ -293,28 +293,28 @@
         <a href="../../index.html" class="back-link">← 메인으로</a>
         <div class="control-panel">
             <div class="input-group">
-                <label for="arrayInput">Array Values</label>
-                <input type="text" id="arrayInput" placeholder="e.g., 64, 34, 25, 12, 90, 22, 10, 77, 30" value="64, 34, 25, 12, 90, 22, 10, 77, 30">
+                <label for="arrayInput">배열 값</label>
+                <input type="text" id="arrayInput" placeholder="예: 64, 34, 25, 12, 90, 22, 10, 77, 30" value="64, 34, 25, 12, 90, 22, 10, 77, 30">
             </div>
-            <button class="btn btn-primary" onclick="quickSort.generateArray()">Generate Array</button>
-            <button class="btn btn-secondary" onclick="quickSort.reset()">Reset</button>
+            <button class="btn btn-primary" onclick="quickSort.generateArray()">배열 생성</button>
+            <button class="btn btn-secondary" onclick="quickSort.reset()">초기화</button>
         </div>
 
         <div class="info-panel">
             <div class="info-item">
-                <div class="info-label">Algorithm</div>
-                <div class="info-value">Quick Sort</div>
+                <div class="info-label">알고리즘</div>
+                <div class="info-value">퀵 정렬</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Step</div>
+                <div class="info-label">단계</div>
                 <div class="info-value" id="stepCounter">0 / 0</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Time Complexity</div>
+                <div class="info-label">시간 복잡도</div>
                 <div class="info-value">O(n log n)</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Space Complexity</div>
+                <div class="info-label">공간 복잡도</div>
                 <div class="info-value">O(log n)</div>
             </div>
         </div>
@@ -322,16 +322,16 @@
         <div class="visualization" id="visualization"></div>
 
         <div class="navigation">
-            <button class="btn btn-secondary" id="prevBtn" onclick="quickSort.previousStep()" disabled="">Previous</button>
-            <button class="btn btn-primary" id="nextBtn" onclick="quickSort.nextStep()" disabled="">Next</button>
+            <button class="btn btn-secondary" id="prevBtn" onclick="quickSort.previousStep()" disabled="">이전</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="quickSort.nextStep()" disabled="">다음</button>
         </div>
 
         <div class="step-info">
-            <div class="step-description" id="stepDescription">Enter array values and click "Generate Array" to begin visualization</div>
+            <div class="step-description" id="stepDescription">배열 값을 입력한 뒤 "배열 생성"을 눌러 시각화를 시작하세요</div>
         </div>
 
         <div class="help-text">
-            Use arrow keys (← →) to navigate between steps. Enter custom values or use the default array to start.
+            ← → 방향키로 단계를 이동할 수 있습니다. 값을 직접 입력하거나 기본 배열로 시작하세요.
         </div>
     </div>
 
@@ -407,7 +407,7 @@
                     greaterThanPivot: [],
                     swapping: [],
                     partitioned: [],
-                    description: `Starting Quick Sort with ${n} elements. We'll select a pivot and partition the array around it.`
+                    description: `퀵 정렬 시작: ${n}개 요소. 피벗을 선택하고 그 기준으로 나눕니다.`
                 });
 
                 this.quickSortRecursive(arr, 0, n - 1);
@@ -421,7 +421,7 @@
                     greaterThanPivot: [],
                     swapping: [],
                     partitioned: Array.from({length: n}, (_, k) => k),
-                    description: 'Quick Sort complete! All elements are now sorted in ascending order.'
+                    description: '퀵 정렬 완료! 모든 원소가 오름차순으로 정렬되었습니다.'
                 });
             }
 
@@ -438,7 +438,7 @@
                         greaterThanPivot: [],
                         swapping: [],
                         partitioned: [],
-                        description: `Sorting subarray from index ${low} to ${high}. Choosing pivot: ${arr[pivotIndex]} at index ${pivotIndex}.`
+                        description: `인덱스 ${low}~${high} 정렬. 피벗: ${arr[pivotIndex]} (인덱스 ${pivotIndex}).`
                     });
 
                     // Partition the array
@@ -453,7 +453,7 @@
                         greaterThanPivot: [],
                         swapping: [],
                         partitioned: [partitionIndex],
-                        description: `Partition complete! Pivot ${arr[partitionIndex]} is now at index ${partitionIndex}. All smaller elements are to the left, larger elements to the right.`
+                        description: `분할 완료. 피벗 ${arr[partitionIndex]}이(가) 인덱스 ${partitionIndex}에. 왼쪽은 더 작고 오른쪽은 더 큼.`
                     });
 
                     // Recursively sort left and right subarrays
@@ -476,7 +476,7 @@
                         greaterThanPivot: [],
                         swapping: [],
                         partitioned: [],
-                        description: `Comparing ${arr[j]} with pivot ${pivot}. ${arr[j] <= pivot ? 'Moving to left partition.' : 'Staying in right partition.'}`
+                        description: `비교: ${arr[j]}와 피벗 ${pivot}. ${arr[j] <= pivot ? '왼쪽 구간으로 이동.' : '오른쪽 구간에 유지.'}`
                     });
 
                     if (arr[j] <= pivot) {
@@ -492,7 +492,7 @@
                                 greaterThanPivot: [],
                                 swapping: [i, j],
                                 partitioned: [],
-                                description: `Swapping ${arr[i]} at index ${i} with ${arr[j]} at index ${j}.`
+                                description: `인덱스 ${i}의 ${arr[i]}와 인덱스 ${j}의 ${arr[j]} 교환.`
                             });
 
                             [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -506,7 +506,7 @@
                                 greaterThanPivot: Array.from({length: j - i}, (_, k) => i + 1 + k),
                                 swapping: [],
                                 partitioned: [],
-                                description: `Swapped! Left partition now has ${i + 1} elements ≤ pivot.`
+                                description: `교환 완료. 왼쪽 구간에 피벗 이하 원소 ${i + 1}개.`
                             });
                         } else {
                             // Show partitions without swap
@@ -518,7 +518,7 @@
                                 greaterThanPivot: Array.from({length: j - i}, (_, k) => i + 1 + k),
                                 swapping: [],
                                 partitioned: [],
-                                description: `Element ${arr[j]} ≤ pivot. Left partition now has ${i + 1} elements.`
+                                description: `${arr[j]} ≤ 피벗. 왼쪽 구간 원소 ${i + 1}개.`
                             });
                         }
                     } else {
@@ -531,7 +531,7 @@
                             greaterThanPivot: Array.from({length: j - i}, (_, k) => i + 1 + k),
                             swapping: [],
                             partitioned: [],
-                            description: `Element ${arr[j]} > pivot. Stays in right partition.`
+                            description: `${arr[j]} > 피벗. 오른쪽 구간에 유지.`
                         });
                     }
                 }
@@ -545,7 +545,7 @@
                     greaterThanPivot: [],
                     swapping: [i + 1, high],
                     partitioned: [],
-                    description: `Placing pivot ${pivot} at its correct position by swapping indices ${i + 1} and ${high}.`
+                    description: `피벗 ${pivot}을(를) 올바른 위치에 놓기: 인덱스 ${i + 1}과 ${high} 교환.`
                 });
 
                 [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
@@ -597,7 +597,7 @@
                     nextBtn.disabled = this.currentStep === this.steps.length - 1;
                 } else {
                     stepCounter.textContent = '0 / 0';
-                    stepDescription.textContent = 'Enter array values and click "Generate Array" to begin visualization';
+                    stepDescription.textContent = '배열 값을 입력한 뒤 "배열 생성"을 눌러 시각화를 시작하세요';
                     prevBtn.disabled = true;
                     nextBtn.disabled = true;
                 }

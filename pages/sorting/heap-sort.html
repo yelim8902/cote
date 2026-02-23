@@ -427,28 +427,28 @@
         <a href="../../index.html" class="back-link">← 메인으로</a>
         <div class="control-panel">
             <div class="input-group">
-                <label for="arrayInput">Array Values</label>
-                <input type="text" id="arrayInput" placeholder="e.g., 64, 34, 25, 12, 90, 22, 14" value="64, 34, 25, 12, 90, 22, 14">
+                <label for="arrayInput">배열 값</label>
+                <input type="text" id="arrayInput" placeholder="예: 64, 34, 25, 12, 90, 22, 14" value="64, 34, 25, 12, 90, 22, 14">
             </div>
-            <button class="btn btn-primary" onclick="heapSort.generateArray()">Generate Array</button>
-            <button class="btn btn-secondary" onclick="heapSort.reset()">Reset</button>
+            <button class="btn btn-primary" onclick="heapSort.generateArray()">배열 생성</button>
+            <button class="btn btn-secondary" onclick="heapSort.reset()">초기화</button>
         </div>
 
         <div class="info-panel">
             <div class="info-item">
-                <div class="info-label">Algorithm</div>
-                <div class="info-value">Heap Sort</div>
+                <div class="info-label">알고리즘</div>
+                <div class="info-value">힙 정렬</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Step</div>
+                <div class="info-label">단계</div>
                 <div class="info-value" id="stepCounter">0 / 0</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Time Complexity</div>
+                <div class="info-label">시간 복잡도</div>
                 <div class="info-value">O(n log n)</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Space Complexity</div>
+                <div class="info-label">공간 복잡도</div>
                 <div class="info-value">O(1)</div>
             </div>
         </div>
@@ -466,16 +466,16 @@
         </div>
 
         <div class="navigation">
-            <button class="btn btn-secondary" id="prevBtn" onclick="heapSort.previousStep()" disabled="">Previous</button>
-            <button class="btn btn-primary" id="nextBtn" onclick="heapSort.nextStep()" disabled="">Next</button>
+            <button class="btn btn-secondary" id="prevBtn" onclick="heapSort.previousStep()" disabled="">이전</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="heapSort.nextStep()" disabled="">다음</button>
         </div>
 
         <div class="step-info">
-            <div class="step-description" id="stepDescription">Enter array values and click "Generate Array" to begin visualization</div>
+            <div class="step-description" id="stepDescription">배열 값을 입력한 뒤 "배열 생성"을 눌러 시각화를 시작하세요</div>
         </div>
 
         <div class="help-text">
-            Use arrow keys (← →) to navigate between steps. Enter custom values or use the default array to start.
+            ← → 방향키로 단계를 이동할 수 있습니다. 값을 직접 입력하거나 기본 배열로 시작하세요.
         </div>
     </div>
 
@@ -553,7 +553,7 @@
                     swapping: [],
                     sorted: [],
                     heapSize: n,
-                    description: `Starting Heap Sort with ${n} elements. First, we'll build a max heap from the array.`
+                    description: `힙 정렬 시작: ${n}개 요소. 먼저 배열로 최대 힙을 만듭니다.`
                 });
 
                 // Build max heap (heapify)
@@ -571,7 +571,7 @@
                     swapping: [],
                     sorted: [],
                     heapSize: n,
-                    description: `Max heap built! Root element ${arr[0]} is the largest. Now we'll extract elements one by one.`
+                    description: `최대 힙 완성. 루트 ${arr[0]}이(가) 최댓값. 이제 하나씩 꺼냅니다.`
                 });
 
                 // Extract elements from heap one by one
@@ -587,7 +587,7 @@
                         swapping: [0, i],
                         sorted: Array.from({length: n - i - 1}, (_, k) => n - 1 - k),
                         heapSize: i + 1,
-                        description: `Extracting max element ${arr[0]}. Swapping root with last heap element at index ${i}.`
+                        description: `최댓값 ${arr[0]} 꺼냄. 루트와 힙의 마지막 원소(인덱스 ${i}) 교환.`
                     });
 
                     [arr[0], arr[i]] = [arr[i], arr[0]];
@@ -602,7 +602,7 @@
                         swapping: [],
                         sorted: Array.from({length: n - i}, (_, k) => n - 1 - k),
                         heapSize: i,
-                        description: `Element ${arr[i]} is now in its final position. Heap size reduced to ${i}.`
+                        description: `${arr[i]}이(가) 최종 위치에 놓임. 힙 크기 ${i}로 감소.`
                     });
 
                     // Heapify the reduced heap
@@ -622,7 +622,7 @@
                     swapping: [],
                     sorted: Array.from({length: n}, (_, k) => k),
                     heapSize: 0,
-                    description: 'Heap Sort complete! All elements are now sorted in ascending order.'
+                    description: '힙 정렬 완료! 모든 원소가 오름차순으로 정렬되었습니다.'
                 });
             }
 
@@ -642,7 +642,7 @@
                     swapping: [],
                     sorted: Array.from({length: arr.length - heapSize}, (_, k) => arr.length - 1 - k),
                     heapSize: heapSize,
-                    description: `${phase}: checking node ${arr[rootIndex]} at index ${rootIndex} with its children.`
+                    description: `${phase}: 인덱스 ${rootIndex}의 노드 ${arr[rootIndex]}과(와) 자식 비교 중.`
                 });
 
                 // Compare with left child
@@ -657,7 +657,7 @@
                         swapping: [],
                         sorted: Array.from({length: arr.length - heapSize}, (_, k) => arr.length - 1 - k),
                         heapSize: heapSize,
-                        description: `Comparing parent ${arr[rootIndex]} with left child ${arr[left]}. ${arr[left] > arr[largest] ? 'Left child is larger!' : 'Parent is larger or equal.'}`
+                        description: `부모 ${arr[rootIndex]}와 왼쪽 자식 ${arr[left]} 비교. ${arr[left] > arr[largest] ? '왼쪽 자식이 더 큼!' : '부모가 더 크거나 같음.'}`
                     });
 
                     if (arr[left] > arr[largest]) {
@@ -677,7 +677,7 @@
                         swapping: [],
                         sorted: Array.from({length: arr.length - heapSize}, (_, k) => arr.length - 1 - k),
                         heapSize: heapSize,
-                        description: `Comparing current largest ${arr[largest]} with right child ${arr[right]}. ${arr[right] > arr[largest] ? 'Right child is larger!' : 'Current largest is maintained.'}`
+                        description: `현재 최댓값 ${arr[largest]}와 오른쪽 자식 ${arr[right]} 비교. ${arr[right] > arr[largest] ? '오른쪽 자식이 더 큼!' : '현재 최댓값 유지.'}`
                     });
 
                     if (arr[right] > arr[largest]) {
@@ -697,7 +697,7 @@
                         swapping: [rootIndex, largest],
                         sorted: Array.from({length: arr.length - heapSize}, (_, k) => arr.length - 1 - k),
                         heapSize: heapSize,
-                        description: `Swapping ${arr[rootIndex]} at index ${rootIndex} with ${arr[largest]} at index ${largest} to maintain heap property.`
+                        description: `힙 성질 유지를 위해 인덱스 ${rootIndex}의 ${arr[rootIndex]}와 인덱스 ${largest}의 ${arr[largest]} 교환.`
                     });
 
                     [arr[rootIndex], arr[largest]] = [arr[largest], arr[rootIndex]];
@@ -715,7 +715,7 @@
                         swapping: [],
                         sorted: Array.from({length: arr.length - heapSize}, (_, k) => arr.length - 1 - k),
                         heapSize: heapSize,
-                        description: `Node ${arr[rootIndex]} at index ${rootIndex} is already in correct position. Heap property maintained.`
+                        description: `인덱스 ${rootIndex}의 노드 ${arr[rootIndex]}은(는) 이미 올바른 위치. 힙 성질 유지됨.`
                     });
                 }
             }
@@ -872,7 +872,7 @@
                     nextBtn.disabled = this.currentStep === this.steps.length - 1;
                 } else {
                     stepCounter.textContent = '0 / 0';
-                    stepDescription.textContent = 'Enter array values and click "Generate Array" to begin visualization';
+                    stepDescription.textContent = '배열 값을 입력한 뒤 "배열 생성"을 눌러 시각화를 시작하세요';
                     prevBtn.disabled = true;
                     nextBtn.disabled = true;
                 }

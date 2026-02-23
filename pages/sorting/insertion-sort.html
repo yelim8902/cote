@@ -270,28 +270,28 @@
         <a href="../../index.html" class="back-link">← 메인으로</a>
         <div class="control-panel">
             <div class="input-group">
-                <label for="arrayInput">Array Values</label>
-                <input type="text" id="arrayInput" placeholder="e.g., 64, 25, 34, 12, 90, 22, 14" value="64, 25, 34, 12, 90, 22, 14">
+                <label for="arrayInput">배열 값</label>
+                <input type="text" id="arrayInput" placeholder="예: 64, 25, 34, 12, 90, 22, 14" value="64, 25, 34, 12, 90, 22, 14">
             </div>
-            <button class="btn btn-primary" onclick="insertionSort.generateArray()">Generate Array</button>
-            <button class="btn btn-secondary" onclick="insertionSort.reset()">Reset</button>
+            <button class="btn btn-primary" onclick="insertionSort.generateArray()">배열 생성</button>
+            <button class="btn btn-secondary" onclick="insertionSort.reset()">초기화</button>
         </div>
 
         <div class="info-panel">
             <div class="info-item">
-                <div class="info-label">Algorithm</div>
-                <div class="info-value">Insertion Sort</div>
+                <div class="info-label">알고리즘</div>
+                <div class="info-value">삽입 정렬</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Step</div>
+                <div class="info-label">단계</div>
                 <div class="info-value" id="stepCounter">0 / 0</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Time Complexity</div>
+                <div class="info-label">시간 복잡도</div>
                 <div class="info-value">O(n²)</div>
             </div>
             <div class="info-item">
-                <div class="info-label">Space Complexity</div>
+                <div class="info-label">공간 복잡도</div>
                 <div class="info-value">O(1)</div>
             </div>
         </div>
@@ -299,16 +299,16 @@
         <div class="visualization" id="visualization"></div>
 
         <div class="navigation">
-            <button class="btn btn-secondary" id="prevBtn" onclick="insertionSort.previousStep()" disabled="">Previous</button>
-            <button class="btn btn-primary" id="nextBtn" onclick="insertionSort.nextStep()" disabled="">Next</button>
+            <button class="btn btn-secondary" id="prevBtn" onclick="insertionSort.previousStep()" disabled="">이전</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="insertionSort.nextStep()" disabled="">다음</button>
         </div>
 
         <div class="step-info">
-            <div class="step-description" id="stepDescription">Enter array values and click "Generate Array" to begin visualization</div>
+            <div class="step-description" id="stepDescription">배열 값을 입력한 뒤 "배열 생성"을 눌러 시각화를 시작하세요</div>
         </div>
 
         <div class="help-text">
-            Use arrow keys (← →) to navigate between steps. Enter custom values or use the default array to start.
+            ← → 방향키로 단계를 이동할 수 있습니다. 값을 직접 입력하거나 기본 배열로 시작하세요.
         </div>
     </div>
 
@@ -382,7 +382,7 @@
                     comparing: -1,
                     shifting: [],
                     sorted: [0],
-                    description: `Starting Insertion Sort with ${n} elements. The first element is considered sorted.`
+                    description: `삽입 정렬 시작: ${n}개 요소. 첫 원소는 정렬된 것으로 둡니다.`
                 });
 
                 for (let i = 1; i < n; i++) {
@@ -395,7 +395,7 @@
                         comparing: -1,
                         shifting: [],
                         sorted: Array.from({length: i}, (_, k) => k),
-                        description: `Pass ${i}: Picking key element ${key} at index ${i}. We'll insert it into the sorted portion.`
+                        description: `바퀴 ${i}: 키 ${key} (인덱스 ${i}). 정렬된 구간에 삽입할 위치를 찾습니다.`
                     });
 
                     let j = i - 1;
@@ -409,7 +409,7 @@
                             comparing: j,
                             shifting: [],
                             sorted: Array.from({length: i}, (_, k) => k),
-                            description: `Comparing key ${key} with ${arr[j]} at index ${j}. Since ${arr[j]} > ${key}, we need to shift ${arr[j]} right.`
+                            description: `키 ${key}와 인덱스 ${j}의 ${arr[j]} 비교. ${arr[j]} > ${key}이므로 ${arr[j]}를 오른쪽으로 한 칸 이동.`
                         });
 
                         // Show shifting
@@ -420,7 +420,7 @@
                             comparing: -1,
                             shifting: [j + 1],
                             sorted: Array.from({length: i}, (_, k) => k),
-                            description: `Shifted ${arr[j + 1]} from index ${j} to index ${j + 1}.`
+                            description: `${arr[j + 1]}을(를) 인덱스 ${j}에서 ${j + 1}(으)로 이동함.`
                         });
 
                         j--;
@@ -434,7 +434,7 @@
                             comparing: j,
                             shifting: [],
                             sorted: Array.from({length: i}, (_, k) => k),
-                            description: `Comparing key ${key} with ${arr[j]} at index ${j}. Since ${arr[j]} ≤ ${key}, we found the correct position.`
+                            description: `키 ${key}와 인덱스 ${j}의 ${arr[j]} 비교. ${arr[j]} ≤ ${key}이므로 삽입 위치를 찾음.`
                         });
                     }
 
@@ -446,7 +446,7 @@
                         comparing: -1,
                         shifting: [],
                         sorted: Array.from({length: i + 1}, (_, k) => k),
-                        description: `Inserted key ${key} at index ${j + 1}. The sorted portion now has ${i + 1} elements.`
+                        description: `키 ${key}을(를) 인덱스 ${j + 1}에 삽입. 정렬된 구간은 ${i + 1}개 원소.`
                     });
 
                     // Show final state of this pass
@@ -456,7 +456,7 @@
                         comparing: -1,
                         shifting: [],
                         sorted: Array.from({length: i + 1}, (_, k) => k),
-                        description: `Pass ${i} complete. Elements from index 0 to ${i} are now sorted.`
+                        description: `바퀴 ${i} 완료. 인덱스 0~${i}까지 정렬됨.`
                     });
                 }
 
@@ -467,7 +467,7 @@
                     comparing: -1,
                     shifting: [],
                     sorted: Array.from({length: n}, (_, k) => k),
-                    description: 'Insertion Sort complete! All elements are now sorted in ascending order.'
+                    description: '삽입 정렬 완료! 모든 원소가 오름차순으로 정렬되었습니다.'
                 });
             }
 
@@ -508,7 +508,7 @@
                     nextBtn.disabled = this.currentStep === this.steps.length - 1;
                 } else {
                     stepCounter.textContent = '0 / 0';
-                    stepDescription.textContent = 'Enter array values and click "Generate Array" to begin visualization';
+                    stepDescription.textContent = '배열 값을 입력한 뒤 "배열 생성"을 눌러 시각화를 시작하세요';
                     prevBtn.disabled = true;
                     nextBtn.disabled = true;
                 }

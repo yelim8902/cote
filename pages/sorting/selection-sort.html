@@ -382,7 +382,7 @@
                     minimum: -1,
                     comparing: -1,
                     sorted: [],
-                    description: `Starting Selection Sort with ${n} elements. We'll find the minimum element and place it at the beginning.`
+                    description: `선택 정렬 시작: ${n}개 요소. 최솟값을 찾아 앞쪽에 놓습니다.`
                 });
 
                 for (let i = 0; i < n - 1; i++) {
@@ -395,7 +395,7 @@
                         minimum: minIndex,
                         comparing: -1,
                         sorted: Array.from({length: i}, (_, k) => k),
-                        description: `Pass ${i + 1}: Starting from position ${i}. Current minimum is ${arr[minIndex]} at index ${minIndex}.`
+                        description: `바퀴 ${i + 1}: 위치 ${i}부터. 현재 최솟값은 ${arr[minIndex]} (인덱스 ${minIndex}).`
                     });
 
                     // Find minimum element in remaining unsorted array
@@ -407,7 +407,7 @@
                             minimum: minIndex,
                             comparing: j,
                             sorted: Array.from({length: i}, (_, k) => k),
-                            description: `Comparing ${arr[j]} with current minimum ${arr[minIndex]}. ${arr[j] < arr[minIndex] ? 'Found new minimum!' : 'Current minimum is still smaller.'}`
+                            description: `비교: ${arr[j]}와 현재 최솟값 ${arr[minIndex]}. ${arr[j] < arr[minIndex] ? '새 최솟값!' : '현재 최솟값이 더 작음.'}`
                         });
 
                         // Update minimum if found smaller element
@@ -419,7 +419,7 @@
                                 minimum: minIndex,
                                 comparing: -1,
                                 sorted: Array.from({length: i}, (_, k) => k),
-                                description: `New minimum found: ${arr[minIndex]} at index ${minIndex}.`
+                                description: `새 최솟값: ${arr[minIndex]} (인덱스 ${minIndex}).`
                             });
                         }
                     }
@@ -432,7 +432,7 @@
                             minimum: minIndex,
                             comparing: -1,
                             sorted: Array.from({length: i}, (_, k) => k),
-                            description: `Swapping ${arr[i]} at position ${i} with minimum ${arr[minIndex]} at position ${minIndex}.`
+                            description: `위치 ${i}의 ${arr[i]}와 최솟값 ${arr[minIndex]}(위치 ${minIndex}) 교환.`
                         });
 
                         [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
@@ -443,7 +443,7 @@
                             minimum: -1,
                             comparing: -1,
                             sorted: Array.from({length: i + 1}, (_, k) => k),
-                            description: `Swapped! ${arr[i]} is now in its correct position at index ${i}.`
+                            description: `교환 완료. ${arr[i]}이(가) 인덱스 ${i}에 올바르게 놓였습니다.`
                         });
                     } else {
                         this.steps.push({
@@ -452,7 +452,7 @@
                             minimum: -1,
                             comparing: -1,
                             sorted: Array.from({length: i + 1}, (_, k) => k),
-                            description: `${arr[i]} is already in the correct position. No swap needed.`
+                            description: `${arr[i]}은(는) 이미 올바른 위치에 있음. 교환 불필요.`
                         });
                     }
                 }
@@ -464,7 +464,7 @@
                     minimum: -1,
                     comparing: -1,
                     sorted: Array.from({length: n}, (_, k) => k),
-                    description: 'Selection Sort complete! All elements are now sorted in ascending order.'
+                    description: '선택 정렬 완료! 모든 원소가 오름차순으로 정렬되었습니다.'
                 });
             }
 
