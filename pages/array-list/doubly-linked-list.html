@@ -379,7 +379,8 @@
             .container { padding: 16px; margin: 0 8px; max-width: 100%; }
         }
     </style>
-</head>
+    <link rel="stylesheet" href="../../assets/code-learning.css">
+    </head>
 <body>
     <div class="container">
         <a href="../../index.html" class="back-link">← 메인으로</a>
@@ -469,6 +470,81 @@
             <h4>시작할 준비가 되었습니다</h4>
             <p>연산을 선택하고 필요한 값을 입력한 뒤 실행하세요. 이중 연결 리스트는 양방향 순회를 지원합니다.</p>
         </div>
+
+        <section class="code-learning-section">
+            <h3>코드로 학습하기</h3>
+            <p style="margin-bottom: 16px; color: #666; font-size: 0.95rem;">이중 연결 리스트(prev/next) 연산을 코드로 확인한 뒤, 오른쪽 칸에 따라 적어 보세요.</p>
+            <div class="code-lang-tabs">
+                <button type="button" class="active" data-lang="python">Python</button>
+                <button type="button" data-lang="java">Java</button>
+                <button type="button" data-lang="c">C</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-reference">
+                    <label>참고 코드</label>
+                    <div id="codePython" class="code-block active"><pre><code class="language-python">class Node:
+    def __init__(self, data):
+        self.data = data
+        self.prev = self.next = None
+
+class DoublyLinkedList:
+    def __init__(self):
+        self.head = self.tail = None
+
+    def insert_head(self, data):
+        node = Node(data)
+        if not self.head: self.head = self.tail = node
+        else: node.next = self.head; self.head.prev = node; self.head = node
+
+    def insert_tail(self, data):
+        node = Node(data)
+        if not self.tail: self.head = self.tail = node
+        else: node.prev = self.tail; self.tail.next = node; self.tail = node
+
+    def delete_head(self):
+        if self.head: self.head = self.head.next; self.head and setattr(self.head, 'prev', None)</code></pre></div>
+                    <div id="codeJava" class="code-block"><pre><code class="language-java">class Node {
+    int data; Node prev, next;
+    Node(int d) { data = d; }
+}
+class DoublyLinkedList {
+    Node head, tail;
+    void insertHead(int data) {
+        Node node = new Node(data);
+        if (head == null) { head = tail = node; return; }
+        node.next = head; head.prev = node; head = node;
+    }
+    void insertTail(int data) {
+        Node node = new Node(data);
+        if (tail == null) { head = tail = node; return; }
+        node.prev = tail; tail.next = node; tail = node;
+    }
+    void deleteHead() {
+        if (head != null) { head = head.next; if (head != null) head.prev = null; }
+    }
+}</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">#include &lt;stdlib.h&gt;
+typedef struct Node { int data; struct Node *prev, *next; } Node;
+Node* create(int d) { Node* n = malloc(sizeof(Node)); n->data = d; n->prev = n->next = NULL; return n; }
+void insert_head(Node** h, Node** t, int d) {
+    Node* n = create(d);
+    if (!*h) *h = *t = n;
+    else { n->next = *h; (*h)->prev = n; *h = n; }
+}
+void insert_tail(Node** h, Node** t, int d) {
+    Node* n = create(d);
+    if (!*t) *h = *t = n;
+    else { n->prev = *t; (*t)->next = n; *t = n; }
+}</code></pre></div>
+                </div>
+                <div class="code-practice">
+                    <label>따라 적어 보기</label>
+                    <textarea id="codePractice" placeholder="왼쪽 참고 코드를 보면서 여기에 따라 적어 보세요."></textarea>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('codePractice').value=''">초기화</button>
+                </div>
+            </div>
+                        <script src="../../assets/code-learning.js"></script>
+        </section>
     </div>
 
     <script>

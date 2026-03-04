@@ -266,7 +266,8 @@
             .container { padding: 16px; margin: 0 8px; max-width: 100%; }
         }
     </style>
-</head>
+    <link rel="stylesheet" href="../../assets/code-learning.css">
+    </head>
 <body>
     <div class="container">
         <a href="../../index.html" class="back-link">← 메인으로</a>
@@ -319,6 +320,52 @@
                 <div class="traversal-value" id="levelorder">50, 50, 50, 50, 50, 50</div>
             </div>
         </div>
+
+        <section class="code-learning-section">
+            <h3>코드로 학습하기</h3>
+            <p style="margin-bottom: 16px; color: #666; font-size: 0.95rem;">이진 트리 4가지 순회(전위·중위·후위·레벨)를 코드로 확인한 뒤, 오른쪽 칸에 따라 적어 보세요.</p>
+            <div class="code-lang-tabs">
+                <button type="button" class="active" data-lang="python">Python</button>
+                <button type="button" data-lang="java">Java</button>
+                <button type="button" data-lang="c">C</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-reference">
+                    <label>참고 코드</label>
+                    <div id="codePython" class="code-block active"><pre><code class="language-python">def preorder(root):   # 전위: 부모-왼-오
+    if root: print(root.val); preorder(root.left); preorder(root.right)
+def inorder(root):    # 중위: 왼-부모-오
+    if root: inorder(root.left); print(root.val); inorder(root.right)
+def postorder(root):  # 후위: 왼-오-부모
+    if root: postorder(root.left); postorder(root.right); print(root.val)
+# 레벨 순회: 큐로 BFS</code></pre></div>
+                    <div id="codeJava" class="code-block"><pre><code class="language-java">void preorder(Node root) {
+    if (root != null) { print(root.val); preorder(root.left); preorder(root.right); }
+}
+void inorder(Node root) {
+    if (root != null) { inorder(root.left); print(root.val); inorder(root.right); }
+}
+void postorder(Node root) {
+    if (root != null) { postorder(root.left); postorder(root.right); print(root.val); }
+}</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">void preorder(Node* r) {
+    if (r) { printf("%d ", r->val); preorder(r->left); preorder(r->right); }
+}
+void inorder(Node* r) {
+    if (r) { inorder(r->left); printf("%d ", r->val); inorder(r->right); }
+}
+void postorder(Node* r) {
+    if (r) { postorder(r->left); postorder(r->right); printf("%d ", r->val); }
+}</code></pre></div>
+                </div>
+                <div class="code-practice">
+                    <label>따라 적어 보기</label>
+                    <textarea id="codePractice" placeholder="왼쪽 참고 코드를 보면서 여기에 따라 적어 보세요."></textarea>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('codePractice').value=''">초기화</button>
+                </div>
+            </div>
+                        <script src="../../assets/code-learning.js"></script>
+        </section>
     </div>
 
     <script>

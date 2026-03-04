@@ -273,7 +273,8 @@
             .container { padding: 16px; margin: 0 8px; max-width: 100%; }
         }
     </style>
-</head>
+    <link rel="stylesheet" href="../../assets/code-learning.css">
+    </head>
 <body>
     <div class="container">
         <a href="../../index.html" class="back-link">← 메인으로</a>
@@ -319,6 +320,56 @@
         <div class="help-text">
             ← → 방향키로 단계를 이동할 수 있습니다. 값을 직접 입력하거나 기본 배열로 시작하세요.
         </div>
+
+        <section class="code-learning-section">
+            <h3>코드로 학습하기</h3>
+            <p style="margin-bottom: 16px; color: #666; font-size: 0.95rem;">합병 정렬(분할 정복) 구현을 Python·Java·C로 확인한 뒤, 오른쪽 칸에 따라 적어 보세요.</p>
+            <div class="code-lang-tabs">
+                <button type="button" class="active" data-lang="python">Python</button>
+                <button type="button" data-lang="java">Java</button>
+                <button type="button" data-lang="c">C</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-reference">
+                    <label>참고 코드</label>
+                    <div id="codePython" class="code-block active"><pre><code class="language-python">def merge_sort(arr):
+    if len(arr) &lt;= 1: return arr
+    mid = len(arr) // 2
+    L = merge_sort(arr[:mid])
+    R = merge_sort(arr[mid:])
+    i = j = 0
+    out = []
+    while i &lt; len(L) and j &lt; len(R):
+        if L[i] &lt;= R[j]: out.append(L[i]); i += 1
+        else: out.append(R[j]); j += 1
+    out += L[i:] + R[j:]
+    return out
+# O(n log n), 안정 정렬</code></pre></div>
+                    <div id="codeJava" class="code-block"><pre><code class="language-java">void mergeSort(int[] arr, int l, int r) {
+    if (l &gt;= r) return;
+    int m = (l + r) / 2;
+    mergeSort(arr, l, m);
+    mergeSort(arr, m + 1, r);
+    merge(arr, l, m, r);  // 두 구간 병합
+}
+// merge()에서 보조 배열로 정렬 후 복사</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">void merge_sort(int arr[], int l, int r) {
+    if (l &gt;= r) return;
+    int m = (l + r) / 2;
+    merge_sort(arr, l, m);
+    merge_sort(arr, m + 1, r);
+    merge(arr, l, m, r);
+}
+// O(n log n)</code></pre></div>
+                </div>
+                <div class="code-practice">
+                    <label>따라 적어 보기</label>
+                    <textarea id="codePractice" placeholder="왼쪽 참고 코드를 보면서 여기에 따라 적어 보세요."></textarea>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('codePractice').value=''">초기화</button>
+                </div>
+            </div>
+                        <script src="../../assets/code-learning.js"></script>
+        </section>
     </div>
 
     <script>

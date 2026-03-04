@@ -380,7 +380,8 @@
             .container { padding: 16px; margin: 0 8px; max-width: 100%; }
         }
     </style>
-</head>
+    <link rel="stylesheet" href="../../assets/code-learning.css">
+    </head>
 <body>
     <div class="container">
         <a href="../../index.html" class="back-link">← 메인으로</a>
@@ -456,6 +457,77 @@
         <div class="help-text">
             Use arrow keys (← →) to navigate between steps
         </div>
+
+        <section class="code-learning-section">
+            <h3>코드로 학습하기</h3>
+            <p style="margin-bottom: 16px; color: #666; font-size: 0.95rem;">DFS(스택/재귀)와 BFS(큐) 탐색 코드를 확인한 뒤, 오른쪽 칸에 따라 적어 보세요.</p>
+            <div class="code-lang-tabs">
+                <button type="button" class="active" data-lang="python">Python</button>
+                <button type="button" data-lang="java">Java</button>
+                <button type="button" data-lang="c">C</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-reference">
+                    <label>참고 코드</label>
+                    <div id="codePython" class="code-block active"><pre><code class="language-python">def dfs(adj, start):
+    vis = set()
+    stack = [start]
+    while stack:
+        v = stack.pop()
+        if v in vis: continue
+        vis.add(v)
+        for u in adj[v]:
+            if u not in vis: stack.append(u)
+
+def bfs(adj, start):
+    from collections import deque
+    vis, q = {start}, deque([start])
+    while q:
+        v = q.popleft()
+        for u in adj[v]:
+            if u not in vis: vis.add(u); q.append(u)</code></pre></div>
+                    <div id="codeJava" class="code-block"><pre><code class="language-java">void dfs(List<List<Integer>> adj, int start) {
+    boolean[] vis = new boolean[adj.size()];
+    Stack<Integer> st = new Stack<>();
+    st.push(start);
+    while (!st.isEmpty()) {
+        int v = st.pop();
+        if (vis[v]) continue;
+        vis[v] = true;
+        for (int u : adj.get(v)) if (!vis[u]) st.push(u);
+    }
+}
+void bfs(List<List<Integer>> adj, int start) {
+    boolean[] vis = new boolean[adj.size()];
+    Queue<Integer> q = new LinkedList<>();
+    q.offer(start); vis[start] = true;
+    while (!q.isEmpty()) {
+        int v = q.poll();
+        for (int u : adj.get(v)) if (!vis[u]) { vis[u]=true; q.offer(u); }
+    }
+}</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">void dfs(int adj[][], int n, int start) {
+    int vis[MAX], st[MAX], top = 0;
+    memset(vis, 0, sizeof vis);
+    st[top++] = start;
+    while (top) {
+        int v = st[--top];
+        if (vis[v]) continue;
+        vis[v] = 1;
+        for (int u = 0; u < n; u++)
+            if (adj[v][u] && !vis[u]) st[top++] = u;
+    }
+}
+// BFS: 큐로 동일하게, 방문 후 인접 미방문 노드 enqueue</code></pre></div>
+                </div>
+                <div class="code-practice">
+                    <label>따라 적어 보기</label>
+                    <textarea id="codePractice" placeholder="왼쪽 참고 코드를 보면서 여기에 따라 적어 보세요."></textarea>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('codePractice').value=''">초기화</button>
+                </div>
+            </div>
+                        <script src="../../assets/code-learning.js"></script>
+        </section>
     </div>
 
     <script>

@@ -349,7 +349,8 @@
             .container { padding: 16px; margin: 0 8px; max-width: 100%; }
         }
     </style>
-</head>
+    <link rel="stylesheet" href="../../assets/code-learning.css">
+    </head>
 <body>
     <div class="container">
         <a href="../../index.html" class="back-link">← 메인으로</a>
@@ -431,6 +432,75 @@
             <button class="btn btn-secondary" onclick="previousStep()" id="prevBtn" disabled="">← 이전</button>
             <button class="btn btn-secondary" onclick="nextStep()" id="nextBtn" disabled="">다음 →</button>
         </div>
+
+        <section class="code-learning-section">
+            <h3>코드로 학습하기</h3>
+            <p style="margin-bottom: 16px; color: #666; font-size: 0.95rem;">원형 연결 리스트(마지막 노드가 head를 가리킴) 연산을 코드로 확인한 뒤, 오른쪽 칸에 따라 적어 보세요.</p>
+            <div class="code-lang-tabs">
+                <button type="button" class="active" data-lang="python">Python</button>
+                <button type="button" data-lang="java">Java</button>
+                <button type="button" data-lang="c">C</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-reference">
+                    <label>참고 코드</label>
+                    <div id="codePython" class="code-block active"><pre><code class="language-python">class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+class CircularList:
+    def __init__(self):
+        self.head = None  # 마지막 노드가 head를 가리킴
+
+    def insert_head(self, data):
+        node = Node(data)
+        if not self.head: node.next = node; self.head = node
+        else: node.next = self.head.next; self.head.next = node; self.head = node
+
+    def traverse(self):
+        if not self.head: return
+        cur = self.head.next
+        while True:
+            print(cur.data, end=" -> ")
+            if cur == self.head: break
+            cur = cur.next</code></pre></div>
+                    <div id="codeJava" class="code-block"><pre><code class="language-java">class Node { int data; Node next; Node(int d){ data = d; } }
+class CircularList {
+    Node head;
+    void insertHead(int data) {
+        Node node = new Node(data);
+        if (head == null) { node.next = node; head = node; return; }
+        node.next = head.next; head.next = node; head = node;
+    }
+    void traverse() {
+        if (head == null) return;
+        Node cur = head.next;
+        do { System.out.print(cur.data + " "); cur = cur.next; } while (cur != head.next);
+    }
+}</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">#include &lt;stdlib.h&gt;
+typedef struct Node { int data; struct Node* next; } Node;
+// 원형: tail->next == head
+void insert_head(Node** tail, int d) {
+    Node* n = malloc(sizeof(Node)); n->data = d;
+    if (!*tail) { n->next = n; *tail = n; return; }
+    n->next = (*tail)->next; (*tail)->next = n; *tail = n;
+}
+void traverse(Node* tail) {
+    if (!tail) return;
+    Node* cur = tail->next;
+    do { printf("%d ", cur->data); cur = cur->next; } while (cur != tail->next);
+}</code></pre></div>
+                </div>
+                <div class="code-practice">
+                    <label>따라 적어 보기</label>
+                    <textarea id="codePractice" placeholder="왼쪽 참고 코드를 보면서 여기에 따라 적어 보세요."></textarea>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('codePractice').value=''">초기화</button>
+                </div>
+            </div>
+                        <script src="../../assets/code-learning.js"></script>
+        </section>
     </div>
 
     <script>

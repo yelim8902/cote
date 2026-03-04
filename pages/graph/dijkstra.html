@@ -347,7 +347,8 @@
             .container { padding: 16px; margin: 0 8px; max-width: 100%; }
         }
     </style>
-</head>
+    <link rel="stylesheet" href="../../assets/code-learning.css">
+    </head>
 <body>
     <div class="container">
         <a href="../../index.html" class="back-link">← 메인으로</a>
@@ -410,6 +411,76 @@
             <h3>Shortest Paths from Source</h3>
             <div class="path-list" id="pathList"></div>
         </div>
+
+        <section class="code-learning-section">
+            <h3>코드로 학습하기</h3>
+            <p style="margin-bottom: 16px; color: #666; font-size: 0.95rem;">다익스트라 최단 경로 코드를 확인한 뒤, 오른쪽 칸에 따라 적어 보세요.</p>
+            <div class="code-lang-tabs">
+                <button type="button" class="active" data-lang="python">Python</button>
+                <button type="button" data-lang="java">Java</button>
+                <button type="button" data-lang="c">C</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-reference">
+                    <label>참고 코드</label>
+                    <div id="codePython" class="code-block active"><pre><code class="language-python">import heapq
+def dijkstra(adj, start):
+    n = len(adj)
+    dist = [float('inf')] * n
+    dist[start] = 0
+    pq = [(0, start)]
+    while pq:
+        d, v = heapq.heappop(pq)
+        if d > dist[v]: continue
+        for u, w in adj[v]:
+            if dist[v] + w < dist[u]:
+                dist[u] = dist[v] + w
+                heapq.heappush(pq, (dist[u], u))
+    return dist</code></pre></div>
+                    <div id="codeJava" class="code-block"><pre><code class="language-java">void dijkstra(List<List<int[]>> adj, int start) {
+    int n = adj.size();
+    int[] dist = new int[n];
+    Arrays.fill(dist, Integer.MAX_VALUE);
+    dist[start] = 0;
+    PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)->a[0]-b[0]);
+    pq.offer(new int[]{0, start});
+    while (!pq.isEmpty()) {
+        int[] cur = pq.poll();
+        int d = cur[0], v = cur[1];
+        if (d > dist[v]) continue;
+        for (int[] e : adj.get(v)) {
+            int u = e[0], w = e[1];
+            if (dist[v] + w < dist[u]) {
+                dist[u] = dist[v] + w;
+                pq.offer(new int[]{dist[u], u});
+            }
+        }
+    }
+}</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">void dijkstra(int n, int adj[][], int start, int *dist) {
+    for (int i = 0; i < n; i++) dist[i] = INT_MAX;
+    dist[start] = 0;
+    int vis[MAX] = {0};
+    for (int step = 0; step < n; step++) {
+        int v = -1;
+        for (int i = 0; i < n; i++)
+            if (!vis[i] && (v == -1 || dist[i] < dist[v])) v = i;
+        if (v == -1 || dist[v] == INT_MAX) break;
+        vis[v] = 1;
+        for (int u = 0; u < n; u++)
+            if (adj[v][u] && dist[v] + adj[v][u] < dist[u])
+                dist[u] = dist[v] + adj[v][u];
+    }
+}</code></pre></div>
+                </div>
+                <div class="code-practice">
+                    <label>따라 적어 보기</label>
+                    <textarea id="codePractice" placeholder="왼쪽 참고 코드를 보면서 여기에 따라 적어 보세요."></textarea>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('codePractice').value=''">초기화</button>
+                </div>
+            </div>
+                        <script src="../../assets/code-learning.js"></script>
+        </section>
     </div>
 
     <script>

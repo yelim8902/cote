@@ -293,7 +293,8 @@
             .container { padding: 16px; margin: 0 8px; max-width: 100%; }
         }
     </style>
-</head>
+    <link rel="stylesheet" href="../../assets/code-learning.css">
+    </head>
 <body>
     <div class="container">
         <a href="../../index.html" class="back-link">← 메인으로</a>
@@ -407,6 +408,72 @@
             <button class="btn-secondary btn" id="prevBtn" disabled="">Previous</button>
             <button class="btn-secondary btn" id="nextBtn" disabled="">Next</button>
         </div>
+
+        <section class="code-learning-section">
+            <h3>코드로 학습하기</h3>
+            <p style="margin-bottom: 16px; color: #666; font-size: 0.95rem;">선형 탐사(linear probing) 해시 삽입·탐색 코드를 확인한 뒤, 오른쪽 칸에 따라 적어 보세요.</p>
+            <div class="code-lang-tabs">
+                <button type="button" class="active" data-lang="python">Python</button>
+                <button type="button" data-lang="java">Java</button>
+                <button type="button" data-lang="c">C</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-reference">
+                    <label>참고 코드</label>
+                    <div id="codePython" class="code-block active"><pre><code class="language-python">def hash_fn(key, size):
+    return key % size
+
+def insert(table, key, value):
+    i = hash_fn(key, len(table))
+    while table[i] is not None and table[i][0] != key:
+        i = (i + 1) % len(table)  # 선형 탐사
+    table[i] = (key, value)
+
+def get(table, key):
+    i = hash_fn(key, len(table))
+    while table[i] is not None:
+        if table[i][0] == key: return table[i][1]
+        i = (i + 1) % len(table)
+    return None</code></pre></div>
+                    <div id="codeJava" class="code-block"><pre><code class="language-java">int hashFn(int key, int size) { return key % size; }
+void insert(Entry[] table, int key, Object value) {
+    int i = hashFn(key, table.length);
+    while (table[i] != null && table[i].key != key)
+        i = (i + 1) % table.length;
+    table[i] = new Entry(key, value);
+}
+Object get(Entry[] table, int key) {
+    int i = hashFn(key, table.length);
+    while (table[i] != null) {
+        if (table[i].key == key) return table[i].value;
+        i = (i + 1) % table.length;
+    }
+    return null;
+}</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">int hash_fn(int key, int size) { return key % size; }
+void insert(Entry *t, int size, int key, int val) {
+    int i = hash_fn(key, size);
+    while (t[i].used && t[i].key != key)
+        i = (i + 1) % size;
+    t[i].key = key; t[i].val = val; t[i].used = 1;
+}
+int get(Entry *t, int size, int key) {
+    int i = hash_fn(key, size);
+    while (t[i].used) {
+        if (t[i].key == key) return t[i].val;
+        i = (i + 1) % size;
+    }
+    return -1;
+}</code></pre></div>
+                </div>
+                <div class="code-practice">
+                    <label>따라 적어 보기</label>
+                    <textarea id="codePractice" placeholder="왼쪽 참고 코드를 보면서 여기에 따라 적어 보세요."></textarea>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('codePractice').value=''">초기화</button>
+                </div>
+            </div>
+                        <script src="../../assets/code-learning.js"></script>
+        </section>
     </div>
 
     <script>

@@ -200,6 +200,7 @@
             .container { padding: 16px; margin: 0 8px; max-width: 100%; }
         }
     </style>
+    <link rel="stylesheet" href="../../assets/code-learning.css">
 </head>
 <body>
     <div class="container">
@@ -249,6 +250,44 @@
             <div class="hash-table" id="hashTable"></div>
             <div class="result-msg info" id="resultMsg">키와 연산을 선택한 뒤 [실행]을 누르세요. 삽입 시 값도 입력하세요.</div>
         </div>
+
+        <section class="code-learning-section">
+            <h3>코드로 학습하기</h3>
+            <p style="margin-bottom: 16px; color: #666; font-size: 0.95rem;">해시 맵(체이닝) 삽입·검색·삭제를 코드로 확인한 뒤, 오른쪽 칸에 따라 적어 보세요.</p>
+            <div class="code-lang-tabs">
+                <button type="button" class="active" data-lang="python">Python</button>
+                <button type="button" data-lang="java">Java</button>
+                <button type="button" data-lang="c">C</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-reference">
+                    <label>참고 코드</label>
+                    <div id="codePython" class="code-block active"><pre><code class="language-python"># Python: dict = 해시 테이블
+d = {}
+d["key"] = 10    # 삽입 O(1)
+x = d.get("key") # 검색 O(1)
+del d["key"]     # 삭제 O(1)
+# 체이닝: 버킷마다 리스트, 충돌 시 append</code></pre></div>
+                    <div id="codeJava" class="code-block"><pre><code class="language-java">HashMap&lt;String, Integer&gt; map = new HashMap&lt;&gt;();
+map.put("key", 10);     // 삽입 O(1)
+int x = map.get("key"); // 검색 O(1)
+map.remove("key");      // 삭제 O(1)
+// 내부: 버킷 + 체이닝(링크드 리스트 등)</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">// 체이닝: 버킷 배열 + 노드 리스트
+typedef struct Node { char* key; int val; struct Node* next; } Node;
+Node* buckets[BUCKETS];
+int hash_fn(char* key) { /* ... */ return idx % BUCKETS; }
+void put(char* k, int v);  // 해시 후 해당 버킷 리스트에 추가
+int get(char* k);         // 해시 후 리스트 탐색</code></pre></div>
+                </div>
+                <div class="code-practice">
+                    <label>따라 적어 보기</label>
+                    <textarea id="codePractice" placeholder="왼쪽 참고 코드를 보면서 여기에 따라 적어 보세요."></textarea>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('codePractice').value=''">초기화</button>
+                </div>
+            </div>
+            <script src="../../assets/code-learning.js"></script>
+        </section>
     </div>
 
     <script>

@@ -317,7 +317,8 @@
             .container { padding: 16px; margin: 0 8px; max-width: 100%; }
         }
     </style>
-</head>
+    <link rel="stylesheet" href="../../assets/code-learning.css">
+    </head>
 <body>
     <div class="container">
         <a href="../../index.html" class="back-link">← 메인으로</a>
@@ -417,6 +418,70 @@
                 <span>연산 대상</span>
             </div>
         </div>
+
+        <section class="code-learning-section">
+            <h3>코드로 학습하기</h3>
+            <p style="margin-bottom: 16px; color: #666; font-size: 0.95rem;">원형 큐(배열 기반) Enqueue/Dequeue를 front·rear로 구현한 코드입니다. 오른쪽 칸에 따라 적어 보세요.</p>
+            <div class="code-lang-tabs">
+                <button type="button" class="active" data-lang="python">Python</button>
+                <button type="button" data-lang="java">Java</button>
+                <button type="button" data-lang="c">C</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-reference">
+                    <label>참고 코드 (원형 큐)</label>
+                    <div id="codePython" class="code-block active"><pre><code class="language-python">class CircularQueue:
+    def __init__(self, cap):
+        self.cap = cap
+        self.q = [None] * cap
+        self.front = self.rear = 0
+
+    def enqueue(self, x):
+        if (self.rear + 1) % self.cap == self.front: return  # full
+        self.rear = (self.rear + 1) % self.cap
+        self.q[self.rear] = x
+
+    def dequeue(self):
+        if self.front == self.rear: return None  # empty
+        self.front = (self.front + 1) % self.cap
+        return self.q[self.front]</code></pre></div>
+                    <div id="codeJava" class="code-block"><pre><code class="language-java">class CircularQueue {
+    int[] q; int cap, front = 0, rear = 0;
+    CircularQueue(int cap) { this.cap = cap; q = new int[cap]; }
+    void enqueue(int x) {
+        if ((rear + 1) % cap == front) return;
+        rear = (rear + 1) % cap;
+        q[rear] = x;
+    }
+    int dequeue() {
+        if (front == rear) return -1;
+        front = (front + 1) % cap;
+        return q[front];
+    }
+}</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">#include &lt;stdio.h&gt;
+#define MAX 100
+int q[MAX], front = 0, rear = 0, cap = MAX;
+
+void enqueue(int x) {
+    if ((rear + 1) % cap == front) return;
+    rear = (rear + 1) % cap;
+    q[rear] = x;
+}
+int dequeue() {
+    if (front == rear) return -1;
+    front = (front + 1) % cap;
+    return q[front];
+}</code></pre></div>
+                </div>
+                <div class="code-practice">
+                    <label>따라 적어 보기</label>
+                    <textarea id="codePractice" placeholder="왼쪽 참고 코드를 보면서 여기에 따라 적어 보세요."></textarea>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('codePractice').value=''">초기화</button>
+                </div>
+            </div>
+                        <script src="../../assets/code-learning.js"></script>
+        </section>
     </div>
 
     <script>

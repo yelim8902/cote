@@ -411,7 +411,8 @@
             .container { padding: 16px; margin: 0 8px; max-width: 100%; }
         }
     </style>
-</head>
+    <link rel="stylesheet" href="../../assets/code-learning.css">
+    </head>
 <body>
     <div class="container">
         <a href="../../index.html" class="back-link">← 메인으로</a>
@@ -467,6 +468,60 @@
         <div class="help-text">
             ← → 방향키로 단계를 이동할 수 있습니다. 값을 직접 입력하거나 기본 배열로 시작하세요.
         </div>
+
+        <section class="code-learning-section">
+            <h3>코드로 학습하기</h3>
+            <p style="margin-bottom: 16px; color: #666; font-size: 0.95rem;">힙 정렬(heapify + 추출) 구현을 Python·Java·C로 확인한 뒤, 오른쪽 칸에 따라 적어 보세요.</p>
+            <div class="code-lang-tabs">
+                <button type="button" class="active" data-lang="python">Python</button>
+                <button type="button" data-lang="java">Java</button>
+                <button type="button" data-lang="c">C</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-reference">
+                    <label>참고 코드</label>
+                    <div id="codePython" class="code-block active"><pre><code class="language-python">def heapify(arr, n, i):
+    largest = i
+    L, R = 2*i+1, 2*i+2
+    if L &lt; n and arr[L] &gt; arr[largest]: largest = L
+    if R &lt; n and arr[R] &gt; arr[largest]: largest = R
+    if largest != i: arr[i], arr[largest] = arr[largest], arr[i]; heapify(arr, n, largest)
+
+def heap_sort(arr):
+    n = len(arr)
+    for i in range(n//2 - 1, -1, -1): heapify(arr, n, i)
+    for i in range(n-1, 0, -1): arr[0], arr[i] = arr[i], arr[0]; heapify(arr, i, 0)
+# O(n log n)</code></pre></div>
+                    <div id="codeJava" class="code-block"><pre><code class="language-java">void heapify(int[] arr, int n, int i) {
+    int largest = i, L = 2*i+1, R = 2*i+2;
+    if (L &lt; n &amp;&amp; arr[L] &gt; arr[largest]) largest = L;
+    if (R &lt; n &amp;&amp; arr[R] &gt; arr[largest]) largest = R;
+    if (largest != i) { int t = arr[i]; arr[i] = arr[largest]; arr[largest] = t; heapify(arr, n, largest); }
+}
+void heapSort(int[] arr) {
+    int n = arr.length;
+    for (int i = n/2 - 1; i &gt;= 0; i--) heapify(arr, n, i);
+    for (int i = n - 1; i &gt; 0; i--) { int t = arr[0]; arr[0] = arr[i]; arr[i] = t; heapify(arr, i, 0); }
+}</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">void heapify(int arr[], int n, int i) {
+    int largest = i, L = 2*i+1, R = 2*i+2;
+    if (L &lt; n &amp;&amp; arr[L] &gt; arr[largest]) largest = L;
+    if (R &lt; n &amp;&amp; arr[R] &gt; arr[largest]) largest = R;
+    if (largest != i) { int t = arr[i]; arr[i] = arr[largest]; arr[largest] = t; heapify(arr, n, largest); }
+}
+void heap_sort(int arr[], int n) {
+    for (int i = n/2 - 1; i &gt;= 0; i--) heapify(arr, n, i);
+    for (int i = n - 1; i &gt; 0; i--) { int t = arr[0]; arr[0] = arr[i]; arr[i] = t; heapify(arr, i, 0); }
+}</code></pre></div>
+                </div>
+                <div class="code-practice">
+                    <label>따라 적어 보기</label>
+                    <textarea id="codePractice" placeholder="왼쪽 참고 코드를 보면서 여기에 따라 적어 보세요."></textarea>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('codePractice').value=''">초기화</button>
+                </div>
+            </div>
+                        <script src="../../assets/code-learning.js"></script>
+        </section>
     </div>
 
     <script>

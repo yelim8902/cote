@@ -279,6 +279,13 @@
         }
         .back-link:hover { color: #2563eb; }
 
+        /* 코드 학습 섹션 */
+        .code-reference, .code-practice { display: flex; flex-direction: column; gap: 8px; }
+        .code-practice textarea { resize: vertical; min-height: 280px; font-size: 13px; }
+        .code-practice textarea:focus { outline: none; border-color: #1d4ed8; box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1); }
+        .code-practice-actions { margin-top: 8px; }
+        .code-practice-actions .btn { padding: 8px 14px; font-size: 0.9rem; }
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -322,7 +329,8 @@
             .control-panel input, .control-panel select { min-width: 0; width: 100%; }
         }
     </style>
-</head>
+    <link rel="stylesheet" href="../../assets/code-learning.css">
+    </head>
 <body>
     <div class="container">
         <a href="../../index.html" class="back-link">← 메인으로</a>
@@ -396,6 +404,163 @@
             <h4>시작할 준비가 되었습니다</h4>
             <p>연산을 선택하고 필요한 값을 입력한 뒤 실행하세요. 단일 연결 리스트는 앞쪽으로만 순회할 수 있습니다.</p>
         </div>
+
+        <section class="code-learning-section">
+            <h3>코드로 학습하기</h3>
+            <p style="margin-bottom: 16px; color: #666; font-size: 0.95rem;">연산(삽입·삭제·탐색·순회)을 코드로 확인한 뒤, 오른쪽 칸에 따라 적어 보세요.</p>
+            <div class="code-lang-tabs">
+                <button type="button" class="active" data-lang="python">Python</button>
+                <button type="button" data-lang="java">Java</button>
+                <button type="button" data-lang="c">C</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-reference">
+                    <label>참고 코드</label>
+                    <div id="codePython" class="code-block active"><pre><code class="language-python">class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def insert_head(self, data):   # 머리 삽입 O(1)
+        node = Node(data)
+        node.next = self.head
+        self.head = node
+
+    def insert_tail(self, data):   # 꼬리 삽입 O(n)
+        node = Node(data)
+        if not self.head:
+            self.head = node
+            return
+        cur = self.head
+        while cur.next:
+            cur = cur.next
+        cur.next = node
+
+    def delete_head(self):         # 머리 삭제 O(1)
+        if self.head:
+            self.head = self.head.next
+
+    def search(self, key):         # 탐색 O(n)
+        cur = self.head
+        while cur:
+            if cur.data == key:
+                return cur
+            cur = cur.next
+        return None
+
+    def traverse(self):             # 순회 O(n)
+        cur = self.head
+        while cur:
+            print(cur.data, end=" -> ")
+            cur = cur.next
+        print("None")</code></pre></div>
+                    <div id="codeJava" class="code-block"><pre><code class="language-java">class Node {
+    int data;
+    Node next;
+    Node(int data) { this.data = data; }
+}
+
+class LinkedList {
+    Node head;
+
+    void insertHead(int data) {   // 머리 삽입 O(1)
+        Node node = new Node(data);
+        node.next = head;
+        head = node;
+    }
+
+    void insertTail(int data) {   // 꼬리 삽입 O(n)
+        Node node = new Node(data);
+        if (head == null) { head = node; return; }
+        Node cur = head;
+        while (cur.next != null) cur = cur.next;
+        cur.next = node;
+    }
+
+    void deleteHead() {           // 머리 삭제 O(1)
+        if (head != null) head = head.next;
+    }
+
+    Node search(int key) {        // 탐색 O(n)
+        Node cur = head;
+        while (cur != null) {
+            if (cur.data == key) return cur;
+            cur = cur.next;
+        }
+        return null;
+    }
+
+    void traverse() {             // 순회 O(n)
+        Node cur = head;
+        while (cur != null) {
+            System.out.print(cur.data + " -> ");
+            cur = cur.next;
+        }
+        System.out.println("null");
+    }
+}</pre></div>
+                    <div id="codeC" class="code-block"><pre>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* create_node(int data) {
+    Node* n = (Node*)malloc(sizeof(Node));
+    n->data = data; n->next = NULL;
+    return n;
+}
+
+void insert_head(Node** head, int data) {  /* 머리 삽입 O(1) */
+    Node* node = create_node(data);
+    node->next = *head;
+    *head = node;
+}
+
+void insert_tail(Node** head, int data) {  /* 꼬리 삽입 O(n) */
+    Node* node = create_node(data);
+    if (!*head) { *head = node; return; }
+    Node* cur = *head;
+    while (cur->next) cur = cur->next;
+    cur->next = node;
+}
+
+void delete_head(Node** head) {           /* 머리 삭제 O(1) */
+    if (*head) *head = (*head)->next;
+}
+
+Node* search(Node* head, int key) {       /* 탐색 O(n) */
+    while (head) {
+        if (head->data == key) return head;
+        head = head->next;
+    }
+    return NULL;
+}
+
+void traverse(Node* head) {               /* 순회 O(n) */
+    while (head) {
+        printf("%d -> ", head->data);
+        head = head->next;
+    }
+    printf("NULL\n");
+}</code></pre></div>
+                </div>
+                <div class="code-practice">
+                    <label>따라 적어 보기</label>
+                    <textarea id="codePractice" placeholder="왼쪽 참고 코드를 보면서 여기에 따라 적어 보세요."></textarea>
+                    <div class="code-practice-actions">
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('codePractice').value=''">초기화</button>
+                    </div>
+                </div>
+            </div>
+            <script src="../../assets/code-learning.js"></script>
+        </section>
     </div>
 
     <script>

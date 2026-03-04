@@ -312,7 +312,8 @@
             .container { padding: 16px; margin: 0 8px; max-width: 100%; }
         }
     </style>
-</head>
+    <link rel="stylesheet" href="../../assets/code-learning.css">
+    </head>
 <body>
     <div class="container">
         <a href="../../index.html" class="back-link">← 메인으로</a>
@@ -366,6 +367,61 @@
             <button class="btn-secondary" id="prevBtn" disabled="">Previous</button>
             <button class="btn-secondary" id="nextBtn" disabled="">Next</button>
         </div>
+
+        <section class="code-learning-section">
+            <h3>코드로 학습하기</h3>
+            <p style="margin-bottom: 16px; color: #666; font-size: 0.95rem;">레드-블랙 트리 삽입과 색 복구 코드를 확인한 뒤, 오른쪽 칸에 따라 적어 보세요.</p>
+            <div class="code-lang-tabs">
+                <button type="button" class="active" data-lang="python">Python</button>
+                <button type="button" data-lang="java">Java</button>
+                <button type="button" data-lang="c">C</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-reference">
+                    <label>참고 코드</label>
+                    <div id="codePython" class="code-block active"><pre><code class="language-python">RED, BLACK = 'red', 'black'
+
+def insert(root, key):
+    root = _insert(root, key)
+    root.color = BLACK  # 루트는 항상 검정
+    return root
+
+def _insert(node, key):
+    if not node: return Node(key, RED)
+    if key < node.val: node.left = _insert(node.left, key)
+    else: node.right = _insert(node.right, key)
+    return fix_up(node)  # 색/회전으로 속성 복구</code></pre></div>
+                    <div id="codeJava" class="code-block"><pre><code class="language-java">void insert(int key) {
+    root = insertRec(root, key);
+    root.color = BLACK;
+}
+Node insertRec(Node node, int key) {
+    if (node == null) return new Node(key, RED);
+    if (key < node.val) node.left = insertRec(node.left, key);
+    else node.right = insertRec(node.right, key);
+    return fixUp(node);
+}
+// fixUp: 색 반전, 좌/우 회전으로 속성 유지</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">void insert(int key) {
+    root = insert_rec(root, key);
+    root->color = BLACK;
+}
+Node* insert_rec(Node* n, int key) {
+    if (!n) return new_node(key, RED);
+    if (key < n->val) n->left = insert_rec(n->left, key);
+    else n->right = insert_rec(n->right, key);
+    return fix_up(n);
+}
+/* fix_up: 색 반전, 좌/우 회전 */</code></pre></div>
+                </div>
+                <div class="code-practice">
+                    <label>따라 적어 보기</label>
+                    <textarea id="codePractice" placeholder="왼쪽 참고 코드를 보면서 여기에 따라 적어 보세요."></textarea>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('codePractice').value=''">초기화</button>
+                </div>
+            </div>
+                        <script src="../../assets/code-learning.js"></script>
+        </section>
     </div>
 
     <script>

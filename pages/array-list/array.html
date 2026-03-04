@@ -275,6 +275,12 @@
             }
         }
 
+        .code-reference, .code-practice { display: flex; flex-direction: column; gap: 8px; }
+        .code-practice textarea { resize: vertical; min-height: 260px; font-size: 13px; }
+        .code-practice textarea:focus { outline: none; border-color: #1d4ed8; box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1); }
+        .code-practice-actions { margin-top: 8px; }
+        .code-practice-actions .btn { padding: 8px 14px; font-size: 0.9rem; }
+
         @media (max-width: 768px) {
             body { overflow-x: hidden; }
             .container { padding: 16px; margin: 0 8px; max-width: 100%; }
@@ -282,7 +288,8 @@
             .control-panel input, .control-panel select { min-width: 0; width: 100%; }
         }
     </style>
-</head>
+    <link rel="stylesheet" href="../../assets/code-learning.css">
+    </head>
 <body>
     <div class="container">
         <a href="../../index.html" class="back-link">← 메인으로</a>
@@ -378,6 +385,85 @@
             </div>
             <div id="resultMessage"></div>
         </div>
+
+        <section class="code-learning-section">
+            <h3>코드로 학습하기</h3>
+            <p style="margin-bottom: 16px; color: #666; font-size: 0.95rem;">배열 연산(접근·삽입·삭제·순회)을 코드로 확인한 뒤, 오른쪽 칸에 따라 적어 보세요.</p>
+            <div class="code-lang-tabs">
+                <button type="button" class="active" data-lang="python">Python</button>
+                <button type="button" data-lang="java">Java</button>
+                <button type="button" data-lang="c">C</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-reference">
+                    <label>참고 코드</label>
+                    <div id="codePython" class="code-block active"><pre><code class="language-python"># Python: 리스트 = 동적 배열
+arr = [10, 20, 30, 40]
+
+# 접근 O(1)
+x = arr[2]           # 30
+arr[1] = 99          # 수정
+
+# 순회 O(n)
+for v in arr:
+    print(v)
+
+# 삽입 O(n) - insert(위치, 값)
+arr.insert(2, 25)    # 인덱스 2에 25 삽입
+
+# 삭제 O(n) - pop(위치) 또는 remove(값)
+arr.pop(1)           # 인덱스 1 제거
+arr.remove(30)       # 값 30 제거
+
+# 정적처럼 쓰려면 크기 고정 후 인덱스로만 접근</code></pre></div>
+                    <div id="codeJava" class="code-block"><pre><code class="language-java">// Java: 정적 배열 / ArrayList(동적)
+int[] staticArr = new int[10];  // 정적
+staticArr[0] = 5;               // 접근·수정 O(1)
+
+ArrayList&lt;Integer&gt; list = new ArrayList&lt;&gt;();
+list.add(10); list.add(20);      // 뒤에 추가 O(1) 분할
+list.get(0);                    // 접근 O(1)
+list.set(1, 99);                // 수정 O(1)
+list.add(1, 15);                // 인덱스 1에 삽입 O(n)
+list.remove(0);                 // 인덱스 0 삭제 O(n)
+
+// 순회
+for (int i = 0; i &lt; list.size(); i++)
+    System.out.println(list.get(i));</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+// 정적 배열: 접근 O(1)
+int arr[100];
+arr[0] = 5;  int x = arr[2];
+
+// 동적 배열: malloc + 인덱스 접근
+int n = 10;
+int* dyn = (int*)malloc(n * sizeof(int));
+dyn[0] = 1;  dyn[1] = 2;
+
+// 삽입(중간): 뒤 요소들 밀기 O(n)
+// 삭제(중간): 뒤 요소들 당기기 O(n)
+void insert_at(int* a, int* len, int cap, int idx, int val) {
+    if (*len >= cap) return;
+    for (int i = *len; i &gt; idx; i--) a[i] = a[i-1];
+    a[idx] = val; (*len)++;
+}
+void delete_at(int* a, int* len, int idx) {
+    for (int i = idx; i &lt; *len-1; i++) a[i] = a[i+1];
+    (*len)--;
+}</code></pre></div>
+                </div>
+                <div class="code-practice">
+                    <label>따라 적어 보기</label>
+                    <textarea id="codePractice" placeholder="왼쪽 참고 코드를 보면서 여기에 따라 적어 보세요."></textarea>
+                    <div class="code-practice-actions">
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('codePractice').value=''">초기화</button>
+                    </div>
+                </div>
+            </div>
+            <script src="../../assets/code-learning.js"></script>
+        </section>
     </div>
 
     <script>

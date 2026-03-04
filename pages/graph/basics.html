@@ -304,7 +304,8 @@
             .container { padding: 16px; margin: 0 8px; max-width: 100%; }
         }
     </style>
-</head>
+    <link rel="stylesheet" href="../../assets/code-learning.css">
+    </head>
 <body>
     <div class="container">
         <a href="../../index.html" class="back-link">← 메인으로</a>
@@ -383,6 +384,62 @@
 </div>
             </div>
         </div>
+
+        <section class="code-learning-section">
+            <h3>코드로 학습하기</h3>
+            <p style="margin-bottom: 16px; color: #666; font-size: 0.95rem;">인접 리스트로 그래프를 표현하는 코드를 확인한 뒤, 오른쪽 칸에 따라 적어 보세요.</p>
+            <div class="code-lang-tabs">
+                <button type="button" class="active" data-lang="python">Python</button>
+                <button type="button" data-lang="java">Java</button>
+                <button type="button" data-lang="c">C</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-reference">
+                    <label>참고 코드</label>
+                    <div id="codePython" class="code-block active"><pre><code class="language-python"># 인접 리스트: adj[v] = [(u, w), ...]
+adj = [[] for _ in range(V)]
+
+def add_edge(u, v, w=1):
+    adj[u].append((v, w))
+    # 무방향이면: adj[v].append((u, w))
+
+for v in range(V):
+    for u, w in adj[v]:
+        # v -> u, 가중치 w
+        pass</code></pre></div>
+                    <div id="codeJava" class="code-block"><pre><code class="language-java">// List<List<int[]>> or List<List<Edge>>
+List<List<int[]>> adj = new ArrayList<>();
+for (int i = 0; i < V; i++) adj.add(new ArrayList<>());
+
+void addEdge(int u, int v, int w) {
+    adj.get(u).add(new int[]{v, w});
+}
+
+for (int v = 0; v < V; v++)
+    for (int[] e : adj.get(v)) {
+        int u = e[0], w = e[1];
+    }</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">// typedef struct { int to, w; } Edge; Edge adj[MAX_V][MAX_E];
+typedef struct { int to, w; } Edge;
+Edge adj[MAX_V][MAX_E];
+int deg[MAX_V];  // deg[v] = outgoing count
+
+void add_edge(int u, int v, int w) {
+    adj[u][deg[u]++] = (Edge){v, w};
+}
+
+for (int i = 0; i < deg[v]; i++) {
+    int u = adj[v][i].to, w = adj[v][i].w;
+}</code></pre></div>
+                </div>
+                <div class="code-practice">
+                    <label>따라 적어 보기</label>
+                    <textarea id="codePractice" placeholder="왼쪽 참고 코드를 보면서 여기에 따라 적어 보세요."></textarea>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('codePractice').value=''">초기화</button>
+                </div>
+            </div>
+                        <script src="../../assets/code-learning.js"></script>
+        </section>
     </div>
 
     <script>

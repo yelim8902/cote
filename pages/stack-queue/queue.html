@@ -266,6 +266,7 @@
         color: #2563eb;
       }
 
+
       @media (max-width: 768px) {
         .container {
           padding: 20px;
@@ -300,7 +301,8 @@
             .container { padding: 16px; margin: 0 8px; max-width: 100%; }
         }
     </style>
-  </head>
+    <link rel="stylesheet" href="../../assets/code-learning.css">
+    </head>
   <body>
     <div class="container">
       <a href="../../index.html" class="back-link">← 메인으로</a>
@@ -370,6 +372,53 @@
       </div>
 
       <div class="keyboard-hint">Use ← → arrow keys to navigate steps</div>
+
+      <section class="code-learning-section">
+        <h3>코드로 학습하기</h3>
+        <p style="margin-bottom: 16px; color: #666; font-size: 0.95rem;">Enqueue, Dequeue 연산을 코드로 확인한 뒤, 오른쪽 칸에 따라 적어 보세요.</p>
+        <div class="code-lang-tabs">
+          <button type="button" class="active" data-lang="python">Python</button>
+          <button type="button" data-lang="java">Java</button>
+          <button type="button" data-lang="c">C</button>
+        </div>
+        <div class="code-panel">
+          <div class="code-reference">
+            <label>참고 코드</label>
+            <div id="codePython" class="code-block active"><pre><code class="language-python">from collections import deque
+q = deque()
+q.append(10)   # Enqueue O(1)
+q.append(20)
+q.append(30)
+x = q.popleft()  # Dequeue O(1) → 10
+# list로 하면: q.pop(0) 은 O(n)</code></pre></div>
+            <div id="codeJava" class="code-block"><pre><code class="language-java">import java.util.Queue;
+import java.util.LinkedList;
+Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();
+q.offer(10);   // Enqueue O(1)
+q.offer(20);
+q.offer(30);
+int x = q.poll();  // Dequeue O(1) → 10
+// q.peek() 맨 앞 확인, q.isEmpty()</code></pre></div>
+            <div id="codeC" class="code-block"><pre><code class="language-c">#include &lt;stdio.h&gt;
+#define MAX 100
+int q[MAX], front = 0, rear = -1;
+
+void enqueue(int x) {
+    if (rear &lt; MAX - 1) q[++rear] = x;
+}
+int dequeue() {
+    return front &lt;= rear ? q[front++] : -1;
+}
+// enqueue(10); enqueue(20); dequeue();</code></pre></div>
+          </div>
+          <div class="code-practice">
+            <label>따라 적어 보기</label>
+            <textarea id="codePractice" placeholder="왼쪽 참고 코드를 보면서 여기에 따라 적어 보세요."></textarea>
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('codePractice').value=''">초기화</button>
+          </div>
+        </div>
+        <script src="../../assets/code-learning.js"></script>
+      </section>
     </div>
 
     <script>
