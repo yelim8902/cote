@@ -197,6 +197,47 @@
         }
         .pc-recommend span { opacity: 0.95; }
 
+        /* 이론 정리 */
+        .theory-section {
+            margin-top: 56px;
+            padding-top: 40px;
+            border-top: 1px solid #e9ecef;
+        }
+        .theory-section .intro {
+            text-align: left;
+            margin-bottom: 28px;
+        }
+        .theory-section .intro h2 {
+            font-size: 1.5rem;
+        }
+        .theory-block {
+            background: white;
+            border-radius: 16px;
+            padding: 24px 28px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        }
+        .theory-block h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1d4ed8;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .theory-item {
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            line-height: 1.55;
+            color: #444;
+        }
+        .theory-item:last-child { margin-bottom: 0; }
+        .theory-item strong {
+            color: #333;
+            font-weight: 600;
+        }
+
         /* Footer */
         .footer {
             margin-top: 48px;
@@ -222,6 +263,10 @@
             .card h3 { font-size: 1.05rem; }
             .section-num { font-size: 0.85rem; }
             .intro[style] { margin-top: 40px !important; }
+            .theory-section { margin-top: 40px; padding-top: 28px; }
+            .theory-block { padding: 18px 20px; }
+            .theory-block h3 { font-size: 1rem; }
+            .theory-item { font-size: 0.85rem; }
         }
         @media (max-width: 480px) {
             .header h1 { font-size: 1.2rem; }
@@ -464,6 +509,66 @@
                 <span class="btn">시작하기</span>
             </a>
         </div>
+
+        <section class="theory-section">
+            <div class="intro">
+                <span class="section-num">이론 정리</span>
+                <h2>자료구조 · 알고리즘 요약</h2>
+                <p>각 주제에 대한 간단한 개념 정리입니다. 시각화와 함께 보면 이해에 도움이 됩니다.</p>
+            </div>
+
+            <div class="theory-block">
+                <h3>배열과 리스트</h3>
+                <div class="theory-item"><strong>정적 배열 / 동적 배열</strong> — 연속된 메모리에 요소를 저장. 정적은 크기 고정, 동적은 확장 가능.</div>
+                <div class="theory-item"><strong>2차원 배열</strong> — 행·열로 구성된 행렬 형태의 자료구조. 행 우선/열 우선 저장 방식.</div>
+                <div class="theory-item"><strong>단일 연결 리스트</strong> — 각 노드가 다음 노드만 참조. 삽입·삭제가 O(1)이 가능하지만 탐색은 순차적.</div>
+                <div class="theory-item"><strong>이중 연결 리스트</strong> — 이전·다음 노드를 모두 참조. 양방향 탐색과 삽입·삭제에 유리.</div>
+                <div class="theory-item"><strong>원형 연결 리스트</strong> — 마지막 노드가 첫 노드를 가리켜 순환 구조. 원형 큐 등에 활용.</div>
+            </div>
+
+            <div class="theory-block">
+                <h3>스택과 큐</h3>
+                <div class="theory-item"><strong>스택</strong> — LIFO(후입선출). Push, Pop, Peek 연산. 재귀, 괄호 검사, DFS 등에 사용.</div>
+                <div class="theory-item"><strong>큐</strong> — FIFO(선입선출). Enqueue, Dequeue. BFS, 대기열, 버퍼에 사용.</div>
+                <div class="theory-item"><strong>큐 (배열 기반)</strong> — 선형 큐는 빈 자리 낭비, 원형 큐는 인덱스를 나머지 연산으로 재사용해 공간 효율적.</div>
+            </div>
+
+            <div class="theory-block">
+                <h3>트리</h3>
+                <div class="theory-item"><strong>이진 트리</strong> — 각 노드가 최대 두 개의 자식. 전위·중위·후위·레벨 순회가 대표적.</div>
+                <div class="theory-item"><strong>이진 탐색 트리(BST)</strong> — 왼쪽 &lt; 부모 &lt; 오른쪽. 탐색·삽입·삭제 평균 O(log n), 편향 시 O(n).</div>
+                <div class="theory-item"><strong>AVL 트리</strong> — 균형 이진 탐색 트리. 높이 차가 1 이하로 유지되어 탐색이 O(log n) 보장.</div>
+                <div class="theory-item"><strong>Red-Black 트리</strong> — 색 규칙으로 균형을 유지하는 BST. 실무에서 널리 쓰이는 균형 트리.</div>
+                <div class="theory-item"><strong>힙</strong> — 완전 이진 트리 기반. 최대 힙/최소 힙으로 우선순위 큐, 힙 정렬에 사용.</div>
+            </div>
+
+            <div class="theory-block">
+                <h3>정렬 · 탐색</h3>
+                <div class="theory-item"><strong>버블 정렬</strong> — 인접 원소 비교·교환. O(n²), 단순하지만 비효율적.</div>
+                <div class="theory-item"><strong>선택 정렬</strong> — 구간에서 최솟값을 골라 앞으로. O(n²), 불안정 정렬.</div>
+                <div class="theory-item"><strong>삽입 정렬</strong> — 정렬된 구간에 원소를 삽입. O(n²), 거의 정렬된 데이터에 유리.</div>
+                <div class="theory-item"><strong>합병 정렬</strong> — 분할 정복, 두 구간을 합치며 정렬. O(n log n), 안정 정렬, 추가 메모리 사용.</div>
+                <div class="theory-item"><strong>퀵 정렬</strong> — 피벗 기준 분할 후 재귀. 평균 O(n log n), 최악 O(n²), 보통 가장 빠름.</div>
+                <div class="theory-item"><strong>힙 정렬</strong> — 힙을 이용해 최댓값을 차례로 제거. O(n log n), 추가 메모리 거의 없음.</div>
+                <div class="theory-item"><strong>이진 탐색</strong> — 정렬된 배열에서 절반씩 범위를 줄이며 탐색. O(log n).</div>
+            </div>
+
+            <div class="theory-block">
+                <h3>해시 맵</h3>
+                <div class="theory-item"><strong>체이닝</strong> — 해시 충돌 시 같은 버킷에 연결 리스트로 저장. 구현이 단순하고 충돌 처리 명확.</div>
+                <div class="theory-item"><strong>오픈 어드레싱</strong> — 충돌 시 다른 빈 버킷을 찾아 저장. 선형/이차 탐사, 더블 해싱 등.</div>
+            </div>
+
+            <div class="theory-block">
+                <h3>그래프</h3>
+                <div class="theory-item"><strong>그래프 기초</strong> — 정점(Vertex)과 간선(Edge). 방향/무방향, 가중치, 인접 리스트·행렬 표현.</div>
+                <div class="theory-item"><strong>DFS / BFS</strong> — 깊이 우선 탐색(스택/재귀), 너비 우선 탐색(큐). 경로 탐색, 연결 요소 등.</div>
+                <div class="theory-item"><strong>다익스트라</strong> — 음수 간선 없을 때 한 정점에서 모든 정점까지 최단 거리. O((V+E) log V) 등.</div>
+                <div class="theory-item"><strong>플로이드 워셜</strong> — 모든 쌍 최단 경로. 3중 루프로 DP 갱신. O(V³).</div>
+                <div class="theory-item"><strong>벨만 포드</strong> — 음수 간선 허용. 음수 사이클 감지 가능. O(VE).</div>
+                <div class="theory-item"><strong>최소 신장 트리(MST)</strong> — 모든 정점을 잇는 트리 중 간선 가중치 합 최소. 크루스칼, 프림 알고리즘.</div>
+            </div>
+        </section>
 
         <footer class="footer">
             Data Structure Visualizers · 선형·비선형 자료구조 학습용
