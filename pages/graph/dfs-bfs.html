@@ -389,8 +389,8 @@
             <div class="input-group">
                 <label for="algorithm">Algorithm</label>
                 <select id="algorithm">
-                    <option value="dfs">Depth-First Search (DFS)</option>
-                    <option value="bfs">Breadth-First Search (BFS)</option>
+                    <option value="dfs">깊이 우선 탐색 (DFS)</option>
+                    <option value="bfs">너비 우선 탐색 (BFS)</option>
                 </select>
             </div>
             
@@ -408,7 +408,7 @@
             </div>
             
             <button class="btn-primary" onclick="startTraversal()">Start Traversal</button>
-            <button class="btn-secondary" onclick="resetVisualization()">Reset</button>
+            <button class="btn-secondary" onclick="resetVisualization()">초기화</button>
         </div>
 
         <div class="info-panel">
@@ -417,15 +417,15 @@
                 <div class="value" id="algorithmName">DFS</div>
             </div>
             <div class="info-item">
-                <h3>Step</h3>
+                <h3>단계</h3>
                 <div class="value" id="currentStep">0 / 0</div>
             </div>
             <div class="info-item">
-                <h3>Time Complexity</h3>
+                <h3>시간 복잡도</h3>
                 <div class="value" id="timeComplexity">O(V + E)</div>
             </div>
             <div class="info-item">
-                <h3>Space Complexity</h3>
+                <h3>공간 복잡도</h3>
                 <div class="value" id="spaceComplexity">O(V)</div>
             </div>
         </div>
@@ -441,8 +441,8 @@
         </div>
 
         <div class="navigation">
-            <button class="btn-secondary" id="prevBtn" onclick="previousStep()" disabled="">Previous</button>
-            <button class="btn-secondary" id="nextBtn" onclick="nextStep()" disabled="">Next</button>
+            <button class="btn-secondary" id="prevBtn" onclick="previousStep()" disabled="">이전</button>
+            <button class="btn-secondary" id="nextBtn" onclick="nextStep()" disabled="">다음</button>
         </div>
 
         <div class="step-info">
@@ -485,7 +485,11 @@ def bfs(adj, start):
     while q:
         v = q.popleft()
         for u in adj[v]:
-            if u not in vis: vis.add(u); q.append(u)</code></pre></div>
+            if u not in vis: vis.add(u); q.append(u)
+
+# 사용 예: adj = [[1,2],[0,2],[0,1]]  # 0-1-2 삼각형
+# dfs(adj, 0)  # 스택 기반 DFS
+# bfs(adj, 0)  # 큐 기반 BFS</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">void dfs(List<List<Integer>> adj, int start) {
     boolean[] vis = new boolean[adj.size()];
     Stack<Integer> st = new Stack<>();
@@ -505,8 +509,11 @@ void bfs(List<List<Integer>> adj, int start) {
         int v = q.poll();
         for (int u : adj.get(v)) if (!vis[u]) { vis[u]=true; q.offer(u); }
     }
-}</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">void dfs(int adj[][], int n, int start) {
+}
+// 사용 예: List<List<Integer>> adj = ...; dfs(adj, 0); bfs(adj, 0);</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* DFS (스택 사용): adj는 인접 행렬 n×n (adj[v][u]==1이면 v→u 간선 있음).
+ * vis[v]: 정점 v 방문 여부. 스택 st와 top으로 방문할 정점 관리. */
+void dfs(int adj[][MAX], int n, int start) {
     int vis[MAX], st[MAX], top = 0;
     memset(vis, 0, sizeof vis);
     st[top++] = start;
@@ -514,11 +521,15 @@ void bfs(List<List<Integer>> adj, int start) {
         int v = st[--top];
         if (vis[v]) continue;
         vis[v] = 1;
-        for (int u = 0; u < n; u++)
-            if (adj[v][u] && !vis[u]) st[top++] = u;
+        /* v의 인접 정점 u 중 미방문인 것을 스택에 push (나중에 나오므로 깊이 우선) */
+        for (int u = 0; u &lt; n; u++)
+            if (adj[v][u] &amp;&amp; !vis[u]) st[top++] = u;
     }
 }
-// BFS: 큐로 동일하게, 방문 후 인접 미방문 노드 enqueue</code></pre></div>
+
+/* BFS: 스택 대신 큐 사용. enqueue(dequeue)로 먼저 들어간 정점부터 처리 → 너비 우선.
+ * 방문 시 인접 미방문 노드를 큐에 넣고, vis 표시. */
+/* 사용 예: dfs(adj, n, 0); 또는 BFS에서 큐로 동일하게 구현 */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>
@@ -849,7 +860,7 @@ void bfs(List<List<Integer>> adj, int start) {
                 
                 // Update step information
                 document.getElementById('currentStep').textContent = `${this.currentStepIndex + 1} / ${this.traversalSteps.length}`;
-                document.getElementById('stepTitle').textContent = `Step ${this.currentStepIndex + 1}: ${step.type.charAt(0).toUpperCase() + step.type.slice(1)}`;
+                document.getElementById('stepTitle').textContent = `단계 ${this.currentStepIndex + 1}: ${step.type === 'dfs' ? '깊이 우선' : '너비 우선'} 탐색`;
                 document.getElementById('stepDescription').textContent = step.description;
                 
                 // Update traversal order

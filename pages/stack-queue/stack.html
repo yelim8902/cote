@@ -381,7 +381,15 @@ stack.append(20)
 stack.append(30)
 top = stack[-1]    # Peek O(1) → 30
 x = stack.pop()    # Pop O(1) → 30
-# stack = [10, 20]</code></pre></div>
+# stack = [10, 20]
+
+# 사용 예
+stack = []
+stack.append(10)
+stack.append(20)
+stack.append(30)
+print(stack.pop())   # 30
+print(stack[-1])     # 20 (peek)</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">import java.util.Stack;
 Stack&lt;Integer&gt; stack = new Stack&lt;&gt;();
 stack.push(10);    // Push O(1)
@@ -389,21 +397,38 @@ stack.push(20);
 stack.push(30);
 int top = stack.peek();  // Peek O(1) → 30
 int x = stack.pop();     // Pop O(1) → 30
-// isEmpty(), size()</code></pre></div>
+// isEmpty(), size()
+
+// 사용 예
+Stack&lt;Integer&gt; st = new Stack&lt;&gt;();
+st.push(10); st.push(20); st.push(30);
+System.out.println(st.pop());   // 30
+System.out.println(st.peek());  // 20</code></pre></div>
                     <div id="codeC" class="code-block"><pre><code class="language-c">#include &lt;stdio.h&gt;
 #define MAX 100
+
+/* 스택: 배열 하나와 top 인덱스. top == -1이면 빈 스택. LIFO(Last In First Out) */
 int stack[MAX], top = -1;
 
+/* push: top을 먼저 증가시킨 뒤 그 위치에 x 저장. 꽉 찼으면 (top &lt; MAX-1) 체크 */
 void push(int x) {
     if (top &lt; MAX - 1) stack[++top] = x;
 }
+
+/* pop: top이 유효하면 stack[top] 반환하고 top 감소. 빈 스택이면 -1 등 에러값 반환 */
 int pop() {
     return top &gt;= 0 ? stack[top--] : -1;
 }
+
+/* peek: 제거하지 않고 맨 위 값만 확인. top이 유효할 때만 stack[top] 반환 */
 int peek() {
     return top &gt;= 0 ? stack[top] : -1;
 }
-// push(10); push(20); peek(); pop();</code></pre></div>
+
+/* 사용 예 */
+push(10); push(20); push(30);
+printf("%d\n", pop());   /* 30 (마지막에 넣은 것 먼저 나옴) */
+printf("%d\n", peek());  /* 20 (현재 맨 위) */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

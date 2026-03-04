@@ -491,7 +491,11 @@ def heap_sort(arr):
     n = len(arr)
     for i in range(n//2 - 1, -1, -1): heapify(arr, n, i)
     for i in range(n-1, 0, -1): arr[0], arr[i] = arr[i], arr[0]; heapify(arr, i, 0)
-# O(n log n)</code></pre></div>
+# O(n log n)
+
+# 사용 예
+# arr = [12, 11, 13, 5, 6, 7]
+# heap_sort(arr)  # arr = [5, 6, 7, 11, 12, 13]</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">void heapify(int[] arr, int n, int i) {
     int largest = i, L = 2*i+1, R = 2*i+2;
     if (L &lt; n &amp;&amp; arr[L] &gt; arr[largest]) largest = L;
@@ -502,17 +506,23 @@ void heapSort(int[] arr) {
     int n = arr.length;
     for (int i = n/2 - 1; i &gt;= 0; i--) heapify(arr, n, i);
     for (int i = n - 1; i &gt; 0; i--) { int t = arr[0]; arr[0] = arr[i]; arr[i] = t; heapify(arr, i, 0); }
-}</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">void heapify(int arr[], int n, int i) {
-    int largest = i, L = 2*i+1, R = 2*i+2;
+}
+// 사용 예: heapSort(arr);</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* heapify: 인덱스 i를 루트로 하는 서브트리가 max-heap이 되도록 함. 자식 L=2*i+1, R=2*i+2 중 더 큰 것과 교환 후 재귀. */
+void heapify(int arr[], int n, int i) {
+    int largest = i, L = 2*i+1, R = 2*i+2, t;
     if (L &lt; n &amp;&amp; arr[L] &gt; arr[largest]) largest = L;
     if (R &lt; n &amp;&amp; arr[R] &gt; arr[largest]) largest = R;
-    if (largest != i) { int t = arr[i]; arr[i] = arr[largest]; arr[largest] = t; heapify(arr, n, largest); }
+    if (largest != i) { t = arr[i]; arr[i] = arr[largest]; arr[largest] = t; heapify(arr, n, largest); }
 }
+
+/* 힙 정렬: 1) 배열을 max-heap으로 만듦 (뒷쪽부터 heapify). 2) 루트(최댓값)를 맨 뒤와 스왑하고 구간 줄인 뒤 heapify. O(n log n) */
 void heap_sort(int arr[], int n) {
-    for (int i = n/2 - 1; i &gt;= 0; i--) heapify(arr, n, i);
-    for (int i = n - 1; i &gt; 0; i--) { int t = arr[0]; arr[0] = arr[i]; arr[i] = t; heapify(arr, i, 0); }
-}</code></pre></div>
+    int i, t;
+    for (i = n/2 - 1; i &gt;= 0; i--) heapify(arr, n, i);
+    for (i = n - 1; i &gt; 0; i--) { t = arr[0]; arr[0] = arr[i]; arr[i] = t; heapify(arr, i, 0); }
+}
+/* 사용 예: heap_sort(arr, n); */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

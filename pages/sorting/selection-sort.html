@@ -321,7 +321,11 @@
             if arr[j] &lt; arr[min_idx]:
                 min_idx = j
         arr[i], arr[min_idx] = arr[min_idx], arr[i]
-# 구간 최솟값을 앞으로, O(n²)</code></pre></div>
+# 구간 최솟값을 앞으로, O(n²)
+
+# 사용 예
+# arr = [64, 25, 12, 22, 11]
+# selection_sort(arr)  # arr = [11, 12, 22, 25, 64]</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">void selectionSort(int[] arr) {
     int n = arr.length;
     for (int i = 0; i &lt; n; i++) {
@@ -330,15 +334,19 @@
             if (arr[j] &lt; arr[minIdx]) minIdx = j;
         int t = arr[i]; arr[i] = arr[minIdx]; arr[minIdx] = t;
     }
-}</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">void selection_sort(int arr[], int n) {
-    for (int i = 0; i &lt; n; i++) {
-        int min_idx = i;
-        for (int j = i + 1; j &lt; n; j++)
+}
+// 사용 예: int[] arr = {64, 25, 12}; selectionSort(arr);</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* 선택 정렬: 구간 [i, n-1]에서 최솟값을 찾아 arr[i]와 교환. i가 0부터 n-1까지 진행하면 앞부터 정렬됨. O(n²) */
+void selection_sort(int arr[], int n) {
+    int i, j, min_idx, t;
+    for (i = 0; i &lt; n; i++) {
+        min_idx = i;
+        for (j = i + 1; j &lt; n; j++)
             if (arr[j] &lt; arr[min_idx]) min_idx = j;
-        int t = arr[i]; arr[i] = arr[min_idx]; arr[min_idx] = t;
+        t = arr[i]; arr[i] = arr[min_idx]; arr[min_idx] = t;
     }
-}</code></pre></div>
+}
+/* 사용 예: int arr[] = {64, 25, 12}; selection_sort(arr, 3); */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

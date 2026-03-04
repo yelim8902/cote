@@ -344,7 +344,11 @@
         else: out.append(R[j]); j += 1
     out += L[i:] + R[j:]
     return out
-# O(n log n), 안정 정렬</code></pre></div>
+# O(n log n), 안정 정렬
+
+# 사용 예
+# arr = [38, 27, 43, 3, 9, 82, 10]
+# arr = merge_sort(arr)  # [3, 9, 10, 27, 38, 43, 82]</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">void mergeSort(int[] arr, int l, int r) {
     if (l &gt;= r) return;
     int m = (l + r) / 2;
@@ -352,15 +356,18 @@
     mergeSort(arr, m + 1, r);
     merge(arr, l, m, r);  // 두 구간 병합
 }
-// merge()에서 보조 배열로 정렬 후 복사</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">void merge_sort(int arr[], int l, int r) {
+// merge()에서 보조 배열로 정렬 후 복사
+// 사용 예: mergeSort(arr, 0, arr.length - 1);</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* 병합 정렬: 구간 [l, r]을 반으로 나누어 각각 재귀 정렬한 뒤, merge(arr, l, m, r)로 두 구간을 합침.
+ * merge: 보조 배열에 arr[l..m]과 arr[m+1..r]을 정렬하며 합쳐서 arr에 다시 복사. O(n log n), 안정 정렬 */
+void merge_sort(int arr[], int l, int r) {
     if (l &gt;= r) return;
     int m = (l + r) / 2;
     merge_sort(arr, l, m);
     merge_sort(arr, m + 1, r);
     merge(arr, l, m, r);
 }
-// O(n log n)</code></pre></div>
+/* 사용 예: merge_sort(arr, 0, n - 1); 호출 전 merge() 함수와 보조 배열 구현 필요 */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

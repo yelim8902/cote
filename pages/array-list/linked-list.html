@@ -416,21 +416,24 @@
             <div class="code-panel">
                 <div class="code-reference">
                     <label>참고 코드</label>
-                    <div id="codePython" class="code-block active"><pre><code class="language-python">class Node:
+                    <div id="codePython" class="code-block active"><pre><code class="language-python"># 노드: 데이터와 다음 노드를 가리키는 포인터만 가짐
+class Node:
     def __init__(self, data):
         self.data = data
-        self.next = None
+        self.next = None   # 마지막 노드는 None
 
 class LinkedList:
     def __init__(self):
-        self.head = None
+        self.head = None   # 빈 리스트는 head가 None
 
-    def insert_head(self, data):   # 머리 삽입 O(1)
+    # 머리 삽입: 새 노드의 next를 기존 head로, head를 새 노드로. O(1)
+    def insert_head(self, data):
         node = Node(data)
         node.next = self.head
         self.head = node
 
-    def insert_tail(self, data):   # 꼬리 삽입 O(n)
+    # 꼬리 삽입: 맨 끝 노드(cur.next == None)까지 이동한 뒤 새 노드 연결. O(n)
+    def insert_tail(self, data):
         node = Node(data)
         if not self.head:
             self.head = node
@@ -440,11 +443,13 @@ class LinkedList:
             cur = cur.next
         cur.next = node
 
-    def delete_head(self):         # 머리 삭제 O(1)
+    # 머리 삭제: head를 head.next로 바꾸면 첫 노드 제거. O(1)
+    def delete_head(self):
         if self.head:
             self.head = self.head.next
 
-    def search(self, key):         # 탐색 O(n)
+    # 탐색: head부터 next를 따라가며 data가 key와 같은 노드 찾기. O(n)
+    def search(self, key):
         cur = self.head
         while cur:
             if cur.data == key:
@@ -452,12 +457,25 @@ class LinkedList:
             cur = cur.next
         return None
 
-    def traverse(self):             # 순회 O(n)
+    # 순회: head부터 끝까지 next로 이동하며 각 노드의 data 출력. O(n)
+    def traverse(self):
         cur = self.head
         while cur:
             print(cur.data, end=" -> ")
             cur = cur.next
-        print("None")</code></pre></div>
+        print("None")
+
+
+# 사용 예
+ll = LinkedList()
+ll.insert_tail(10)
+ll.insert_tail(20)
+ll.insert_head(5)
+ll.traverse()           # 5 -> 10 -> 20 -> None
+ll.delete_head()
+ll.traverse()           # 10 -> 20 -> None
+n = ll.search(20)
+print(n.data if n else None)  # 20</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">class Node {
     int data;
     Node next;
@@ -502,40 +520,56 @@ class LinkedList {
         }
         System.out.println("null");
     }
+
+    public static void main(String[] args) {
+        LinkedList ll = new LinkedList();
+        ll.insertTail(10);
+        ll.insertTail(20);
+        ll.insertHead(5);
+        ll.traverse();      // 5 -> 10 -> 20 -> null
+        ll.deleteHead();
+        ll.traverse();      // 10 -> 20 -> null
+    }
 }</pre></div>
-                    <div id="codeC" class="code-block"><pre>#include &lt;stdio.h&gt;
+                    <div id="codeC" class="code-block"><pre><code class="language-c">#include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 
+/* 노드: 데이터 + 다음 노드를 가리키는 포인터. 마지막 노드는 next == NULL */
 typedef struct Node {
     int data;
     struct Node* next;
 } Node;
 
+/* 새 노드 할당 후 data 설정, next는 NULL. 호출측에서 free 필요 */
 Node* create_node(int data) {
     Node* n = (Node*)malloc(sizeof(Node));
     n->data = data; n->next = NULL;
     return n;
 }
 
-void insert_head(Node** head, int data) {  /* 머리 삽입 O(1) */
+/* 머리 삽입 O(1): 새 노드의 next를 현재 head로 두고, head를 새 노드로 변경 */
+void insert_head(Node** head, int data) {
     Node* node = create_node(data);
     node->next = *head;
     *head = node;
 }
 
-void insert_tail(Node** head, int data) {  /* 꼬리 삽입 O(n) */
+/* 꼬리 삽입 O(n): 리스트가 비면 head가 새 노드. 아니면 next가 NULL인 노드까지 이동 후 연결 */
+void insert_tail(Node** head, int data) {
     Node* node = create_node(data);
     if (!*head) { *head = node; return; }
     Node* cur = *head;
-    while (cur->next) cur = cur->next;
+    while (cur->next) cur = cur->next;  /* 마지막 노드 찾기 */
     cur->next = node;
 }
 
-void delete_head(Node** head) {           /* 머리 삭제 O(1) */
+/* 머리 삭제 O(1): head가 있으면 head를 head->next로 바꿔서 첫 노드 제거 (기존 첫 노드 메모리 해제는 별도) */
+void delete_head(Node** head) {
     if (*head) *head = (*head)->next;
 }
 
-Node* search(Node* head, int key) {       /* 탐색 O(n) */
+/* 탐색 O(n): head부터 next를 따라가며 data가 key인 노드 찾기. 없으면 NULL */
+Node* search(Node* head, int key) {
     while (head) {
         if (head->data == key) return head;
         head = head->next;
@@ -543,12 +577,25 @@ Node* search(Node* head, int key) {       /* 탐색 O(n) */
     return NULL;
 }
 
-void traverse(Node* head) {               /* 순회 O(n) */
+/* 순회 O(n): head부터 끝까지 next로 이동하며 각 노드 data 출력 */
+void traverse(Node* head) {
     while (head) {
         printf("%d -> ", head->data);
         head = head->next;
     }
     printf("NULL\n");
+}
+
+/* 사용 예: head는 리스트의 첫 노드를 가리키는 포인터. 빈 리스트는 head == NULL */
+int main(void) {
+    Node* head = NULL;
+    insert_tail(&amp;head, 10);
+    insert_tail(&amp;head, 20);
+    insert_head(&amp;head, 5);
+    traverse(head);   /* 5 -> 10 -> 20 -> NULL */
+    delete_head(&amp;head);
+    traverse(head);   /* 10 -> 20 -> NULL */
+    return 0;
 }</code></pre></div>
                 </div>
                 <div class="code-practice">

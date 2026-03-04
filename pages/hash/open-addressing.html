@@ -434,7 +434,13 @@ def get(table, key):
     while table[i] is not None:
         if table[i][0] == key: return table[i][1]
         i = (i + 1) % len(table)
-    return None</code></pre></div>
+    return None
+
+# 사용 예 (선형 탐사)
+# table = [None] * 10
+# insert(table, 5, 100); insert(table, 15, 200)
+# print(get(table, 5))   # 100
+# print(get(table, 15)) # 200</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">int hashFn(int key, int size) { return key % size; }
 void insert(Entry[] table, int key, Object value) {
     int i = hashFn(key, table.length);
@@ -449,14 +455,23 @@ Object get(Entry[] table, int key) {
         i = (i + 1) % table.length;
     }
     return null;
-}</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">int hash_fn(int key, int size) { return key % size; }
+}
+// 사용 예: Entry[] table = new Entry[10]; insert(table, 5, 100); insert(table, 15, 200); get(table, 5);</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* 해시 함수: key % size 로 초기 버킷 인덱스. size는 테이블 크기 */
+int hash_fn(int key, int size) { return key % size; }
+
+/* 선형 탐사 삽입: Entry는 { key, val, used }. used==1이면 슬롯 사용 중.
+ * i = hash_fn(key)에서 시작해, t[i].used이고 key가 다르면 i = (i+1) % size 로 다음 슬롯.
+ * 빈 슬롯이 나오거나 같은 key를 찾으면 그 자리에 key, val 저장하고 used=1. */
 void insert(Entry *t, int size, int key, int val) {
     int i = hash_fn(key, size);
-    while (t[i].used && t[i].key != key)
+    while (t[i].used &amp;&amp; t[i].key != key)
         i = (i + 1) % size;
     t[i].key = key; t[i].val = val; t[i].used = 1;
 }
+
+/* 검색: hash_fn(key)부터 used인 동안 key 비교. 같으면 val 반환.
+ * used인데 key가 다르면 (i+1)%size로 계속. 빈 슬롯(used==0) 나오면 없음 → -1 */
 int get(Entry *t, int size, int key) {
     int i = hash_fn(key, size);
     while (t[i].used) {
@@ -464,7 +479,9 @@ int get(Entry *t, int size, int key) {
         i = (i + 1) % size;
     }
     return -1;
-}</code></pre></div>
+}
+
+/* 사용 예: Entry t[10]; 전부 used=0으로 초기화. insert(t, 10, 5, 100); get(t, 10, 5); */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

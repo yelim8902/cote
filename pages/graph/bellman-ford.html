@@ -475,7 +475,10 @@
                 dist[v] = dist[u] + w
     for u, v, w in edges:  # 음수 사이클 검사
         if dist[u] + w < dist[v]: return None
-    return dist</code></pre></div>
+    return dist
+
+# 사용 예: edges = [(0,1,2),(0,2,4),(1,2,1),(1,3,7),(2,3,3)]; n=4
+# dist = bellman_ford(edges, n, 0)  # 0에서 각 정점까지 최단거리</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">int[] bellmanFord(List<int[]> edges, int n, int start) {
     int[] dist = new int[n];
     Arrays.fill(dist, Integer.MAX_VALUE);
@@ -489,19 +492,26 @@
     for (int[] e : edges)
         if (dist[e[0]] + e[2] < dist[e[1]]) return null; // 음수 사이클
     return dist;
-}</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">void bellman_ford(Edge *edges, int E, int n, int start, int *dist) {
-    for (int i = 0; i < n; i++) dist[i] = INT_MAX;
+}
+// 사용 예: List<int[]> edges = ...; int[] d = bellmanFord(edges, n, 0);</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* 벨만-포드: 음수 간선 허용. start에서 각 정점까지 최단거리. E = 간선 개수, n = 정점 개수.
+ * Edge는 .u, .v, .w (시작, 끝, 가중치). dist 배열에 결과 저장. */
+void bellman_ford(Edge *edges, int E, int n, int start, int *dist) {
+    int i, j;
+    for (i = 0; i &lt; n; i++) dist[i] = INT_MAX;
     dist[start] = 0;
-    for (int i = 0; i < n - 1; i++)
-        for (int j = 0; j < E; j++) {
+    /* 완화: n-1번 반복. 매번 모든 간선 (u,v,w)에 대해 dist[u]+w < dist[v]면 dist[v] 갱신 */
+    for (i = 0; i &lt; n - 1; i++)
+        for (j = 0; j &lt; E; j++) {
             int u = edges[j].u, v = edges[j].v, w = edges[j].w;
-            if (dist[u] != INT_MAX && dist[u] + w < dist[v])
+            if (dist[u] != INT_MAX &amp;&amp; dist[u] + w &lt; dist[v])
                 dist[v] = dist[u] + w;
         }
-    for (int j = 0; j < E; j++)
-        if (dist[edges[j].u] + edges[j].w < dist[edges[j].v]) return; // 음수 사이클
-}</code></pre></div>
+    /* n번째에 또 갱신되면 음수 사이클 존재 → 결과 무의미, return 등으로 처리 */
+    for (j = 0; j &lt; E; j++)
+        if (dist[edges[j].u] + edges[j].w &lt; dist[edges[j].v]) return;
+}
+/* 사용 예: Edge edges[]; int dist[MAX]; bellman_ford(edges, E, n, 0, dist); */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

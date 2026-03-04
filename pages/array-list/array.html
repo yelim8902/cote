@@ -415,7 +415,15 @@ arr.insert(2, 25)    # 인덱스 2에 25 삽입
 arr.pop(1)           # 인덱스 1 제거
 arr.remove(30)       # 값 30 제거
 
-# 정적처럼 쓰려면 크기 고정 후 인덱스로만 접근</code></pre></div>
+# 정적처럼 쓰려면 크기 고정 후 인덱스로만 접근
+
+# 사용 예
+arr = [10, 20, 30, 40]
+print(arr[2])        # 30
+arr.insert(2, 25)    # [10, 20, 25, 30, 40]
+arr.pop(1)           # [10, 25, 30, 40]
+for v in arr:
+    print(v, end=" ")  # 10 25 30 40</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">// Java: 정적 배열 / ArrayList(동적)
 int[] staticArr = new int[10];  // 정적
 staticArr[0] = 5;               // 접근·수정 O(1)
@@ -429,30 +437,51 @@ list.remove(0);                 // 인덱스 0 삭제 O(n)
 
 // 순회
 for (int i = 0; i &lt; list.size(); i++)
-    System.out.println(list.get(i));</code></pre></div>
+    System.out.println(list.get(i));
+
+// 사용 예
+ArrayList&lt;Integer&gt; list = new ArrayList&lt;&gt;();
+list.add(10); list.add(20); list.add(30);
+list.add(1, 15);        // [10, 15, 20, 30]
+list.remove(0);         // [15, 20, 30]
+System.out.println(list.get(1));  // 20</code></pre></div>
                     <div id="codeC" class="code-block"><pre><code class="language-c">#include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 
-// 정적 배열: 접근 O(1)
+/* ========== 정적 배열 ==========
+ * 컴파일 시 크기가 고정. 인덱스로 직접 접근 → O(1) */
 int arr[100];
-arr[0] = 5;  int x = arr[2];
+arr[0] = 5;       /* 0번 인덱스에 쓰기 */
+int x = arr[2];  /* 2번 인덱스 읽기 */
 
-// 동적 배열: malloc + 인덱스 접근
+/* ========== 동적 배열 ==========
+ * malloc으로 힙에 할당. 사용 후 free() 필요. 접근 역시 O(1) */
 int n = 10;
 int* dyn = (int*)malloc(n * sizeof(int));
 dyn[0] = 1;  dyn[1] = 2;
 
-// 삽입(중간): 뒤 요소들 밀기 O(n)
-// 삭제(중간): 뒤 요소들 당기기 O(n)
+/* ========== 중간 삽입 O(n) ==========
+ * a: 배열 포인터, len: 현재 원소 개수(포인터로 갱신), cap: 최대 용량
+ * idx 위치에 val 삽입 → idx 이후 원소들을 한 칸씩 뒤로 밀고, idx에 val 저장 */
 void insert_at(int* a, int* len, int cap, int idx, int val) {
-    if (*len >= cap) return;
-    for (int i = *len; i &gt; idx; i--) a[i] = a[i-1];
+    if (*len >= cap) return;   /* 꽉 찼으면 삽입 불가 */
+    for (int i = *len; i &gt; idx; i--) a[i] = a[i-1];  /* 뒤에서부터 밀기 */
     a[idx] = val; (*len)++;
 }
+
+/* ========== 중간 삭제 O(n) ==========
+ * idx 위치 원소 제거 → idx+1 이후 원소들을 한 칸씩 앞으로 당김 */
 void delete_at(int* a, int* len, int idx) {
     for (int i = idx; i &lt; *len-1; i++) a[i] = a[i+1];
     (*len)--;
-}</code></pre></div>
+}
+
+/* 사용 예: len은 현재 길이를 담고 있어야 삽입/삭제 시 갱신됨 */
+int a[10], len = 0, cap = 10;
+insert_at(a, &amp;len, cap, 0, 10);
+insert_at(a, &amp;len, cap, 1, 20);
+insert_at(a, &amp;len, cap, 2, 30);
+delete_at(a, &amp;len, 0);   /* a[] = {20, 30}, len=2 */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

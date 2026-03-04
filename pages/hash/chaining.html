@@ -262,23 +262,64 @@
             <div class="code-panel">
                 <div class="code-reference">
                     <label>참고 코드</label>
-                    <div id="codePython" class="code-block active"><pre><code class="language-python"># Python: dict = 해시 테이블
+                    <div id="codePython" class="code-block active"><pre><code class="language-python"># Python의 dict는 내부적으로 해시 테이블(체이닝)로 구현됨
 d = {}
-d["key"] = 10    # 삽입 O(1)
-x = d.get("key") # 검색 O(1)
-del d["key"]     # 삭제 O(1)
-# 체이닝: 버킷마다 리스트, 충돌 시 append</code></pre></div>
-                    <div id="codeJava" class="code-block"><pre><code class="language-java">HashMap&lt;String, Integer&gt; map = new HashMap&lt;&gt;();
-map.put("key", 10);     // 삽입 O(1)
-int x = map.get("key"); // 검색 O(1)
-map.remove("key");      // 삭제 O(1)
-// 내부: 버킷 + 체이닝(링크드 리스트 등)</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">// 체이닝: 버킷 배열 + 노드 리스트
+
+# 삽입: 해시(key) → 버킷 인덱스 → 해당 버킷 리스트에 (key, value) 추가. 평균 O(1)
+d["key"] = 10
+
+# 검색: 해시(key)로 버킷 찾은 뒤, 그 버킷의 리스트에서 key로 탐색. 평균 O(1)
+x = d.get("key")
+
+# 삭제: 검색과 동일하게 버킷 찾아서 해당 노드 제거. 평균 O(1)
+del d["key"]
+
+# 체이닝: 같은 버킷으로 해시되는 키들은 하나의 리스트(체인)로 연결됨
+
+# 사용 예
+d = {}
+d["apple"] = 10
+d["banana"] = 20
+print(d.get("apple"))   # 10
+del d["apple"]
+print(d.get("apple"))   # None</code></pre></div>
+                    <div id="codeJava" class="code-block"><pre><code class="language-java">// HashMap 내부: 버킷 배열 + 충돌 시 체이닝(링크드 리스트 또는 트리)
+HashMap&lt;String, Integer&gt; map = new HashMap&lt;&gt;();
+
+// put: key 해시 → 버킷 인덱스 → 버킷에 노드 추가 또는 기존 키면 값 갱신. 평균 O(1)
+map.put("key", 10);
+
+// get: 해시로 버킷 찾고, 체인을 따라 key 비교. 평균 O(1)
+int x = map.get("key");
+
+// remove: get과 같이 노드 찾은 뒤 제거. 평균 O(1)
+map.remove("key");
+
+// 사용 예
+HashMap&lt;String, Integer&gt; map = new HashMap&lt;&gt;();
+map.put("apple", 10);
+map.put("banana", 20);
+System.out.println(map.get("apple"));  // 10
+map.remove("apple");</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* ========== 체이닝 방식 해시 테이블 ==========
+ * 버킷 배열: 각 버킷은 연결 리스트의 head. 충돌 시 같은 버킷의 리스트에 노드 추가 */
+
 typedef struct Node { char* key; int val; struct Node* next; } Node;
-Node* buckets[BUCKETS];
+Node* buckets[BUCKETS];  /* BUCKETS는 상수(예: 7). 초기화 시 각 원소 NULL */
+
+/* 해시 함수: key를 정수로 바꾼 뒤 BUCKETS로 나눈 나머지 → 0 ~ BUCKETS-1 버킷 인덱스
+ * 문자열 key면 각 문자 합이나 다항식 등으로 idx 계산 후 return idx % BUCKETS; */
 int hash_fn(char* key) { /* ... */ return idx % BUCKETS; }
-void put(char* k, int v);  // 해시 후 해당 버킷 리스트에 추가
-int get(char* k);         // 해시 후 리스트 탐색</code></pre></div>
+
+/* put: hash_fn(k)로 버킷 i 계산. buckets[i] 리스트 맨 앞에 (key, v) 노드 추가.
+ * 기존에 같은 key가 있으면 값만 갱신하거나, 새 노드를 head에 붙임. 평균 O(1) */
+void put(char* k, int v);
+
+/* get: hash_fn(k)로 버킷 i 찾고, buckets[i] 리스트를 순회하며 key 비교.
+ * 찾으면 val 반환, 없으면 에러값 또는 NULL. 평균 O(1) */
+int get(char* k);
+
+/* 사용 예: buckets 전부 NULL로 초기화 후 put("apple", 10); put("banana", 20); get("apple") → 10 */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

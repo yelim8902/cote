@@ -406,7 +406,11 @@ def add_edge(u, v, w=1):
 for v in range(V):
     for u, w in adj[v]:
         # v -> u, 가중치 w
-        pass</code></pre></div>
+        pass
+
+# 사용 예 (V=3)
+# adj = [[] for _ in range(3)]
+# add_edge(0, 1, 2); add_edge(0, 2, 1); add_edge(1, 2, 3)</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">// List<List<int[]>> or List<List<Edge>>
 List<List<int[]>> adj = new ArrayList<>();
 for (int i = 0; i < V; i++) adj.add(new ArrayList<>());
@@ -418,19 +422,24 @@ void addEdge(int u, int v, int w) {
 for (int v = 0; v < V; v++)
     for (int[] e : adj.get(v)) {
         int u = e[0], w = e[1];
-    }</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">// typedef struct { int to, w; } Edge; Edge adj[MAX_V][MAX_E];
+    }
+// 사용 예: addEdge(0,1,2); addEdge(0,2,1); addEdge(1,2,3);</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* 인접 리스트 (고정 배열 버전): adj[v]는 정점 v에서 나가는 간선 배열.
+ * deg[v] = v의 나가는 간선 개수. adj[v][0] ~ adj[v][deg[v]-1] 이 v의 인접 간선. */
 typedef struct { int to, w; } Edge;
-Edge adj[MAX_V][MAX_E];
-int deg[MAX_V];  // deg[v] = outgoing count
+Edge adj[MAX_V][MAX_E];  /* MAX_V: 최대 정점 수, MAX_E: 정점당 최대 간선 수 */
+int deg[MAX_V];         /* deg[v] = v에서 나가는 간선 개수. 초기화 시 0 */
 
+/* 간선 추가: u → v, 가중치 w. adj[u]의 다음 빈 칸에 (v, w) 넣고 deg[u] 증가 */
 void add_edge(int u, int v, int w) {
     adj[u][deg[u]++] = (Edge){v, w};
 }
 
-for (int i = 0; i < deg[v]; i++) {
+/* 정점 v의 모든 인접 간선 순회: adj[v][0..deg[v]-1] 에서 to, w 읽기 */
+for (int i = 0; i &lt; deg[v]; i++) {
     int u = adj[v][i].to, w = adj[v][i].w;
-}</code></pre></div>
+}
+/* 사용 예: deg 전부 0으로 둔 뒤 add_edge(0,1,2); add_edge(0,2,1); add_edge(1,2,3); */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

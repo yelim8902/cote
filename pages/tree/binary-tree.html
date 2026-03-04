@@ -338,7 +338,13 @@ def inorder(root):    # 중위: 왼-부모-오
     if root: inorder(root.left); print(root.val); inorder(root.right)
 def postorder(root):  # 후위: 왼-오-부모
     if root: postorder(root.left); postorder(root.right); print(root.val)
-# 레벨 순회: 큐로 BFS</code></pre></div>
+# 레벨 순회: 큐로 BFS
+
+# 사용 예 (Node는 left, right, val 갖는 클래스라고 가정)
+# root = Node(1); root.left = Node(2); root.right = Node(3)
+# preorder(root)  # 1 2 3
+# inorder(root)   # 2 1 3
+# postorder(root) # 2 3 1</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">void preorder(Node root) {
     if (root != null) { print(root.val); preorder(root.left); preorder(root.right); }
 }
@@ -347,16 +353,27 @@ void inorder(Node root) {
 }
 void postorder(Node root) {
     if (root != null) { postorder(root.left); postorder(root.right); print(root.val); }
-}</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">void preorder(Node* r) {
+}
+// 사용 예: Node root = new Node(1); root.left = new Node(2); root.right = new Node(3);
+// preorder(root); inorder(root); postorder(root);</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* 전위 순회: (부모 → 왼쪽 서브트리 → 오른쪽 서브트리). 루트를 먼저 출력 */
+void preorder(Node* r) {
     if (r) { printf("%d ", r->val); preorder(r->left); preorder(r->right); }
 }
+
+/* 중위 순회: (왼쪽 → 부모 → 오른쪽). BST면 오름차순으로 출력됨 */
 void inorder(Node* r) {
     if (r) { inorder(r->left); printf("%d ", r->val); inorder(r->right); }
 }
+
+/* 후위 순회: (왼쪽 → 오른쪽 → 부모). 자식 처리 후 부모 출력 (삭제 시 유용) */
 void postorder(Node* r) {
     if (r) { postorder(r->left); postorder(r->right); printf("%d ", r->val); }
-}</code></pre></div>
+}
+
+/* 사용 예: Node는 val, left, right 멤버. root가 NULL이면 빈 트리 */
+/* Node* root = new_node(1); root->left = new_node(2); root->right = new_node(3);
+   preorder(root); inorder(root); postorder(root); */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

@@ -399,7 +399,7 @@
         <a href="../../index.html" class="back-link">← 메인으로</a>
         <div class="control-panel">
             <button class="btn-primary" onclick="visualizer.generateRandomGraph()">Generate Random Graph</button>
-            <button class="btn-secondary" onclick="visualizer.reset()">Reset</button>
+            <button class="btn-secondary" onclick="visualizer.reset()">초기화</button>
         </div>
 
         <div class="info-panel">
@@ -408,11 +408,11 @@
                 <div class="value">Floyd-Warshall</div>
             </div>
             <div class="info-item">
-                <h3>Step</h3>
+                <h3>단계</h3>
                 <div class="value" id="stepInfo">0 / 0</div>
             </div>
             <div class="info-item">
-                <h3>Time Complexity</h3>
+                <h3>시간 복잡도</h3>
                 <div class="value">O(V³)</div>
             </div>
             <div class="info-item">
@@ -441,8 +441,8 @@
         </div>
 
         <div class="navigation-controls">
-            <button class="btn-secondary" id="prevBtn" onclick="visualizer.previousStep()" disabled="">Previous</button>
-            <button class="btn-primary" id="nextBtn" onclick="visualizer.nextStep()" disabled="">Next Step</button>
+            <button class="btn-secondary" id="prevBtn" onclick="visualizer.previousStep()" disabled="">이전</button>
+            <button class="btn-primary" id="nextBtn" onclick="visualizer.nextStep()" disabled="">다음 단계</button>
             <button class="btn-primary" id="startBtn" onclick="visualizer.startAlgorithm()" disabled="">Start Algorithm</button>
         </div>
 
@@ -469,7 +469,11 @@
                 if dist[i][k] + dist[k][j] < dist[i][j]:
                     dist[i][j] = dist[i][k] + dist[k][j]
     return dist
-# graph: 인접 행렬, 무한대는 큰 값. dist[i][i]=0</code></pre></div>
+# graph: 인접 행렬, 무한대는 큰 값. dist[i][i]=0
+
+# 사용 예
+# INF = 10**9; graph = [[0,1,INF],[INF,0,1],[1,INF,0]]
+# dist = floyd_warshall(3, graph)  # 모든 쌍 최단거리</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">void floydWarshall(int n, int[][] dist) {
     for (int k = 0; k < n; k++)
         for (int i = 0; i < n; i++)
@@ -477,15 +481,19 @@
                 if (dist[i][k] + dist[k][j] < dist[i][j])
                     dist[i][j] = dist[i][k] + dist[k][j];
 }
-// dist: 인접 행렬, INF 미연결, dist[i][i]=0</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">void floyd_warshall(int n, int dist[][MAX]) {
-    for (int k = 0; k < n; k++)
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                if (dist[i][k] + dist[k][j] < dist[i][j])
+// dist: 인접 행렬, INF 미연결, dist[i][i]=0
+// 사용 예: floydWarshall(n, dist); 후 dist[i][j]가 i→j 최단거리</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* 플로이드-워셜: 모든 쌍 최단 거리. dist[i][j] = i→j 최단거리 (입력이자 출력).
+ * 초기: 인접 행렬, 간선 없으면 INF, dist[i][i]=0. 음수 사이클 없어야 함. */
+void floyd_warshall(int n, int dist[][MAX]) {
+    int k, i, j;
+    for (k = 0; k &lt; n; k++)           /* 경유지 k */
+        for (i = 0; i &lt; n; i++)
+            for (j = 0; j &lt; n; j++)
+                if (dist[i][k] + dist[k][j] &lt; dist[i][j])
                     dist[i][j] = dist[i][k] + dist[k][j];
 }
-/* dist: 인접행렬, INF 미연결, dist[i][i]=0 */</code></pre></div>
+/* 사용 예: dist 초기화 후 floyd_warshall(n, dist); dist[i][j]가 i→j 최단거리 */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

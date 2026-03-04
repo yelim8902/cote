@@ -372,7 +372,7 @@
                 </div>
             </div>
             <button class="btn btn-primary" id="startBtn">Start Algorithm</button>
-            <button class="btn btn-secondary" id="resetBtn">Reset</button>
+            <button class="btn btn-secondary" id="resetBtn">초기화</button>
         </div>
 
         <div class="info-panel">
@@ -381,15 +381,15 @@
                 <div class="value">Dijkstra's</div>
             </div>
             <div class="info-item">
-                <h3>Step</h3>
+                <h3>단계</h3>
                 <div class="value" id="stepCounter">0 / 0</div>
             </div>
             <div class="info-item">
-                <h3>Time Complexity</h3>
+                <h3>시간 복잡도</h3>
                 <div class="value">O(V²)</div>
             </div>
             <div class="info-item">
-                <h3>Space Complexity</h3>
+                <h3>공간 복잡도</h3>
                 <div class="value">O(V)</div>
             </div>
         </div>
@@ -399,8 +399,8 @@
         </div>
 
         <div class="navigation">
-            <button class="btn btn-secondary" id="prevBtn" disabled="">Previous</button>
-            <button class="btn btn-secondary" id="nextBtn" disabled="">Next</button>
+            <button class="btn btn-secondary" id="prevBtn" disabled="">이전</button>
+            <button class="btn btn-secondary" id="nextBtn" disabled="">다음</button>
         </div>
 
         <div class="visualization">
@@ -408,7 +408,7 @@
         </div>
 
         <div class="shortest-paths" id="shortestPaths" style="display: none;">
-            <h3>Shortest Paths from Source</h3>
+            <h3>시작점으로부터 최단 경로</h3>
             <div class="path-list" id="pathList"></div>
         </div>
 
@@ -436,7 +436,10 @@ def dijkstra(adj, start):
             if dist[v] + w < dist[u]:
                 dist[u] = dist[v] + w
                 heapq.heappush(pq, (dist[u], u))
-    return dist</code></pre></div>
+    return dist
+
+# 사용 예: adj = [[(1,4),(2,2)],[(2,1),(3,5)],[(3,3)],[]]  # 0~3 정점
+# dist = dijkstra(adj, 0)  # dist[0]=0, dist[1]=4, dist[2]=2, dist[3]=5</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">void dijkstra(List<List<int[]>> adj, int start) {
     int n = adj.size();
     int[] dist = new int[n];
@@ -456,22 +459,28 @@ def dijkstra(adj, start):
             }
         }
     }
-}</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">void dijkstra(int n, int adj[][], int start, int *dist) {
-    for (int i = 0; i < n; i++) dist[i] = INT_MAX;
+}
+// 사용 예: dijkstra(adj, 0); 후 dist[] 배열에서 최단 거리 확인</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* 다익스트라: 음수 간선 없을 때 한 정점(start)에서 모든 정점까지 최단 거리.
+ * adj: 인접 행렬, adj[v][u] = v→u 가중치 (없으면 0). dist: 결과로 채울 배열. */
+void dijkstra(int n, int adj[][MAX], int start, int *dist) {
+    int i, u, v;
+    for (i = 0; i &lt; n; i++) dist[i] = INT_MAX;
     dist[start] = 0;
     int vis[MAX] = {0};
-    for (int step = 0; step < n; step++) {
-        int v = -1;
-        for (int i = 0; i < n; i++)
-            if (!vis[i] && (v == -1 || dist[i] < dist[v])) v = i;
+    /* n번 반복: 매번 방문 안 한 정점 중 dist가 최소인 v를 골라 확정, 그 v의 인접 정점 거리 갱신 */
+    for (int step = 0; step &lt; n; step++) {
+        v = -1;
+        for (i = 0; i &lt; n; i++)
+            if (!vis[i] &amp;&amp; (v == -1 || dist[i] &lt; dist[v])) v = i;
         if (v == -1 || dist[v] == INT_MAX) break;
         vis[v] = 1;
-        for (int u = 0; u < n; u++)
-            if (adj[v][u] && dist[v] + adj[v][u] < dist[u])
+        for (u = 0; u &lt; n; u++)
+            if (adj[v][u] &amp;&amp; dist[v] + adj[v][u] &lt; dist[u])
                 dist[u] = dist[v] + adj[v][u];
     }
-}</code></pre></div>
+}
+/* 사용 예: dist[MAX] 선언 후 dijkstra(n, adj, 0, dist); dist[i]가 0→i 최단거리 */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

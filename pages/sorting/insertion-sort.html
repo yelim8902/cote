@@ -321,7 +321,11 @@
             arr[j + 1] = arr[j]
             j -= 1
         arr[j + 1] = key
-# 정렬된 구간에 삽입, O(n²)</code></pre></div>
+# 정렬된 구간에 삽입, O(n²)
+
+# 사용 예
+# arr = [12, 11, 13, 5, 6]
+# insertion_sort(arr)  # arr = [5, 6, 11, 12, 13]</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">void insertionSort(int[] arr) {
     for (int i = 1; i &lt; arr.length; i++) {
         int key = arr[i], j = i - 1;
@@ -330,16 +334,21 @@
         }
         arr[j + 1] = key;
     }
-}</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">void insertion_sort(int arr[], int n) {
-    for (int i = 1; i &lt; n; i++) {
-        int key = arr[i], j = i - 1;
+}
+// 사용 예: int[] arr = {12, 11, 13}; insertionSort(arr);</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* 삽입 정렬: arr[0..i-1]은 이미 정렬되어 있다고 보고, arr[i]를 알맞은 자리에 삽입.
+ * key = arr[i]를 왼쪽으로 보내며 key보다 큰 원소는 한 칸씩 오른쪽으로 밀고, 빈 자리에 key 저장. O(n²) */
+void insertion_sort(int arr[], int n) {
+    int i, j, key;
+    for (i = 1; i &lt; n; i++) {
+        key = arr[i]; j = i - 1;
         while (j &gt;= 0 &amp;&amp; arr[j] &gt; key) {
             arr[j + 1] = arr[j]; j--;
         }
         arr[j + 1] = key;
     }
-}</code></pre></div>
+}
+/* 사용 예: int arr[] = {12, 11, 13}; insertion_sort(arr, 3); */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

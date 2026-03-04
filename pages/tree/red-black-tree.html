@@ -319,19 +319,19 @@
         <a href="../../index.html" class="back-link">← 메인으로</a>
         <div class="control-panel">
             <div class="input-group">
-                <label for="valueInput">Value</label>
-                <input type="number" id="valueInput" placeholder="Enter value">
+                <label for="valueInput">값</label>
+                <input type="number" id="valueInput" placeholder="값 입력">
             </div>
             <div class="input-group">
-                <label for="operationSelect">Operation</label>
+                <label for="operationSelect">연산</label>
                 <select id="operationSelect">
-                    <option value="insert">Insert</option>
-                    <option value="delete">Delete</option>
-                    <option value="search">Search</option>
+                    <option value="insert">삽입</option>
+                    <option value="delete">삭제</option>
+                    <option value="search">탐색</option>
                 </select>
             </div>
-            <button class="btn-primary" id="executeBtn">Execute</button>
-            <button class="btn-secondary" id="resetBtn">Reset Tree</button>
+            <button class="btn-primary" id="executeBtn">실행</button>
+            <button class="btn-secondary" id="resetBtn">트리 초기화</button>
         </div>
 
         <div class="info-panel">
@@ -340,15 +340,15 @@
                 <div class="value">Red-Black Tree</div>
             </div>
             <div class="info-item">
-                <div class="label">Step</div>
+                <div class="label">단계</div>
                 <div class="value" id="stepCounter">0 / 0</div>
             </div>
             <div class="info-item">
-                <div class="label">Time Complexity</div>
+                <div class="label">시간 복잡도</div>
                 <div class="value" id="timeComplexity">O(log n)</div>
             </div>
             <div class="info-item">
-                <div class="label">Space Complexity</div>
+                <div class="label">공간 복잡도</div>
                 <div class="value">O(n)</div>
             </div>
         </div>
@@ -364,8 +364,8 @@
         </div>
 
         <div class="navigation">
-            <button class="btn-secondary" id="prevBtn" disabled="">Previous</button>
-            <button class="btn-secondary" id="nextBtn" disabled="">Next</button>
+            <button class="btn-secondary" id="prevBtn" disabled="">이전</button>
+            <button class="btn-secondary" id="nextBtn" disabled="">다음</button>
         </div>
 
         <section class="code-learning-section">
@@ -390,7 +390,11 @@ def _insert(node, key):
     if not node: return Node(key, RED)
     if key < node.val: node.left = _insert(node.left, key)
     else: node.right = _insert(node.right, key)
-    return fix_up(node)  # 색/회전으로 속성 복구</code></pre></div>
+    return fix_up(node)  # 색/회전으로 속성 복구
+
+# 사용 예 (Node는 val, left, right, color)
+# root = None
+# root = insert(root, 10); root = insert(root, 20); root = insert(root, 5)</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">void insert(int key) {
     root = insertRec(root, key);
     root.color = BLACK;
@@ -401,18 +405,24 @@ Node insertRec(Node node, int key) {
     else node.right = insertRec(node.right, key);
     return fixUp(node);
 }
-// fixUp: 색 반전, 좌/우 회전으로 속성 유지</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">void insert(int key) {
+// fixUp: 색 반전, 좌/우 회전으로 속성 유지
+// 사용 예: insert(10); insert(20); insert(5);</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* 삽입: BST처럼 재귀 삽입 후 루트를 항상 BLACK으로. root는 전역 또는 클래스 멤버 */
+void insert(int key) {
     root = insert_rec(root, key);
     root->color = BLACK;
 }
+
+/* 재귀 삽입: 빈 노드면 RED 노드 생성. 작으면 왼쪽, 크면 오른쪽. 돌아오면서 fix_up으로 속성 복구.
+ * fix_up: 이중 RED 등 위반 시 색 반전(flip) 또는 좌/우 회전으로 RBT 속성 유지 */
 Node* insert_rec(Node* n, int key) {
     if (!n) return new_node(key, RED);
     if (key < n->val) n->left = insert_rec(n->left, key);
     else n->right = insert_rec(n->right, key);
     return fix_up(n);
 }
-/* fix_up: 색 반전, 좌/우 회전 */</code></pre></div>
+
+/* 사용 예: 전역 root = NULL에서 시작. insert(10); insert(20); insert(5); */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

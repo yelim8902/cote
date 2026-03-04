@@ -308,43 +308,43 @@
       <a href="../../index.html" class="back-link">← 메인으로</a>
       <div class="control-panel">
         <div class="input-group">
-          <label for="operationType">Operation</label>
+          <label for="operationType">연산</label>
           <select id="operationType">
-            <option value="enqueue">Enqueue</option>
-            <option value="dequeue">Dequeue</option>
+            <option value="enqueue">Enqueue (삽입)</option>
+            <option value="dequeue">Dequeue (삭제)</option>
           </select>
         </div>
         <div class="input-group">
-          <label for="valueInput">Value (for Enqueue)</label>
-          <input type="text" id="valueInput" placeholder="Enter value" />
+          <label for="valueInput">값 (Enqueue 시)</label>
+          <input type="text" id="valueInput" placeholder="값 입력" />
         </div>
-        <button class="btn btn-primary" id="addStepBtn">Add Step</button>
-        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+        <button class="btn btn-primary" id="addStepBtn">단계 추가</button>
+        <button class="btn btn-secondary" id="resetBtn">초기화</button>
       </div>
 
       <div class="info-panel">
         <div class="info-item">
-          <h3>Data Structure</h3>
-          <div class="value">Queue</div>
+          <h3>자료구조</h3>
+          <div class="value">큐</div>
         </div>
         <div class="info-item">
-          <h3>Step</h3>
+          <h3>단계</h3>
           <div class="value" id="currentStep">0 / 0</div>
         </div>
         <div class="info-item">
-          <h3>Time Complexity</h3>
+          <h3>시간 복잡도</h3>
           <div class="value">O(1)</div>
         </div>
         <div class="info-item">
-          <h3>Space Complexity</h3>
+          <h3>공간 복잡도</h3>
           <div class="value">O(n)</div>
         </div>
       </div>
 
       <div class="step-info">
-        <h3>Current Step</h3>
+        <h3>현재 단계</h3>
         <p id="stepDescription">
-          Add operations to see step-by-step queue visualization
+          연산을 추가하면 단계별 큐 시각화가 진행됩니다
         </p>
       </div>
 
@@ -352,26 +352,26 @@
         <div class="queue-container">
           <div class="queue-pointer">
             <div class="arrow">→</div>
-            <div>FRONT</div>
+            <div>앞(Front)</div>
           </div>
           <div class="queue-elements" id="queueElements">
-            <div class="empty-queue">Queue is empty</div>
+            <div class="empty-queue">큐가 비어 있습니다</div>
           </div>
           <div class="queue-pointer">
             <div class="arrow">←</div>
-            <div>REAR</div>
+            <div>뒤(Rear)</div>
           </div>
         </div>
       </div>
 
       <div class="navigation">
         <button class="btn btn-secondary" id="prevBtn" disabled="">
-          Previous
+          이전
         </button>
-        <button class="btn btn-secondary" id="nextBtn" disabled="">Next</button>
+        <button class="btn btn-secondary" id="nextBtn" disabled="">다음</button>
       </div>
 
-      <div class="keyboard-hint">Use ← → arrow keys to navigate steps</div>
+      <div class="keyboard-hint">← → 방향키로 단계를 이동할 수 있습니다</div>
 
       <section class="code-learning-section">
         <h3>코드로 학습하기</h3>
@@ -390,7 +390,16 @@ q.append(10)   # Enqueue O(1)
 q.append(20)
 q.append(30)
 x = q.popleft()  # Dequeue O(1) → 10
-# list로 하면: q.pop(0) 은 O(n)</code></pre></div>
+# list로 하면: q.pop(0) 은 O(n)
+
+# 사용 예
+from collections import deque
+q = deque()
+q.append(10)
+q.append(20)
+q.append(30)
+print(q.popleft())   # 10
+print(q.popleft())   # 20</code></pre></div>
             <div id="codeJava" class="code-block"><pre><code class="language-java">import java.util.Queue;
 import java.util.LinkedList;
 Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();
@@ -398,18 +407,33 @@ q.offer(10);   // Enqueue O(1)
 q.offer(20);
 q.offer(30);
 int x = q.poll();  // Dequeue O(1) → 10
-// q.peek() 맨 앞 확인, q.isEmpty()</code></pre></div>
+// q.peek() 맨 앞 확인, q.isEmpty()
+
+// 사용 예
+Queue&lt;Integer&gt; q = new LinkedList&lt;&gt;();
+q.offer(10); q.offer(20); q.offer(30);
+System.out.println(q.poll());  // 10
+System.out.println(q.peek());  // 20</code></pre></div>
             <div id="codeC" class="code-block"><pre><code class="language-c">#include &lt;stdio.h&gt;
 #define MAX 100
+
+/* 큐(선형): front는 꺼낼 위치, rear는 마지막으로 넣은 위치. FIFO(First In First Out) */
 int q[MAX], front = 0, rear = -1;
 
+/* enqueue: rear를 1 증가시킨 뒤 그 자리에 x 저장. rear가 MAX-1이면 꽉 참 */
 void enqueue(int x) {
     if (rear &lt; MAX - 1) q[++rear] = x;
 }
+
+/* dequeue: front가 rear 이하일 때만 유효. q[front] 반환하고 front 1 증가. 빈 큐면 -1 */
 int dequeue() {
     return front &lt;= rear ? q[front++] : -1;
 }
-// enqueue(10); enqueue(20); dequeue();</code></pre></div>
+
+/* 사용 예: 먼저 넣은 10, 20, 30이 순서대로 나옴 */
+enqueue(10); enqueue(20); enqueue(30);
+printf("%d\n", dequeue());  /* 10 */
+printf("%d\n", dequeue());  /* 20 */</code></pre></div>
           </div>
           <div class="code-practice">
             <label>따라 적어 보기</label>

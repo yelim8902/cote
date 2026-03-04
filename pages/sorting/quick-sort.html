@@ -349,7 +349,11 @@ def partition(arr, lo, hi):
         if arr[j] &lt;= pivot: arr[i], arr[j] = arr[j], arr[i]; i += 1
     arr[i], arr[hi] = arr[hi], arr[i]
     return i
-# 평균 O(n log n)</code></pre></div>
+# 평균 O(n log n)
+
+# 사용 예
+# arr = [64, 34, 25, 12, 22, 11, 90]
+# quick_sort(arr, 0, len(arr)-1)  # arr 정렬됨</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">void quickSort(int[] arr, int lo, int hi) {
     if (lo &gt;= hi) return;
     int p = partition(arr, lo, hi);
@@ -362,20 +366,26 @@ int partition(int[] arr, int lo, int hi) {
         if (arr[j] &lt;= pivot) { int t = arr[i]; arr[i] = arr[j]; arr[j] = t; i++; }
     int t = arr[i]; arr[i] = arr[hi]; arr[hi] = t;
     return i;
-}</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">void quick_sort(int arr[], int lo, int hi) {
+}
+// 사용 예: quickSort(arr, 0, arr.length - 1);</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* 퀵 정렬: pivot(여기서는 arr[hi]) 기준으로 작은 것/큰 것 나눈 뒤, partition 인덱스 p 기준으로 왼쪽/오른쪽 재귀. 평균 O(n log n) */
+void quick_sort(int arr[], int lo, int hi) {
     if (lo &gt;= hi) return;
     int p = partition(arr, lo, hi);
     quick_sort(arr, lo, p - 1);
     quick_sort(arr, p + 1, hi);
 }
+
+/* partition: pivot = arr[hi]. arr[lo..hi]에서 pivot 이하인 원소를 앞쪽으로 모으고, 최종 위치에 pivot을 넣어 그 인덱스 반환.
+ * i는 pivot 이하가 들어갈 다음 위치. j로 순회하며 arr[j] &lt;= pivot이면 arr[i]와 스왑 후 i++ */
 int partition(int arr[], int lo, int hi) {
-    int pivot = arr[hi], i = lo;
-    for (int j = lo; j &lt; hi; j++)
-        if (arr[j] &lt;= pivot) { int t = arr[i]; arr[i] = arr[j]; arr[j] = t; i++; }
-    int t = arr[i]; arr[i] = arr[hi]; arr[hi] = t;
+    int pivot = arr[hi], i = lo, j, t;
+    for (j = lo; j &lt; hi; j++)
+        if (arr[j] &lt;= pivot) { t = arr[i]; arr[i] = arr[j]; arr[j] = t; i++; }
+    t = arr[i]; arr[i] = arr[hi]; arr[hi] = t;
     return i;
-}</code></pre></div>
+}
+/* 사용 예: quick_sort(arr, 0, n - 1); */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

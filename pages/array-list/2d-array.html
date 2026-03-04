@@ -447,7 +447,14 @@ for row in arr:
 # 열 순회: arr의 열 기준
 for c in range(len(arr[0])):
     for r in range(len(arr)):
-        print(arr[r][c], end=" ")</code></pre></div>
+        print(arr[r][c], end=" ")
+
+# 사용 예
+arr = [[1,2,3], [4,5,6], [7,8,9]]
+print(arr[1][2])   # 6
+arr[0][0] = 99
+for row in arr:
+    print(row)     # [99,2,3] [4,5,6] [7,8,9]</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">// 2차원 배열
 int[][] arr = {{1,2,3},{4,5,6},{7,8,9}};
 // 접근 O(1)
@@ -457,17 +464,34 @@ arr[0][0] = 99;
 for (int r = 0; r &lt; arr.length; r++)
     for (int c = 0; c &lt; arr[r].length; c++)
         System.out.print(arr[r][c] + " ");
-// 동적: int[][] a = new int[3][4];</code></pre></div>
+// 동적: int[][] a = new int[3][4];
+
+// 사용 예
+int[][] arr = {{1,2,3},{4,5,6},{7,8,9}};
+System.out.println(arr[1][2]);  // 6
+arr[0][0] = 99;</code></pre></div>
                     <div id="codeC" class="code-block"><pre><code class="language-c">#include &lt;stdio.h&gt;
-// 2차원 배열
-int arr[3][4] = {{1,2,3,4},{5,6,7,8},{9,10,11,12}};
-// 접근 O(1): arr[행][열]
-int x = arr[1][2];  // 7
-arr[0][0] = 99;
-// 행 순회
+
+/* ========== 2차원 배열 (행×열) ==========
+ * arr[행인덱스][열인덱스]. 메모리에 행 순서로 연속 저장됨. 접근 O(1) */
+int arr[3][4] = {
+    {1,2,3,4},   /* 0행 */
+    {5,6,7,8},   /* 1행 */
+    {9,10,11,12} /* 2행 */
+};
+
+/* 접근: arr[행][열]. 1행 2열 = 7 */
+int x = arr[1][2];  /* 7 */
+arr[0][0] = 99;    /* 0행 0열 수정 */
+
+/* 행 순회: 바깥 루프가 행, 안쪽 루프가 열 */
 for (int r = 0; r &lt; 3; r++)
     for (int c = 0; c &lt; 4; c++)
-        printf("%d ", arr[r][c]);</code></pre></div>
+        printf("%d ", arr[r][c]);
+
+/* 사용 예 */
+int arr[3][4] = {{1,2,3,4},{5,6,7,8},{9,10,11,12}};
+printf("%d\n", arr[1][2]);  /* 7 */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

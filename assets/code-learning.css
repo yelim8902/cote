@@ -2,6 +2,7 @@
  * 코드 학습 섹션 공통 스타일 (코드로 학습하기)
  * 모든 시각화 페이지에서 공통 사용
  */
+/* 블랙(다크) 코드 테마 */
 @import url('https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css');
 
 .code-learning-section {
@@ -71,8 +72,6 @@
   line-height: 1.5;
   padding: 16px;
   border-radius: 10px;
-  border: 2px solid #e9ecef;
-  background: #f8fafc;
   margin: 0;
   overflow: auto;
   min-height: 240px;
@@ -80,6 +79,14 @@
 
 .code-reference pre {
   white-space: pre;
+  border: 2px solid #3d3d3d;
+  background: #2d2d2d;
+  color: #ccc;
+}
+
+.code-practice textarea {
+  border: 2px solid #e9ecef;
+  background: #f8fafc;
 }
 
 .code-practice textarea {
@@ -109,6 +116,34 @@
   font-size: 0.9rem;
 }
 
+/* 채점 결과 */
+.code-grade-result {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  display: none;
+}
+.code-grade-result.visible {
+  display: block;
+}
+.code-grade-result.success {
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  color: #166534;
+}
+.code-grade-result.warning {
+  background: #fef9c3;
+  border: 1px solid #fde047;
+  color: #854d0e;
+}
+.code-grade-result.error {
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+}
+
 /* Prism 하이라이트 영역 보정 */
 .code-learning-section .code-reference pre {
   margin: 0;
@@ -118,7 +153,24 @@
 .code-learning-section .code-reference pre code {
   font-size: 13px;
   line-height: 1.5;
+  background: transparent !important;
+  color: #ccc;
 }
+.code-learning-section .code-reference pre .token.comment,
+.code-learning-section .code-reference pre .token.prolog,
+.code-learning-section .code-reference pre .token.doctype,
+.code-learning-section .code-reference pre .token.cdata { color: #8e908c; }
+.code-learning-section .code-reference pre .token.punctuation { color: #b4b7b4; }
+.code-learning-section .code-reference pre .token.property,
+.code-learning-section .code-reference pre .token.tag { color: #f8c555; }
+.code-learning-section .code-reference pre .token.boolean,
+.code-learning-section .code-reference pre .token.number { color: #e78c45; }
+.code-learning-section .code-reference pre .token.selector,
+.code-learning-section .code-reference pre .token.attr-name,
+.code-learning-section .code-reference pre .token.string { color: #7ec699; }
+.code-learning-section .code-reference pre .token.operator { color: #67cdcc; }
+.code-learning-section .code-reference pre .token.keyword { color: #c792ea; }
+.code-learning-section .code-reference pre .token.function { color: #79b6f2; }
 
 @media (max-width: 900px) {
   .code-panel {

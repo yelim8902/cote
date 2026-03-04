@@ -444,7 +444,15 @@
     def dequeue(self):
         if self.front == self.rear: return None  # empty
         self.front = (self.front + 1) % self.cap
-        return self.q[self.front]</code></pre></div>
+        return self.q[self.front]
+
+# 사용 예
+cq = CircularQueue(5)
+cq.enqueue(10)
+cq.enqueue(20)
+cq.enqueue(30)
+print(cq.dequeue())   # 10
+print(cq.dequeue())   # 20</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">class CircularQueue {
     int[] q; int cap, front = 0, rear = 0;
     CircularQueue(int cap) { this.cap = cap; q = new int[cap]; }
@@ -458,20 +466,43 @@
         front = (front + 1) % cap;
         return q[front];
     }
+    public static void main(String[] args) {
+        CircularQueue cq = new CircularQueue(5);
+        cq.enqueue(10);
+        cq.enqueue(20);
+        cq.enqueue(30);
+        System.out.println(cq.dequeue());  // 10
+        System.out.println(cq.dequeue());  // 20
+    }
 }</code></pre></div>
                     <div id="codeC" class="code-block"><pre><code class="language-c">#include &lt;stdio.h&gt;
 #define MAX 100
+
+/* 원형 큐: front와 rear를 0으로 시작. 한 칸 비워두고 (rear+1)%cap == front면 꽉 찬 것으로 봄.
+ * cap은 큐 크기. 배열을 원형으로 쓰기 위해 인덱스를 % cap으로 계산. */
 int q[MAX], front = 0, rear = 0, cap = MAX;
 
+/* enqueue: 꽉 찼으면 ((rear+1)%cap == front) 그냥 return.
+ * 아니면 rear를 다음 위치로 옮긴 뒤 (rear = (rear+1)%cap) 그 자리에 x 저장 */
 void enqueue(int x) {
     if ((rear + 1) % cap == front) return;
     rear = (rear + 1) % cap;
     q[rear] = x;
 }
+
+/* dequeue: 비었으면 (front == rear) -1 반환.
+ * 아니면 front를 다음 위치로 옮기고 (front = (front+1)%cap) 그 자리 값 반환 */
 int dequeue() {
     if (front == rear) return -1;
     front = (front + 1) % cap;
     return q[front];
+}
+
+int main(void) {
+    enqueue(10); enqueue(20); enqueue(30);
+    printf("%d\n", dequeue());  /* 10 */
+    printf("%d\n", dequeue());  /* 20 */
+    return 0;
 }</code></pre></div>
                 </div>
                 <div class="code-practice">

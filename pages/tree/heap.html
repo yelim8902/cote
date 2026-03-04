@@ -429,7 +429,13 @@ def pop(h):
         if h[i] <= h[c]: break
         h[i], h[c] = h[c], h[i]
         i = c
-    return top</code></pre></div>
+    return top
+
+# 사용 예 (min-heap)
+# h = []
+# push(h, 10); push(h, 5); push(h, 20)
+# print(pop(h))  # 5
+# print(pop(h))  # 10</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">void push(List<Integer> h, int x) {
     h.add(x);
     int i = h.size() - 1;
@@ -445,22 +451,32 @@ int pop(List<Integer> h) {
     h.remove(h.size()-1);
     heapifyDown(h, 0);
     return top;
-}</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">void push(int *h, int *n, int x) {
+}
+// 사용 예: List<Integer> h = new ArrayList<>(); push(h, 10); push(h, 5); push(h, 20);
+// System.out.println(pop(h));  // 5</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* min-heap 삽입: 맨 끝에 x 넣은 뒤, 부모 (i-1)/2 와 비교해 더 작으면 위로 올림 (sift-up).
+ * h: 배열, n: 원소 개수 포인터. 인덱스 0이 루트, i의 부모는 (i-1)/2, 자식은 2*i+1, 2*i+2 */
+void push(int *h, int *n, int x) {
     int i = (*n)++;
     h[i] = x;
     while (i && h[(i-1)/2] > h[i]) {
-        swap(&h[(i-1)/2], &h[i]);
+        swap(&amp;h[(i-1)/2], &amp;h[i]);
         i = (i - 1) / 2;
     }
 }
+
+/* min-heap pop: 루트(최솟값) 반환. 맨 끝 원소를 루트로 올린 뒤 heapify_down으로 힙 속성 복구.
+ * heapify_down(h, size, idx): idx에서 시작해 자식 중 더 작은 것과 교환하며 내려감 */
 int pop(int *h, int *n) {
     if (!*n) return -1;
     int top = h[0];
     h[0] = h[--*n];
     heapify_down(h, *n, 0);
     return top;
-}</code></pre></div>
+}
+
+/* 사용 예: h는 힙 배열, n은 현재 개수. push 후 pop하면 최솟값이 순서대로 나옴 */
+/* int h[100], n=0; push(h, &amp;n, 10); push(h, &amp;n, 5); printf("%d\n", pop(h, &amp;n));  // 5 */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

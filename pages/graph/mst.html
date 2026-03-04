@@ -437,7 +437,10 @@ def kruskal(edges, n):
     for u, v, w in edges:
         if find(u) != find(v): mst.append((u,v,w)); cost += w; union(u,v)
     return mst, cost
-# Prim: 시작점에서 최소 간선 확장, heapq</code></pre></div>
+# Prim: 시작점에서 최소 간선 확장, heapq
+
+# 사용 예 (Kruskal): edges = [(0,1,1),(1,2,2),(0,2,3)]; n=3
+# mst, cost = kruskal(edges, n)  # mst 간선 리스트, cost 총 비용</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">// Kruskal: sort edges by weight, Union-Find
 int kruskal(List<int[]> edges, int n) {
     edges.sort((a,b) -> a[2]-b[2]);
@@ -450,18 +453,22 @@ int kruskal(List<int[]> edges, int n) {
     }
     return cost;
 }
-// Prim: start node, PriorityQueue of (weight, v)</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">/* Kruskal: qsort edges by weight, Union-Find */
+// Prim: start node, PriorityQueue of (weight, v)
+// 사용 예: List<int[]> edges = ...; int cost = kruskal(edges, n);</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* 크루스칼: 간선을 가중치 오름차순으로 정렬 후, 사이클 안 생기면 MST에 추가. Union-Find로 사이클 검사.
+ * Edge: .u, .v, .w. find(x): x의 루트. unite(u,v): u와 v를 같은 집합으로. cmp: 가중치 비교. */
 int kruskal(Edge *e, int E, int n) {
     qsort(e, E, sizeof(Edge), cmp);
-    int cost = 0;
-    for (int i = 0; i < E; i++) {
-        if (find(e[i].u) != find(e[i].v))
-            unite(e[i].u, e[i].v), cost += e[i].w;
+    int cost = 0, i;
+    for (i = 0; i &lt; E; i++) {
+        if (find(e[i].u) != find(e[i].v)) {
+            unite(e[i].u, e[i].v);
+            cost += e[i].w;
+        }
     }
     return cost;
 }
-/* Prim: start, min-heap (weight, v) */</code></pre></div>
+/* 사용 예: Union-Find 부모 배열 초기화 후 cost = kruskal(edges, E, n); */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>

@@ -292,42 +292,42 @@
         <a href="../../index.html" class="back-link">← 메인으로</a>
         <div class="control-panel">
             <div class="input-group">
-                <label for="valueInput">Value</label>
-                <input type="number" id="valueInput" placeholder="Enter value">
+                <label for="valueInput">값</label>
+                <input type="number" id="valueInput" placeholder="값 입력">
             </div>
             <div class="input-group">
-                <label for="operationSelect">Operation</label>
+                <label for="operationSelect">연산</label>
                 <select id="operationSelect">
-                    <option value="insert">Insert</option>
-                    <option value="delete">Delete</option>
-                    <option value="search">Search</option>
+                    <option value="insert">삽입</option>
+                    <option value="delete">삭제</option>
+                    <option value="search">탐색</option>
                 </select>
             </div>
-            <button class="btn-primary" id="executeBtn">Execute</button>
-            <button class="btn-secondary" id="resetBtn">Reset Tree</button>
+            <button class="btn-primary" id="executeBtn">실행</button>
+            <button class="btn-secondary" id="resetBtn">트리 초기화</button>
         </div>
 
         <div class="info-panel">
             <div class="info-item">
-                <div class="label">Algorithm</div>
-                <div class="value">Binary Search Tree</div>
+                <div class="label">알고리즘</div>
+                <div class="value">이진 탐색 트리</div>
             </div>
             <div class="info-item">
-                <div class="label">Step</div>
+                <div class="label">단계</div>
                 <div class="value" id="stepCounter">0 / 0</div>
             </div>
             <div class="info-item">
-                <div class="label">Time Complexity</div>
+                <div class="label">시간 복잡도</div>
                 <div class="value" id="timeComplexity">O(log n)</div>
             </div>
             <div class="info-item">
-                <div class="label">Space Complexity</div>
+                <div class="label">공간 복잡도</div>
                 <div class="value">O(n)</div>
             </div>
         </div>
 
         <div class="step-info">
-            <div class="description" id="stepDescription">Select an operation and enter a value to begin</div>
+            <div class="description" id="stepDescription">연산을 선택하고 값을 입력한 뒤 실행하세요</div>
         </div>
 
         <div class="visualization">
@@ -335,8 +335,8 @@
         </div>
 
         <div class="navigation">
-            <button class="btn-secondary" id="prevBtn" disabled="">Previous</button>
-            <button class="btn-secondary" id="nextBtn" disabled="">Next</button>
+            <button class="btn-secondary" id="prevBtn" disabled="">이전</button>
+            <button class="btn-secondary" id="nextBtn" disabled="">다음</button>
         </div>
 
         <section class="code-learning-section">
@@ -362,7 +362,13 @@ def search(root, key):
 
 def min_node(node):
     while node.left: node = node.left
-    return node</code></pre></div>
+    return node
+
+# 사용 예 (Node는 val, left, right 갖는 클래스)
+# root = None
+# root = insert(root, 50); root = insert(root, 30); root = insert(root, 70)
+# n = search(root, 30)   # 있으면 해당 노드
+# m = min_node(root)     # 최솟값 노드</code></pre></div>
                     <div id="codeJava" class="code-block"><pre><code class="language-java">Node insert(Node root, int key) {
     if (root == null) return new Node(key);
     if (key < root.val) root.left = insert(root.left, key);
@@ -372,17 +378,26 @@ def min_node(node):
 Node search(Node root, int key) {
     if (root == null || root.val == key) return root;
     return key > root.val ? search(root.right, key) : search(root.left, key);
-}</code></pre></div>
-                    <div id="codeC" class="code-block"><pre><code class="language-c">Node* insert(Node* r, int key) {
+}
+// 사용 예: Node root = null; root = insert(root, 50); root = insert(root, 30);
+// Node n = search(root, 30);</code></pre></div>
+                    <div id="codeC" class="code-block"><pre><code class="language-c">/* BST 삽입: 빈 트리면 새 노드 반환. key가 현재 노드보다 작으면 왼쪽, 크면 오른쪽으로 재귀.
+ * 반환값을 r->left 또는 r->right에 붙여서 부모와 연결. new_node()는 val, left, right 초기화. */
+Node* insert(Node* r, int key) {
     if (!r) return new_node(key);
     if (key < r->val) r->left = insert(r->left, key);
     else r->right = insert(r->right, key);
     return r;
 }
+
+/* BST 탐색: 없거나 찾은 노드면 그대로 반환. key가 현재 값보다 크면 오른쪽, 작으면 왼쪽 서브트리에서 재귀. */
 Node* search(Node* r, int key) {
     if (!r || r->val == key) return r;
     return key > r->val ? search(r->right, key) : search(r->left, key);
-}</code></pre></div>
+}
+
+/* 사용 예: root가 NULL이면 빈 BST. insert는 루트가 바뀔 수 있으므로 root = insert(root, key); */
+/* Node* root = NULL; root = insert(root, 50); root = insert(root, 30); Node* n = search(root, 30); */</code></pre></div>
                 </div>
                 <div class="code-practice">
                     <label>따라 적어 보기</label>
